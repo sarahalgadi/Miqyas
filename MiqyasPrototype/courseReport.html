@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Assessment: Grades</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <style>
+        .navbar-nav {
+            margin-left: 60%;
+        }
+
+        .navbar-nav .nav-link {
+            color: #15416e;
+            margin: 1rem;
+            font-size: large;
+            font: weight 500px;
+        }
+
+        .custom-button {
+            background-color: #15416e;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-family: Arial, sans-serif;
+            margin: 0.5rem;
+            margin-left: 7%;
+            width: 250px;
+            text-decoration: none;
+        }
+
+        .custom-button:hover {
+            background-color: #507eac;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        #project,
+        #majors,
+        #final {
+            padding: 4rem;
+            font-weight: 500;
+            margin-left: 0;
+        }
+
+        .nav-link:hover {
+            color: #15416e;
+            background-color: #fff;
+        }
+
+        .nav-link {
+            background-color: #15416e;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+
+        <nav class="navbar navbar-expand-md p-4" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-auto">
+                    <img src="images/miqyasLogo.png" alt="logo" style="height: auto; width: 200px; margin-left:35%;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="nav navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" style="background-color: white; color: #15416e;"
+                                href="/homeCI.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="background-color: white; color: #15416e;"
+                                href="/login.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <hr>
+    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+        <div class="col-md-8">
+            <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">SE322: Software Design & Architecture</h2>
+                <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">CLO Assessment Course Report</h2>
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Direct Assessment Results</h2>
+        </div>
+        <div class="col-md-4">
+            <h2 style="font-weight: 600; margin-top: 1rem; margin-left: 20%; padding: 1rem; font-size: x-large;">Term
+                231</h2>
+        </div>
+    </div>
+    <div class="container">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>CLO Number</th>
+              <th>BE</th>
+              <th>DE</th>
+              <th>ME</th>
+              <th>AE</th>
+              <th>Results</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CLO 1</td>
+              <td>3</td>
+              <td>2</td>
+              <td>4</td>
+              <td>8</td>
+              <td>70%</td>
+            </tr>
+            <tr>
+                <td>CLO 2</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>8</td>
+                <td>70%</td>
+              </tr>
+          </tbody>
+        </table>
+        <div class="dropdown">
+            <button type="button" class="btn custom-button dropdown-toggle" style="margin-left: 0;" data-bs-toggle="dropdown">
+              Filter
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Software Engineering</a></li>
+            </ul>
+          </div>
+    </div>
+    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Indirect Assessment Results</h2>
+        </div>
+    <div class="container" id="result">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>CLO Number</th>
+                    <th>Not Satisfied</th>
+                    <th>Barely Satisfied</th>
+                    <th>Satisfied</th>
+                    <th>Adequetly Satisfied</th>
+                    <th>Fully Satisfied</th>
+                    <th>Achievement Results</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CLO 1</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>8</td>
+                    <td>70%</td>
+                </tr>
+                <tr>
+                    <td>CLO 2</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>8</td>
+                    <td>70%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Overall Achievement Results</h2>
+    </div>
+<div class="container" id="result">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th rowspan="2">CLO Number</th>
+                <th rowspan="2">Achievement Rate</th>
+                <th colspan="5">Action Plan & Recommendation
+                    <tr>
+                        
+                        <th>Action</th>
+                        <th>Resposible</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Resources</th>
+                    </tr>
+                </th>
+            </tr>
+            
+        </thead>
+        <tbody>
+            <tr>
+                <td>CLO 1</td>
+                <td>70%</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti a qui exercitationem praesentium expedita ab provident iure sint repellat hic sed culpa maxime corrupti voluptas, illo accusamus magni reiciendis enim.</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis animi ad fugit obcaecati eius labore repellat inventore ducimus, consequuntur perspiciatis reiciendis suscipit quam repudiandae ipsum! Eius molestias debitis doloremque ut!</td>
+                <td>17/3/2023</td>
+                <td>30/3/2023</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla tempora a numquam explicabo at distinctio quasi vitae quaerat dignissimos delectus unde, nihil veniam dolor? Nihil, excepturi fugiat! Nam, id magni?</td>
+            </tr>
+            <tr>
+                <td>CLO 2</td>
+                <td>70%</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti a qui exercitationem praesentium expedita ab provident iure sint repellat hic sed culpa maxime corrupti voluptas, illo accusamus magni reiciendis enim.</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis animi ad fugit obcaecati eius labore repellat inventore ducimus, consequuntur perspiciatis reiciendis suscipit quam repudiandae ipsum! Eius molestias debitis doloremque ut!</td>
+                <td>17/3/2023</td>
+                <td>30/3/2023</td>
+                <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla tempora a numquam explicabo at distinctio quasi vitae quaerat dignissimos delectus unde, nihil veniam dolor? Nihil, excepturi fugiat! Nam, id magni?</td>
+            </tr>
+        </tbody>
+    </table>
+    <!--Look into where this goes later-->
+    <a class="btn custom-button" style="margin-left: 75%">Save Report</a>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miqyas: Login</title>
+  <!--  Bootstrap CSS link -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-md" id="nav">
+      <div class="container-fluid">
+        <a class="navbar-brand mx-auto">
+          <img src="images/miqyasLogo.png" alt="logo" style="height:85px; width: 230px; margin-top: 4rem;">
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="mt-4">
+    <div class="row" style="background-color: #15416e;">
+      <div class="col-md-4">
+        <h2
+          style="color: white; margin-left: 25%; font-style: italic; font-family: Helvetica, sans-serif; padding: 4rem;">
+          About <br>Miqyas</h2>
+      </div>
+      <div class="col-md-6">
+        <p style="color: white; text-align: justify; padding: 4rem; font-family: Arial, Helvetica, sans-serif;">
+          Miqyas is an online platform designed to enhance the CLO assessment process at Prince Sultan
+          University. It has been developed by a group of senior software engineering students under the
+          supervision of Dr. Layla AlFawzan.</p>
+      </div>
+
+    </div>
+    <div class="mt-4" style="margin-bottom: 4rem;">
+      <div>
+        <h2 style="margin-left: 26%;">Login</h2>
+        <div class="col-md-6 mx-auto">
+          <form id="loginForm">
+            <div class="mt-4">
+              <label for="user_role">Role:</label>
+              <select class="form-select" name="user_role" id="user_role">
+                <option value="CI">Course Instructor</option>
+                <option value="CC">Course Coordinator</option>
+                <option value="QAC">Quality Assurance Member</option>
+                <option value="CP">Chairperson</option>
+                <option value="DCC">Departmenet Curriculum Commitee</option>
+              </select> <br>
+              <label for="username">Username:</label>
+              <input type="text" class="form-control" id="username" name="username">
+            </div>
+            <div class="form-group">
+              <label for="password">Password:</label>
+              <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="button" onclick="redirectBasedOnUsername()" class="btn mt-4"
+              style="background-color: #15416e; color: white">Login</button>
+          </form>
+          <script>
+            function redirectBasedOnUsername() {
+              var user_role = document.getElementById('user_role').value;
+              var form = document.getElementById('loginForm');
+
+              switch (user_role) {
+                case 'CI':
+                  window.location.href = "/homeCI.html";
+                  break;
+                case 'CC':
+                  window.location.href = "/homeCC.html";
+                  break;
+                case 'CP':
+                  window.location.href = "/homeChairperson.html";
+                  break;
+                case 'DCC':
+                  window.location.href = "/homeDCC.html";
+                  break;
+                case 'QAC':
+                  window.location.href = "/homeQA.html";
+                default:
+                  break;
+              }
+            }
+            var form = document.getElementById('loginForm');
+            form.addEventListener('submit', function (e) {
+              e.preventDefault(); // Prevents the default form submission behavior
+              redirectBasedOnUsername();
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-white text-center py-3 mt-4" style="background-color:#15416e;">
+    &copy; 2023 Miqyas
+  </footer>
+
+</body>
+
+</html>

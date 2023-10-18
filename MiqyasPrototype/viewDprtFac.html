@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!--  Bootstrap CSS link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <style>
+        .navbar-nav {
+            margin-left: 60%;
+        }
+
+        .navbar-nav .nav-link {
+            color: #15416e;
+            margin: 1rem;
+            font-size: large;
+            font: weight 500px;
+        }
+
+        .course-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .course-card-header {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .custom-button {
+            background-color: #15416e;
+            /* Replace with your desired custom color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-family: Arial, sans-serif;
+            margin-top: 1rem;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        .custom-button:hover {
+            background-color: #507eac;
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md p-4" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-auto">
+                    <img src="images/miqyasLogo.png" alt="logo" style="height: auto; width: 200px; margin-left:35%;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/homeChairperson.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <h2
+            style="background-color: #15416e; height: 5rem;color: white; padding: 20px; font-family: Arial, Helvetica, sans-serif; font-size: 25px;">
+            Software Engineering Department Faculty Members </h2> <br>
+        <div class="container mt-2">
+            <table class="table">
+                <thead style="font-size: 20px;">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dr. Zainab Masood</td>
+                        <td><button type="button" class="btn custom-button" data-bs-toggle="modal"
+                                data-bs-target="#roleModal">Assign Role</button></td>
+                    </tr>
+                    <tr>
+                        <td>Dr. Suad AlRamouni</td>
+                        <td><button type="button" class="btn custom-button">Assign Role</button></td>
+                    </tr>
+                    <tr>
+                        <td>Ms. Alhanouf Almutairi</td>
+                        <td><button type="button" class="btn  custom-button">Assign Role</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="roleModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3> Assign role to Dr. Zainab Masood</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body m-2">
+                        <form>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" name="roles[]"
+                                    value="departmentCurriculumCommittee" id="dcc">
+                                <label class="form-check-label" for="dcc">Department Curriculum Committee</label>
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" name="roles[]"
+                                    value="qualityAssurance" id="QA">
+                                <label class="form-check-label" for="QA">Quality Assurance Member</label>
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" name="roles[]"
+                                    value="courseCoordinator" id="CC" onchange="toggleTextBox()">
+                                <label class="form-check-label" for="CC">Course Coordinator</label>
+                            </div>
+                            <div class="mt-2" id="courseCodeDiv" style="display: none;">
+                                <label for="courseCode" class="form-label">Coordinated Course Code</label>
+                                <input type="text" class="form-control" name="courseCode" id="courseCode" placeholder="Coordinated Course Code">
+                            </div>
+                        </form>
+                        <script>
+                            function toggleTextBox() {
+                                var checkBox = document.getElementById("CC");
+                                var textBoxDiv = document.getElementById("courseCodeDiv");
+                                if (checkBox.checked) {
+                                    textBoxDiv.style.display = "block";
+                                } else {
+                                    textBoxDiv.style.display = "none";
+                                }
+                            }
+                        </script>
+                    </div>
+                    <div class="modal-footer">
+                        <a type="submit" value="Assign Roles" class="custom-button" href="viewDprtFac.html">Assign Roles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

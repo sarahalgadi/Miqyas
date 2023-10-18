@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Coordinator</title>
+    <link rel="stylesheet" href="CSS/css.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <style>
+        #project,
+        #majors,
+        #final {
+            padding: 4rem;
+            font-weight: 500;
+            margin-left: 0;
+        }
+
+        .nav-link:hover {
+            color: #15416e;
+            background-color: #fff;
+        }
+
+        .nav-link {
+            background-color: #15416e;
+            color: white;
+        }
+    </style>
+
+    <script>
+        function toggleWeightInput(id) {
+            var checkBox = document.getElementById(id);
+            checkBox.classList.toggle('d-none');
+        }
+
+        function validateWeights() {
+            var weights = [
+                parseFloat(document.getElementById('projectWeight').value),
+                parseFloat(document.getElementById('majorWeight').value),
+                parseFloat(document.getElementById('assignmentWeight').value),
+                parseFloat(document.getElementById('quizWeight').value),
+                parseFloat(document.getElementById('finalExamWeight').value),
+                parseFloat(document.getElementById('otherWeight').value)
+            ];
+
+            var totalWeight = weights.reduce((total, weight) => total + (isNaN(weight) ? 0 : weight), 0);
+
+            if (totalWeight < 50) {
+                alert('Total weight should be at least 50%. Current total: ' + totalWeight);
+            } else if (totalWeight > 100) {
+                alert('Total weight should not exceed 100%. Current total: ' + totalWeight);
+            } else {
+                alert('Weights are valid! Total weight: ' + totalWeight);
+            }
+        }
+
+        function populateSections() {
+            var semesterSelect = document.getElementById("semester");
+            var sectionSelect = document.getElementById("section");
+            var selectedSemester = semesterSelect.value;
+
+            // Clear existing options
+            sectionSelect.innerHTML = '<option value="" selected disabled>Select Section</option>';
+
+            // Each semester has its own sections
+            if (selectedSemester === "spring2023") {
+                sectionSelect.innerHTML += '<option value="section1"> Section 1 </option>';
+                sectionSelect.innerHTML += '<option value="section2">Section 2</option>';
+                sectionSelect.innerHTML += '<option value="section3">Section 3</option>';
+            } else if (selectedSemester === "summer2023") {
+                sectionSelect.innerHTML += '<option value="section4">Section 4</option>';
+                sectionSelect.innerHTML += '<option value="section5">Section 5</option>';
+            } else if (selectedSemester === "fall2023") {
+                sectionSelect.innerHTML += '<option value="section6">Section 6</option>';
+                sectionSelect.innerHTML += '<option value="section7">Section 7</option>';
+                sectionSelect.innerHTML += '<option value="section8">Section 8</option>';
+            }
+
+            // Enable the section select dropdown
+            sectionSelect.disabled = false;
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md p-4" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-auto">
+                    <img src="images/miqyasLogo.png" alt="logo" style="height: auto; width: 200px; margin-left:35%;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" style="background-color: white; color: #15416e;" href="/homeCC.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" style="background-color: white; color: #15416e;" href="/login.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <hr>
+
+    <main>
+        <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <div class="col-md-8">
+                <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">SE322: Software Design & Architecture</h1>
+            </div>
+            <div class="col-md-4">
+                <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Term: 231</h2>
+            </div>
+        </div>
+        </div>
+
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#viewReports">View Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#editActivites">Edit Activites</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#generateReport">Generate Report</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="viewReports" class="tab-pane container active mt-4 p-4">
+                    <h3>Previous Semesters Reports</h3>
+                    <form method="POST">
+                        <label for="semester" class="form-label">Select Semester:</label>
+                        <select id="semester" name="semester" class="form-select" onchange="populateSections()">
+                            <option value="" selected disabled>Select Semester</option>
+                            <option value="spring2023">Term 231</option>
+                            <option value="summer2023">Term 222</option>
+                            <option value="fall2023">Term 221</option>
+                        </select>
+                        <br>
+                        <br>
+                        <label for="section" class="form-label">Select Section:</label>
+                        <select id="section" name="section" class="form-select" disabled>
+                            <option value="" selected disabled>Select Section</option>
+                        </select>
+                        <br>
+                        <br> <button type="button" class="custom-button"
+                            onclick="window.location.href = 'report.html'">View Report</button>
+                    </form>
+                </div>
+
+                <div id="editActivites" class="tab-pane container fade p-4 mt-4">
+                    <h3>Edit Activites</h3>
+                    <div class="row" style="margin-left: 40%; text-align: left;">
+                        <form id="weightsForm">
+                            <h4>Choose Assessment Achitivites:</h4>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" value="" id="projectCheckbox" onchange="toggleWeightInput('projectWeight')">
+                                <label class="form-check-label" for="projectCheckbox">Project</label>
+                                <input class="form-control d-none" type="number" id="projectWeight" placeholder="Enter weight (%)" min="0" max="100">
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" value="" id="majorCheckbox" onchange="toggleWeightInput('majorWeight')">
+                                <label class="form-check-label" for="majorCheckbox">Major</label>
+                                <input class="form-control d-none" type="number" id="majorWeight" placeholder="Enter weight (%)" min="0" max="100">
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" value="" id="assignmentCheckbox" onchange="toggleWeightInput('assignmentWeight')">
+                                <label class="form-check-label" for="assignmentCheckbox">Assignment</label>
+                                <input class="form-control d-none" type="number" id="assignmentWeight" placeholder="Enter weight (%)" min="0" max="100">
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" value="" id="quizCheckbox" onchange="toggleWeightInput('quizWeight')">
+                                <label class="form-check-label" for="quizCheckbox">Quiz</label>
+                                <input class="form-control d-none" type="number" id="quizWeight" placeholder="Enter weight (%)" min="0" max="100">
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" value="" id="finalExamCheckbox" onchange="toggleWeightInput('finalExamWeight')">
+                                <label class="form-check-label" for="finalExamCheckbox">Final Exam</label>
+                                <input class="form-control d-none" type="number" id="finalExamWeight" placeholder="Enter weight (%)" min="0" max="100">
+                            </div>
+                            <div class="form-check p-2">
+                                <input class="form-check-input" type="checkbox" value="" id="otherCheckbox" onchange="toggleWeightInput('otherWeight')">
+                                <label class="form-check-label" for="otherCheckbox">Other</label>
+                                <input class="form-control d-none" type="number" id="otherWeight" placeholder="Enter weight (%)" min="0" max="100">
+                            </div>
+                            <button type="button" onclick="validateWeights()"
+                                class="custom-button mt-4">Save</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div id="generateReport" class="tab-pane fade p-4 mt-4">
+                <h3>Generate Report</h3>
+                <p>Report will be fetched here.</p>
+                <input type="button" value="Print" class="custom-button">
+                <input type="submit" value="Save" class="custom-button">
+            </div>
+        </div>
+        </div>
+        </div>
+    </main>
+    <footer class="text-white text-center py-3 mt-4" style="background-color:#15416e;">
+        &copy; 2023 Miqyas
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!--  Bootstrap CSS link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <style>
+        .navbar-nav {
+            margin-left: 60%;
+        }
+
+        .navbar-nav .nav-link {
+            color: #15416e;
+            margin: 1rem;
+            font-size: large;
+            font: weight 500px;
+        }
+
+        .course-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .course-card-header {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .custom-button {
+            background-color: #15416e;
+            /* Replace with your desired custom color */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-family: Arial, sans-serif;
+            margin-top: 1rem;
+            text-decoration: none;
+        }
+
+        .custom-button:hover {
+            background-color: #507eac;
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+
+        <nav class="navbar navbar-expand-md p-4" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-auto">
+                    <img src="images/miqyasLogo.png" alt="logo" style="height: auto; width: 200px; margin-left:35%;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/homeDCC.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <hr>
+    <div id="termSection">
+        <h3
+            style="font-weight: 400; margin: 1.5rem; padding: 1rem; font-family: Arial, Helvetica, sans-serif; font-size: 24px;">
+            Academic Terms:</h3>
+
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card course-card">
+                        <div class="card-header course-card-header">
+                            <strong>Term 231</strong>
+                        </div>
+                        <div class="card-body">
+                            <a class="custom-button" onclick="showSection()">View Courses</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card course-card">
+                        <div class="card-header course-card-header">
+                            <strong>Term 223</strong>
+                        </div>
+                        <div class="card-body">
+                            <a class="custom-button" onclick="showSection()">View Courses</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card course-card">
+                        <div class="card-header course-card-header">
+                            <strong>Term 222</strong>
+                        </div>
+                        <div class="card-body">
+                            <a class="custom-button" onclick="showSection()">View Courses</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        function showSection() {
+            var section = document.getElementById('homeSection');
+            section.style.display = 'block';
+
+            var prevSection = document.getElementById('termSection');
+            prevSection.style.display = 'none';
+        }
+    </script>
+    <div id="homeSection" style="display: none;">
+        <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <div class="col-md-6">
+                <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">Welcome, DCC Member X</h1>
+            </div>
+            <div class="col-md-4">
+                <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Term: 231</h2>
+            </div>
+        </div>
+        <div class="row continer" style="font-family:Arial, Helvetica, sans-serif">
+            <div class="col-md-6">
+                <h2 style="font-size: medium; margin-left: 5%; padding: 1rem;"><strong>Department:</strong> Software
+                    Engineering</h2>
+            </div>
+
+        </div>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card course-card">
+                        <div class="card-header course-card-header">
+                            SE3211: Software Design & Architecture
+                        </div>
+                        <div class="card-body">
+                            <br>
+                            <a class="btn custom-button" href="courseReport.html">View CLO Assessment Results</a>
+                            <button class="btn custom-button" style="width: 100%;" data-bs-toggle="modal"
+                                data-bs-target="#closModal">Add CLOs</a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card course-card">
+                        <div class="card-header course-card-header">
+                            SE311: Requirements Engineering
+                        </div>
+                        <div class="card-body">
+                            <br>
+                            <a class="btn custom-button" href="courseReport.html">View CLO Assessment Results</a>
+                            <button class="btn custom-button" style="width: 100%;" data-bs-toggle="modal"
+                                data-bs-target="#closModal">Add CLOs</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card course-card">
+                        <div class="card-header course-card-header">
+                            SE411: Software Construction
+                        </div>
+                        <div class="card-body">
+                            <br>
+                            <a class="btn custom-button" href="courseReport.html">View CLO Assessment Results</a><br>
+                            <button class="btn custom-button" style="width: 100%;" data-bs-toggle="modal"
+                                data-bs-target="#closModal">Add CLOs</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="closModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add CLOs</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>CLO Number</th>
+                                        <th>CLO Type</th>
+                                        <th>CLO Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="insertionPoint">
+                                    <tr>
+                                        <td><input type="number" class="form-control"></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
+                                                    CLOs
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#">Knowledge</a></li>
+                                                    <li><a class="dropdown-item" href="#">Values</a></li>
+                                                    <li><a class="dropdown-item" href="#">Skills</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button class="btn custom-button" onclick="addCLO()">Add CLO</button>
+                        </div>
+                        <a class="btn custom-button" style="margin: 1rem;"
+                onclick="saveCLOs()">Save</a>
+                        <script>
+                            var cloCount = 1;
+
+                            function addCLO() {
+                                var tableBody = document.getElementById("insertionPoint");
+
+                                if (cloCount < 8) {
+                                    var newRow = document.createElement('tr');
+                                    newRow.innerHTML = `
+                                            <td><input type="number" class="form-control"></td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown">
+                                                        CLOs
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#">Knowledge</a></li>
+                                                        <li><a class="dropdown-item" href="#">Values</a></li>
+                                                        <li><a class="dropdown-item" href="#">Skills</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control">
+                                            </td>
+                                        `;
+                                    tableBody.appendChild(newRow);
+                                    cloCount++;
+                                } else {
+                                    alert("You can add a maximum of 8 CLOs.");
+                                }
+                            }
+                            function saveCLOs() {
+                                if (cloCount < 4) {
+                                    alert("Please add at least four CLOs before saving.");
+                                } else {
+                                    window.location.href = "/homeDCC.html"
+                                }
+                            }
+                        </script>
+                        <!--
+                            <script>
+                                function addCLO() {
+                                    // Select the element where you want to insert the HTML code
+                                    var element = document.getElementById("insertionPoint");
+            
+                                    // Create the HTML code you want to insert
+                                    var htmlCode = `
+                                    <tr>
+                                        <td><input type="number" class="form-control"></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown">
+                                                    CLOs
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#">Knowledge</a></li>
+                                                    <li><a class="dropdown-item" href="#">Values</a></li>
+                                                    <li><a class="dropdown-item" href="#">Skills</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control">
+                                        </td>                                        
+                                    </tr>
+                    `;
+                                    // Insert the HTML code into the selected element
+                                    element.insertAdjacentHTML("beforeend", htmlCode);
+                                }
+                            </script>-->
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    </div>
+    </div>
+</body>
+
+</html>
