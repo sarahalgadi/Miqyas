@@ -49,4 +49,12 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
+//render login page
+app.get('/',(req, res)=>{
+  res.render('login');
+});
+
+//listening port
+app.listen(8080);
+
 module.exports = app;
