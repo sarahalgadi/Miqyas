@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include("./partials/head.ejs")%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../stylesheets/courseCards.css">
+    <style>
+        #welcome {
+            margin: 4rem;
+            margin-left: 4rem;
+            font-size: 18px;
+        }
+
+        h2 {
+            font-size: 30px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <%-include("./partials/nav.ejs")%>
+    <!--Welcome note that will retrieve the user's name-->
+    <!--I'm currently not retreiving this information, so I used X. To be edited later.-->
+    <div>
+        <table id="welcome" class="table table-borderless">
+            <tr>
+                <td>
+                    <h2>Welcome, X </h2>
+                </td>
+                <td><strong>Term:</strong> X</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Department:</strong> X</td>
+            </tr>
+
+        </table>
+    </div>
+
+    <!--Courses available to the user will be retrieved from the database and displayed in cards-->
+    <!--Currenlty i'm commenting out the code that would dynamically create the card based on the retrieved data, 
+        as I do not have access to the database yet. It should be commented out once I firgue out how to retrieve from the database.-->
+    <!--
+        <div class="container mt-4">
+            <div class="card">
+                <div class="course-cards">
+                    <% courses.forEach(function (course) { %>
+                        <div class="card">
+                            <h2 class="card-title">
+                                <%= course.courseTitle %>
+                            </h2>
+                            <div class="card-body">
+                                NOTE: Links to be adjusted here later in routing.
+                                <button class="btn custom-button" href="#"  style="width: 100%;">View CLO Assessment Results</button>
+                                <button class="btn custom-button" data-bs-toggle="modal"
+                                        data-bs-target="#addCLOModal"  style="width: 100%;">Add CLOs</a>
+                            </div>
+                        </div>
+
+                        <% }) %>
+                </div>
+            </div>
+        </div>
+-->
+
+        <!--Modal that will pop up to add CLOs-->
+        <div class="modal" id="addCLOModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add CLOs</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered" id="cloTable">
+                            <thead>
+                                <tr>
+                                    <th style="border: none;">CLO Number</th>
+                                    <th>CLO Type</th>
+                                    <th>CLO Description</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="insertionPoint">
+                                <tr>
+                                    <td><input type="number" class="form-control" value="1" readonly
+                                            style="border: none;"></td>
+                                    <td>
+                                        <select class="form-select" id="typeSelect" onchange="selectType()">
+                                            <option value="" selected>Type</option>
+                                            <option value="Knowledge">Knowledge</option>
+                                            <option value="Values">Values</option>
+                                            <option value="Skills">Skills</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <textarea rows="1" class="form-control"></textarea>
+                                    </td>
+                                    <td><button class="btn" style="background-color: #15416e;"
+                                            onclick="deleteCLO(this)"><i class="fas fa-times"
+                                                style="color: white"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                            <p id="validationMessage" style="font-weight: 400; color: #15416e; margin-top: 10px;"></p>
+                            <button id="addCLOButton" class="btn custom-button" onclick="addCLO()">Add CLO</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn custom-button" style="width: 100%" onclick="saveCLOs()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+        //defining count to track number of clos added
+        let cloCount = 1;
+
+        //dynamically adds a clo to the table of clos when the "add clo" button is clicked
+        function addCLO() {
+            //allows adding a clo if clocount is less than 8
+            if (cloCount < 8) {
+                cloCount++;
+                const table = document.getElementById('cloTable');
+                //inserting a new row for the new clo then adding the html for the added cell
+                const row = table.insertRow(-1);
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                cell1.innerHTML = `<input type="number" class="form-control" value="${cloCount}" readonly style="border: none;">`;
+                cell2.innerHTML = `<select class="form-select" id="typeSelect" onchange="selectType()">
+                                            <option value="" selected>Type</option>
+                                            <option value="Knowledge">Knowledge</option>
+                                            <option value="Values">Values</option>
+                                            <option value="Skills">Skills</option>
+                                        </select> `;
+                cell3.innerHTML = '<textarea rows="1" class="form-control"></textarea>';
+                cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
+                //once 8 clos are reached, the "add clo" button is disabled to prevent adding more
+                if (cloCount === 8) {
+                    document.getElementById('addCLOButton').style.backgroundColor = 'lightgrey';
+                    document.getElementById('addCLOButton').disabled = true;
+                }
+                //double validation that number of clos does not exceed 8 if somehow the button was not disabled
+            } else if (cloCount === 8) {
+                const validationMessage = document.getElementById('validationMessage');
+                validationMessage.textContent = 'You can add a maximum of 8 CLOs only.';
+                validationMessage.style.color = '#15416e';
+            }
+            //if error message is shown to the user for attempting to save <4 clos and the user adds enough clos, the error message disappears
+            if (cloCount >= 4) {
+                const validationMessage = document.getElementById('validationMessage');
+                validationMessage.textContent = ''; // Clear the validation message
+            }
+        }
+
+        //handles deletion of clo
+        function deleteCLO(row) {
+            const table = document.getElementById('cloTable');
+            const rowIndex = row.parentNode.parentNode.rowIndex;
+            table.deleteRow(rowIndex);
+            cloCount--;
+            //calls update function to update the numbering and enable add button
+            updateCLONumbers();
+        }
+
+        function updateCLONumbers() {
+            const table = document.getElementById('cloTable');
+            const rows = table.getElementsByTagName('tr');
+            //updates the numbering of rows to accomodate changes
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                cells[0].innerHTML = `<input type="number" class="form-control" value="${i}" readonly style="border: none;">`;
+            }
+            //removes disabled button
+            if (cloCount < 8) {
+                document.getElementById('addCLOButton').style.backgroundColor = '';
+                document.getElementById('addCLOButton').disabled = false;
+                const validationMessage = document.getElementById('validationMessage');
+                validationMessage.textContent = '';
+            }
+        }
+
+
+        function saveCLOs() {
+            //prevents saving unless we have a minimmum of 4 clos
+            if (cloCount < 4) {
+                const validationMessage = document.getElementById('validationMessage');
+                validationMessage.textContent = 'Please add at least four CLOs.';
+                validationMessage.style.color = 'Maroon';
+                validationMessage.style.fontWeight = '500';
+            } else {
+                const validationMessage = document.getElementById('validationMessage');
+                validationMessage.textContent = '';
+                // save to database functionality will be added here?
+            }
+        }
+    </script>
+</body>
+</html>
