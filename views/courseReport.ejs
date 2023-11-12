@@ -115,40 +115,44 @@
     <div class="container" id="result">
         <canvas id="assessmentChart" width="400" height="130"></canvas>
     </div>
-
-
     <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
-        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Overall Achievement Results</h2>
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Select Action Plan:</h2>
     </div>
-    <div class="container" id="result">
-        <label class="form-check-label">
-            <input type="checkbox" class="form-check-input" id="showTable"> Section 323
-          </label>
-        <table class="table table-bordered d-none" id="actionPlan">
-            <thead>
-                <tr>
-                    <th rowspan="2">CLO Number</th>
+    <form action="/save-course-report" method="post">
+        <div class="container" id="result">
+            <!-- im using dummy data for sections, but thru database, you should get the sections with action plans only.-->
+           <% const sections = ['Section 323', 'Section 324', 'Section 325']; %>
+           <div class="checkbox-sections">
+               <% sections.forEach((section, index) => { %>
+                   <label class="form-check-label">
+                       <input type="checkbox" class="form-check-input sectionCheckbox" id="<%= `showTableSection${index}` %>"> <%= section %>
+                   </label><br>
+                   <table class="table table-bordered d-none" id="<%= `actionPlan${index}` %>">
+                       <thead>
+                           <tr>
+                               <th rowspan="2">CLO Number</th>
+                               <th colspan="5">Action Plan & Recommendation
+                                   <tr>
+                                       <th>Action</th>
+                                       <th>Responsible</th>
+                                       <th>Start Time</th>
+                                       <th>End Time</th>
+                                       <th>Resources</th>
+                                   </tr>
+                               </th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <!-- here we'll use ejs for the course code, semester, and clo and get action plan data from sections-->
+                       </tbody>
+                   </table>
+               <% }); %>
+           </div>
+           <button type="submit" class="btn custom-button" style="margin-left: 75%">Save Report</button>
 
-                    <th colspan="5">Action Plan & Recommendation
-                        <tr>
-
-                            <th>Action</th>
-                            <th>Responsible</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Resources</th>
-                        </tr>
-                    </th>
-                </tr>
-
-            </thead>
-            <tbody>
-
-            </tbody>
-        </table>
-        <!-- Look into where this goes later -->
-        <a class="btn custom-button" style="margin-left: 75%">Save Report</a>
-    </div>
+       </div>
+    </form>
+   
 </body>
 
 <script>
@@ -202,18 +206,19 @@
     ;
 </script>
 <script>
-    const showTableCheckbox = document.getElementById('showTable');
-    const myTable = document.getElementById('actionPlan');
+    const sectionCheckboxes = document.querySelectorAll('.sectionCheckbox');
 
-    // Add an event listener to the checkbox
-    showTableCheckbox.addEventListener('change', function() {
-      // If the checkbox is checked, remove the 'd-none' class; otherwise, add it
-      if (this.checked) {
-        myTable.classList.remove('d-none');
-      } else {
-        myTable.classList.add('d-none');
-      }
+    // Add an event listener to each section checkbox (once i click on section, it will show the action plan table!)
+    sectionCheckboxes.forEach((sectionCheckbox, index) => {
+        const actionPlanTable = document.getElementById(`actionPlan${index}`);
+
+        sectionCheckbox.addEventListener('change', function () {
+            // If the section checkbox is checked, show the corresponding action plan table; otherwise, hide it
+            actionPlanTable.classList.toggle('d-none', !this.checked);
+        });
     });
-  </script>
+</script>
+
+
 
 </html>

@@ -69,11 +69,18 @@ app.post('/submit_form', (req, res)=>{
 
 app.get('/generate-report', (req, res)=>{
 
+  // of course we'll use controllers for data needed for calculations etc 
+  res.render('courseReport');
+})
 
-  res.render('courseReport')
+app.post('/save-course-report', (req, res)=>{
+  //what info do we need to save? other than action plan? do we render to temp (courses)?
+  
+  res.redirect('/');
 })
 
 app.use((req, res)=>{
   res.status(404).render('404error');
 })
+
 module.exports = app;
