@@ -1,0 +1,82 @@
+.card {
+    height: 100vh;
+    display: flex;
+    width: 60%;
+    height: 85%;
+    border-radius: 20px;
+    box-shadow: 0px 5px 10px #15416e;
+    margin: auto;
+    margin-bottom: 20px;
+}
+.cardBody{
+    max-height: 600px;;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.cardTitle {
+    font-size: 36px;
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    color:#15416e;
+    margin-top: 20px;
+    margin-left: 20px;
+    padding-top: 40px;   
+}
+.navbar-nav {
+    margin-left: 60%;
+}
+
+.navbar-nav .nav-link {
+    color: #15416e;
+    margin: 1rem;
+    font-size: large;
+    font: weight 500px;
+}
+
+.custom-button {
+    background-color: #15416e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: Arial, sans-serif;
+    margin: 0.5rem;
+    margin-left:0%;
+    width: 100;
+
+
+}
+.custom-button:hover {
+    background-color: #507eac;
+    color: #fff;
+}
+
+
+.course-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.course-card-header {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+.custom-button {
+    background-color: #15416e;
+    /* Replace with your desired custom color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: Arial, sans-serif;
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+.custom-button:hover {
+    background-color: #507eac;
+    color: #fff;
+    text-decoration: none;
+}
