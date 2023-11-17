@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <%-include("./partials/head.ejs")%>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../stylesheets/style.css">
+  <title>Faculty List</title>
+</head>
+<body>
+  <%-include("./partials/nav.ejs")%>
+  <h1>Faculty List</h1>
+  <ul>
+    <% faculty_role.forEach(function(username) { %>
+      <li>
+        <%= faculty.username %>
+        <form action="/assign-role" method="POST">
+          <input type="hidden" name="username" value="<%= faculty_role.username %>">
+          <input type="text" name="role" placeholder="Enter role...">
+          <button type="submit">Assign Role</button>
+        </form>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>
