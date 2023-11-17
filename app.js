@@ -1,6 +1,8 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
 
+//db 
+const db = require('database');
 //express app
 var app = express();
 
@@ -13,8 +15,13 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use((req, res, next) => {
+  req.db = db; // Make the database accessible in the request object
+  next();
+});
 
 var chairRouter = require('./routes/chairRouter');
+const { database } = require('./database');
 
 
 app.get('/roleAssign',  (request, response) => {
@@ -22,7 +29,6 @@ app.get('/roleAssign',  (request, response) => {
 });
 
 
-//app.use('/users', usersRouter);
 app.use('/roleAssign', chairRouter);
 
 
