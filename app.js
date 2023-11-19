@@ -10,6 +10,13 @@ const e = require('express');
 
 const app = express();
 
+const connectDatabase = require('./database');
+
+const database = connectDatabase();
+
+// Now you can use the 'database' object for your queries or operations
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -19,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const courseModel = require('./models/courseReport')
 
 
 
@@ -28,11 +36,17 @@ app.listen(port);
 const courses = [
   { code: 'COURSE001', name: 'Course 1', term: "223"},
   { code: 'COURSE002', name: 'Course 2', term:"224"},
-  { code: 'COURSE003', name: 'Course 3', term: "222" },
+  { code: 'SE322', name: 'Course 3', term: "222" },
 ];
 //error. we may need to go over the diff types of errors..
-app.get('/', (req, res)=>{
-  res.render('temp', {courses})
+app.get('/',  async (req, res)=>{
+  try {
+    const data =  await courseModel.getAllCourses();
+    res.render('temp', { courses, data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.get('/display-course', (req, res) =>{
@@ -42,7 +56,8 @@ app.get('/display-course', (req, res) =>{
   if (selectedCourseName){
     const courseName = selectedCourseName.name;
     const term = selectedCourseName.term;
-    res.render('cc', {courseName, term});
+    const courseCode = selectedCourseCode;
+    res.render('cc', {courseCode, courseName, term});
   }
 })
 
@@ -67,11 +82,30 @@ app.post('/submit_form', (req, res)=>{
  res.render('temp', { courses });// we need to add logic for after saving this info.. what is displayed later on? and if there's data saved, do we redisplay it..
 })
 
-app.get('/generate-report', (req, res)=>{
+app.get('/course-report/:courseCode/:term', (req, res) => {
+  const { courseCode, term } = req.params;
 
-  // of course we'll use controllers for data needed for calculations etc 
-  res.render('courseReport');
-})
+  //im thinking of adding database queries in a separate file.. then we use them modularly..
+
+  const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
+
+  database.query(sql, [courseCode], (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.render('error', { message: 'Internal Server Error' });
+    }
+
+    if (results.length > 0) {
+      const courseName = results[0].courseName;
+      res.render('courseReport', { courseCode, term, courseName});
+    } else {
+      res.render('error', { message: 'Course not found' });
+    }
+  });
+
+
+
+});
 
 app.post('/save-course-report', (req, res)=>{
   //what info do we need to save? other than action plan? do we render to temp (courses)?

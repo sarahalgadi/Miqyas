@@ -155,7 +155,7 @@
             </div>
             <div id="generateReport" class="tab-pane fade p-4 mt-4">
                 <h3>Generate Report</h3>
-                <form id="report" action="/generate-report" method="get">
+                <form id="report" action="/course-report/<%= courseCode %>/<%= term %>" method="get">
                     <p>Do we view the report here? it's too big.</p>
                     <input type="button" value="Print" class="custom-button">
                     <input type="submit" value="Edit" class="custom-button">
