@@ -1,60 +1,33 @@
-// importing modules
-var createError = require('http-errors');
-var express = require('express');
+// i only kept things i'm using; it was cluttering my brain :)
 var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-// need to import database module here
+var express = require('express');
+const database = require('./config/database')
 
-//import routers
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var dccRouter = require('./routes/dccRouter');
+//importing routers
+const dccRouter = require('./routes/dccRouter');
 
-const {isAuth} = require("./middleware/isAuth")
+//contains port information
 require('dotenv').config();
 
 //express app
-var app = express();
+const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-
-app.use(logger('dev'));
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//i need to establish connection to the database here; i'm unable to right now
+// Passing database to the router file
+app.locals.database = database;
 
-//rendering dcc home only if dcc user is logged in, hence isAuth here is used
-app.get('/DCC', isAuth,  (request, response) => {
-  response.render('dccHome', { title: 'Home' });
-});
-
-//using routes respectively
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//handling and rendering dcc route
 app.use('/DCC', dccRouter);
 
-//remaining is not my work and idk if needed
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+const port = process.env.PORT;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });
 
 module.exports = app;

@@ -1,10 +1,9 @@
-//creating a router to work over here
-const express = require('express');
-const router = express.Router();
-const dccController = require('../controller/dccController');
-const { check } = require('express-validator');
+var express = require('express');
+var router = express.Router();
 
-router.post('/', dccController.addCLO);
-
+/* GET DCC page. */
+router.get('/', function(req, res, next) {
+  res.render('dccHome', { title: 'Home' });
+});
 
 module.exports = router;
