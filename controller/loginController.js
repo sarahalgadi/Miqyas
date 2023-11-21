@@ -2,14 +2,14 @@ const bcrypt = require('bcrypt');
 const username = require('../model/user'); //recheck with db  
 // const loginForm = document.getElementById("loginForm");
 
-//render loginForm
+//render loginForm 
 const getLogin =(req,res)=> {
     res.render('login');
 };
 
 
 //listener for LoginForm submission
-const loginForm = async (req, res) => {
+const postLogin = async (req, res) => {
     //to prevent from default form submission
     Event.preventDefault();
     //retrieve role, username, and password
@@ -48,7 +48,7 @@ const loginForm = async (req, res) => {
     } catch(error){
         console.error(error);
         return res.send('<script> alert("Unexpected error, please try again later."); window.location.href="/login";</script>');
-    }
+    } 
 }; 
 
 //Logout Listener 
@@ -62,6 +62,6 @@ const logout = (req, res) => {
 //exporting modules
 module.exports = {
     getLogin: getLogin, 
-    loginForm: loginForm,
+    postLogin: postLogin,
     logout: logout   
 };

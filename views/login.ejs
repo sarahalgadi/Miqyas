@@ -61,7 +61,8 @@
             <button id="submit" type="submit login-btn" class="login-btn">Login</button>
 
             <!-- redirect according to chosen user type  -->
-            <script>
+            <!-- should be handled here or in the controller?   -->
+            <script> 
               function redirectBasedOnType() {
                 var username = document.getElementById('type').value;
                 var form = document.getElementById('loginForm');
