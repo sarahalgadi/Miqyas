@@ -11,16 +11,39 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+//Repeated code from DCC Model
+//coordinator name 
+async function getFullName (username){
+    const [rows, fields] = await pool.execute
+    ('SELECT fullname FROM faculty WHERE username = ? ');
+    return rows;
+}
+
+//courses cc is teaching 
+async function coursesTeaching (username){
+    const [rows, fields] = await pool.execute
+    ('SELECT c.courseCode, c.courseName, cs.sectionNumber FROM course_section cs JOIN course c ON c.courseCode = cs.courseCode WHERE cs.username = ?');
+    return rows;
+}
+
+//courses cc is coordinating 
+async function coursesCoordinating(username){
+    const [rows, fields] = await pool.execute
+    ('SELECT c.courseCode, c.courseName FROM coordinator co JOIN course c ON c.courseCode = co.courseCode WHERE co.username = ?');
+    return rows;
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //the semesters for a given course
 //needs to be according to the course chosen
-async function getSemester (){
+async function getSemester (courseCode){
     const [rows, fields] = await pool.execute
     ('SELECT semester FROM coordinator WHERE courseCode=?');
     return rows;
 }
 
 //action plans aka course section reports
-async function getActionReports (){
+async function getActionReports (courseCode,semester){
     const [rows, fields] = await pool.execute
     ('SELECT statement FROM action_plan WHERE courseCode=? AND semester=?');
     return rows;
@@ -63,7 +86,8 @@ async function getAssessmentWeight (courseCode, semester){
     return rows;
 }
 module.exports ={getSemester,getActionReports, updateAssessmentType,
-     getAssessmentType, updateAssessmentWeight ,getAssessmentWeight, addTypeAndWeight};
+     getAssessmentType, updateAssessmentWeight ,getAssessmentWeight, addTypeAndWeight,
+     getFullName, coursesTeaching, coursesCoordinating};
 
 
 
