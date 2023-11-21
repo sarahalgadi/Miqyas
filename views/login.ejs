@@ -15,19 +15,12 @@
     charset="UTF-8"></script>
   <link rel="stylesheet" crossorigin="anonymous"
     href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9kb2MtMDgtYmstZG9jcy5nb29nbGV1c2VyY29udGVudC5jb20vZG9jcy9zZWN1cmVzYy9xaDJjZHM3YW01a3Vxc2wyMDNiMWZsNTkwNWdpMGtjaS83c2pxcXFsNzJnbjlxYXU4MTQ0Nmg0bGdlM3IyOTBpOS8xNjgzNTUyODI1MDAwLzEyMTIzMTMwNjU5NzEwNzgwNjYxLzEwMjEyODgzMzEwNjUxNjYzNzU1LzFsb204alE2cnBDY1UxSUg2TFl4TlhuTmtTcm11eFBZRD9lPWRvd25sb2FkJmF4PUFEV0NQS0NjUlNYc1hWTktsdkpwVjV2UWdRQmxELUtvYWV1Mk9DSFNqOVpOTnN4dHdMVFhZZGc4aDFkMlZxbS1UWVpNbVd3QS1oVDk4bzBHcmVyelRWTDd5YkNXQzREWk5FdGhFZHYtQXM0ay0wSXZGTEhvQm50MWhVTnRSNkljekF2WkJpX2lzTU0wU1JFRkNlZlN2bGRySUE0UTRJaXJNa3dabmhSanRERHg2bWo2SFA4b1AyanFqUnlZYnMtYzd5LVFyUEotLVhwQ2xFdTNuN0Rjc1ZmcElfbjNVQy1heTdPOUZEWS02T1BXbG43aE9ZTzRCOWZrUk5FUk9UdGpBWjNvblNQbUFSdGJxb1RscmFKSG44WmhKRW5YamxDb2ZtMDJGR0VEOVp6enJjTjhXeTdVYVZXdlN0emZNZW5nWHRMdXFLYXUyWjEycVRjbnc1MU9GbmNGanhKNmZ6R3Z3MUs4Yk1QamFtQ3BJUS1tdGJ3LU5NbTd3NERYNURJZXdqalJfYmhGRTV6cHFwYjhzWkc5T1MyVWRmZFJNd2pDc2ExR3AtOW5ScE1VcVNXZkFEbGU5eldQd2k4REpWeFNrdjlpTnFMNGtZNG1wTlZXWHFuRGFrbnBwX3hrTjlRN1NwbVdYMlcwblBtaE4wTGhnOEpyNnBJa3BCQWczbzFhNkZ1eVdzM2hNc2JkSjBmVHY5bXFQLXB1NWtSc2RGNU8zbGlNeXlISXVWQ2tfN2dnVU1zY3FfSEtrc3d1UUEzTlc2Z1N1UjdWWElrYkkyYWQ4b25RTmxRZnpsUGpyNUw0cHpFLWJ2MFRnbHRFelhlYWUxb19mSGg4Mm42LUdpYnlNcUVydHdETGVpbHhoS0EwUXJMNk9jTnFJQ0NsQnhsOTJPZ09LMmxROFFrTnBoOHJVQTJwMTFaaHJHSjJ0WHJFNEY3cVdWRjhfSzBkUUVKTlh1VXE5c0JfMElyT0hQMmhZeXFyQ3BEalhSQTVzdkNmaWtFcldTQzczV1JHU09LdlZvbEJZZXpiTnVyemtNbDVycTRCeDM1WnpYbHR3ckMtUV9UcnNCM1NmejRjeDVxcTNuOG1DUnNJYWRlWGZxa0tPdXpWSEZEWVJ4Zk1uN1BlRVczRDBVWFVzUG8zcXVqLU9xVGxMQU9uWVFfdTgxcmpSbXVmcW1zWndHRHVOVkJvb2FFWHM5XzZ0ZzltVzlNbW9uYm9rTy11WHBVZTYzWWdETmJGd0VLbDVKZktRSXpJZWtWWmRrX2FSRU9lZWZFSVl5eEhTckZvZjZXRnNnJnV1aWQ9MjNhYjMzNzUtOGZlYS00MWVkLWI3N2EtZjEzNDkwMDdhNWVlJmF1dGh1c2VyPTAmbm9uY2U9NGViNmFkZjJ0bm0zOCZ1c2VyPTEwMjEyODgzMzEwNjUxNjYzNzU1Jmhhc2g9c3UzbTQ1MmNtN3U2MTIwZmFnbGoxbTloZnNhc3JyNmo" />
-  <%-include(". /partials/head.ejs")%>
     <title>Miqyas: Login</title>
 </head>
 
 <body>
   <header>
-    <nav class="navbar navbar-expand-md" id="navbar">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img src="images/miqyasLogo" alt="logo" style="height:75px; width: 150px;">
-        </a>
-      </div>
-    </nav>
+    <%-include(". /partials/head.ejs")%>
   </header>
 
   <main class="mt-4">
@@ -62,10 +55,10 @@
             <input type="text" placeholder="Enter Username" id="username" name="username" required>
             <span id="usernameError" class="text-danger"></span><br>
             <!-- password feild  -->
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" id="psw" name="password" required>
+            <label for="password"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" id="password" name="password" required>
             <br>
-            <button type="submit login-btn" class="login-btn">Login</button>
+            <button id="submit" type="submit login-btn" class="login-btn">Login</button>
 
             <!-- redirect according to chosen user type  -->
             <script>
@@ -74,32 +67,35 @@
                 var form = document.getElementById('loginForm');
                 switch (type) {
                   case 'QA':
-                    window.location.href = "/";
+                    window.location.href = "/qaHome";
                     break;
                   case 'CC':
-                    window.location.href = "/";
+                    window.location.href = "/ccHome";
                     break;
                   case 'CP':
-                    window.location.href = "/";
+                    window.location.href = "/cpHome";
                     break;
                   case 'DCC':
-                    window.location.href = "/";
+                    window.location.href = "/dccHome";
                     break;
                   default:
                     // CI (default)
+                    window.location.href = "/ciHome";
+
                     break;
                 }
               }
               var form = document.getElementById('loginForm');
-              form.addEventListener('submit', function (e) {
-                e.preventDefault(); // Prevents the default form submission behavior
-                redirectBasedOnUsername();
+              form.addEventListener('submit', function (Event) {
+                Event.preventDefault(); // Prevents the default form submission 
+                redirectBasedOnUsername(); // 
               });
             </script>
           </div>
         </form>
       </div>
     </div>
+    
   </main>
   <%-include(".partials /footer.ejs")%>
 </body>
