@@ -1,17 +1,5 @@
-#project,
-#majors,
-#final {
-    padding: 4rem;
-    font-weight: 500;
-    margin-left: 0;
-}
-
-.nav-link:hover {
-    color: #15416e;
-    background-color: #fff;
-}
-
-.nav-link {
-    background-color: #15416e;
-    color: white;
+form {
+    margin-left: 10%;
+    margin-right: 40%;
+    font-size: 16px;
 }

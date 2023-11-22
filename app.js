@@ -47,7 +47,8 @@ app.get('/display-course', (req, res) =>{
     const courseName = selectedCourseName.name;
     const term = selectedCourseName.term;
     const courseCode = selectedCourseCode;
-    res.render('cc', {courseCode, courseName, term});
+    const title = courseCode;
+    res.render('cc', {title, courseCode, courseName, term});
   }
 })
 
