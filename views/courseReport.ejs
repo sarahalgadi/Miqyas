@@ -121,7 +121,7 @@
         <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Overall Assessment Results</h2>
     </div>
     <div class="container" id="result">
-        <div id="hi"></div>
+        
         <canvas id="assessmentChart" width="400" height="130"></canvas>
     </div>
     <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
@@ -182,7 +182,7 @@
         </div>
         <div class="container">
             <div id="recommendationError" style="color: red;"></div>
-            <textarea id="recommendation" name="recommendation" class="form-control" rows="5" style="resize: vertical;" required></textarea>
+            <textarea id="recommendation" name="recommendation" class="form-control" rows="5" style="resize: vertical;" required><% if (recommendation ) { %><%= recommendation %><% } %></textarea>
         </div>
 
         
@@ -194,42 +194,48 @@
 
    
 </body>
+
 <script>
     // histogram script
-    // Assuming you have passed the following data from the server side:
+    // i had to split them into arrays in the server-side.. because javascript could not understand ejs objects.
 
-    // totalIndirectPerCLO: { '1': '44.44', '2': '44.72' }
-    // resultsPerCLO: { '1': '70', '2': '80', '3': '90' }
-    // CLOnumbers: [1, 2, 3]
 
-    // Convert percentages to numbers
-    const indirectResults = '<%= JSON.stringify(totalIndirectPerCLO) %>';
-    const directResults = '<%= JSON.stringify(resultsPerCLO) %>';
-    const cloNumbers = '<%= CLOnumbers %>';
+    const clonumbers = "<%= clohisto %>".split(',').map(Number);
+    const indirectres = "<%= indirecthisto %>".split(',').map(Number);
+    const directres = "<%= directhisto %>".split(',').map(Number);
 
-    // Convert percentage strings to numbers
-    const indirectResultValues = cloNumbers.map(cloNumber => parseFloat(indirectResults[cloNumber]) || 0);
-    const directResultValues = cloNumbers.map(cloNumber => parseInt(directResults[cloNumber]) || 0);
+    const cloData = [];
+    for(let i = 0; i< clonumbers.length; i++){
+       const obj = 
+       {clo: "CLO " + clonumbers[i],
+         directResult: directres[i],
+         indirectResult: indirectres[i]};
+        cloData.push(obj);
+    }
+
+    const cloLabels = cloData.map(item => item.clo);
+    const directResults = cloData.map(item => item.directResult);
+    const indirectResults = cloData.map(item => item.indirectResult);
 
     const ctx = document.getElementById('assessmentChart').getContext('2d');
     const chart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: cloNumbers.map(cloNumber => `CLO ${cloNumber}`),
+            labels: cloLabels,
             datasets: [
                 {
                     label: 'Direct Results',
                     backgroundColor: 'rgba(21, 65, 110, 0.9)',
                     borderColor: 'rgba(96, 137, 179)',
                     borderWidth: 1,
-                    data: directResultValues,
+                    data: directResults,
                 },
                 {
                     label: 'Indirect Results',
                     backgroundColor: 'rgba(174, 183, 191, 0.8)',
                     borderColor: 'rgba(225, 230, 235)',
                     borderWidth: 1,
-                    data: indirectResultValues,
+                    data: indirectResults,
                 },
             ],
         },
@@ -241,6 +247,9 @@
             },
         },
     });
+;
+</script>
+
 
 
 

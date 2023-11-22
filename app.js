@@ -92,11 +92,16 @@ app.get('/course-report/:courseCode/:term', async (req, res) => {
       //total for all . indirect.
       const totalIndirectPerCLO =  calculateOverallSatisfaction(indirectSums);
       console.log('totalIndirectPerCLO:', totalIndirectPerCLO);
-
-      console.log('CLONUMBERS:', learningOutcomes.CLOnumbers);
+      
 
       // Calculate results for each CLO number. for direct.
       const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
+      console.log(resultsPerCLO);
+      //had to do this since javascript can't handle ejs objects. i separated them into arrays.
+      const [clohisto, indirecthisto, directhisto] =  prepareHistogramData(learningOutcomes.CLOnumbers, totalIndirectPerCLO, resultsPerCLO);
+      //rec. in case it exists. as well as action plan
+     
+      const recommendation = await courseReport.getRecommendation(courseCode, term, "rjan");// temporary username. SESSION MANAGEMENT!!!!!
      
 
       res.render('courseReport', {
@@ -110,7 +115,11 @@ app.get('/course-report/:courseCode/:term', async (req, res) => {
         resultsPerCLO,
         indirectSums,
         actionPlans,
-        totalIndirectPerCLO
+        totalIndirectPerCLO,
+        clohisto,
+        directhisto,
+        indirecthisto,
+        recommendation
       });
     } else {
       res.render('error', { message: 'Course not found' });
@@ -141,7 +150,6 @@ app.get('/course-report/:courseCode/:term/:department', async (req, res) => {
       const indirectSums = await courseReport.calculateIndirectPerCLO(courseCode, term);
       const actionPlans = await courseReport.getActionPlan(courseCode, term);
       const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
-
 
       // Calculate results for each CLO number
       const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
@@ -234,6 +242,27 @@ function calculateResultsPerCLO(categoryCounts) {
   return overallSatisfactionPerCLO;
 }
 
+function prepareHistogramData(clonums,indirectSums, resultsPerCLO) {
+  const clonumbers = [];
+  const indirectResults = [];
+  const directResults = [];
+
+  // Iterate over the CLO numbers
+  for (const cloNumber of clonums) {
+    // Get the indirect result for the CLO number
+    const indirectResult = parseFloat(indirectSums[cloNumber])|| 0;
+    indirectResults.push(indirectResult);
+
+    // Get the direct result for the CLO number
+    const directResult = resultsPerCLO[cloNumber] ? resultsPerCLO[cloNumber].results.toFixed(2) : 0;
+    directResults.push(directResult);
+
+    // Add the CLO number to the array
+    clonumbers.push(cloNumber);
+  }
+
+  return [clonumbers, indirectResults, directResults];
+}
 
 
 

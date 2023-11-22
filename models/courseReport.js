@@ -58,16 +58,6 @@ async function getCategoryCounts(courseCode, semester, department = null) {
 }
 
 
-async function getNumberOfStudents(courseCode, semester) {
-  const sql = `
-    SELECT numberOfStudents
-    FROM course_section
-    WHERE courseCode = ? AND semester = ?;
-  `;
-  const [rows] = await pool.execute(sql, [courseCode, semester]);
-  const numberOfStudents = rows.length > 0 ? rows[0].numberOfStudents : 0;
-  return numberOfStudents;
-}
 
 async function getDepartments() {
   const sql = 'SELECT departmentName FROM department';
@@ -114,6 +104,7 @@ async function saveRecommendation(courseCode, term, username, recommendation) {
     VALUES (?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE statment = VALUES(statment);
   `;
+  //the onduplicate key update query is used to update recommendation if user provides one.
 
   await pool.execute(sql, [courseCode, term, username, recommendation]);
 }
@@ -135,6 +126,16 @@ async function updateSelectedActionPlans(courseCode, term, formData) {
     }
   }
 }
+async function getRecommendation(courseCode, term, username) {
+  const sql = `
+      SELECT statment
+      FROM recommendation
+      WHERE courseCode = ? AND semester = ? AND username = ?;
+  `;
+
+  const [rows] = await pool.execute(sql, [courseCode, term, username]);
+  return rows.length > 0 ? rows[0].statment : ''; // return an empty string if no recommendation exists
+}
 
 
 //function for get and update recommendation..and get selected action plans.. logic soon bc i need to add ejs conditions too:).
@@ -145,10 +146,11 @@ async function updateSelectedActionPlans(courseCode, term, formData) {
     getCLOInfo,
     getCourseName,
     getCategoryCounts,
-    getNumberOfStudents,
     getDepartments,
     calculateIndirectPerCLO,
     getActionPlan,
     saveRecommendation,
-    updateSelectedActionPlans
+    updateSelectedActionPlans,
+    getRecommendation,
+  
   };
