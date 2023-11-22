@@ -5,6 +5,7 @@ const database = require('./config/database')
 
 //importing routers
 const dccRouter = require('./routes/dccRouter');
+const ciRouter = require('./routes/ciRouter');
 
 //contains port information
 require('dotenv').config();
@@ -24,6 +25,7 @@ app.locals.database = database;
 
 //handling and rendering dcc route
 app.use('/DCC', dccRouter);
+app.use('/assessments', ciRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => {
