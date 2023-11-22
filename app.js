@@ -4,17 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const port = process.env.PORT || 3000;
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const e = require('express');
 const app = express();
-const connectDatabase = require('./database');
-const database = connectDatabase();
-// Now you can use the 'database' object for your queries or operations
+const pool = require('./database');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -22,7 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const courseReportRoutes = require('./routes/courseReportRoutes');
-
+const cc = require('./routes/cc');
+const ccModel = require('./models/cc');
 
 
 
@@ -39,24 +36,35 @@ app.get('/',  async (req, res)=>{
  res.render('temp', {courses})
 });
 
-app.get('/display-course', (req, res) =>{
-  const selectedCourseCode = req.query.courseCode;
-  const selectedCourseName = courses.find(course =>
-    course.code === selectedCourseCode);
-  if (selectedCourseName){
-    const courseName = selectedCourseName.name;
-    const term = selectedCourseName.term;
-    const courseCode = selectedCourseCode;
+app.get('/display-course/:courseCode/:term', async (req, res) =>{
+    const {courseCode, term} = req.params;
+    try{
+    const courseName = await ccModel.getCourseName(courseCode);
+    const directSaved = await ccModel.getDirect(courseCode, term);
+    const assignedWeights = {};
+          // Assuming tuples is an array of tuples returned from the model
+          directSaved.forEach(tuple => {
+              const type = tuple.type;
+              const weight = tuple.weight;
+              assignedWeights[type] = weight;
+          });
     const title = courseCode;
-    res.render('cc', {title, courseCode, courseName, term});
-  }
-})
+    res.render('cc', {title, courseCode, courseName, term, assignedWeights});
+    } catch(error){
+      console.error(error);
+      res.render('error', {message: "course not found!"});
+    }
+    
+  
+});
 
 app.get('/editActivities', (req, res)=>{
   res.render('editActivities');
 })
 
-app.post('/submit_form', (req, res)=>{
+app.post('/submit-form/:courseCode/:term', async (req, res)=>{
+
+  const {courseCode, term} = req.params;
 
   //do we parseInt or math.floor or add a logic overall to prevent decimals? what is the best?
   const formData = {
@@ -68,14 +76,28 @@ app.post('/submit_form', (req, res)=>{
     other: req.body.other === 'on' ? parseInt(req.body.other_weight) : null,
   };
 
-  console.log(formData); // this is just for debugging. we'll loop over this; if value is not null, we save it in database with type, course code, and semester..
+      // Iterate over formData
+      for (const [type, weight] of Object.entries(formData)) {
+        // Check if weight is not null
+        if (weight !== null) {
+            try {
+                // Call the saveDirectAssessment function
+                await ccModel.addTypeAndWeight(courseCode, type, weight, term);
+                res.render('temp', {courses});//todo: how about we tell the user they correctly saved the report instead ..
+            } catch (error) {
+                console.error(`Error saving direct assessment for type ${type}:`, error);
+            }
+        }
+    }
 
- res.render('temp', { courses });// we need to add logic for after saving this info.. what is displayed later on? and if there's data saved, do we redisplay it..
+  
+ 
 })
 
 
 
 app.use('/', courseReportRoutes);
+app.use('/', cc);
 
 
 app.use((req, res)=>{

@@ -1,7 +1,10 @@
-function toggleWeightInput(weightInputId) {
-    var checkbox = document.getElementById(weightInputId);
-    checkbox.classList.toggle('d-none', !checkbox.classList.contains('d-none'));
+//Javascript for cc.ejs
+
+function toggleWeightInput(weightInputId, isChecked) {
+    var weightInput = document.getElementById(weightInputId);
+    weightInput.classList.toggle('d-none', !isChecked);
 }
+
 
 function validateWeights() {
     // Get the checkboxes and their corresponding weight inputs

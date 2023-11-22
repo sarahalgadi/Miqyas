@@ -1,14 +1,6 @@
-const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'miqyasdb',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const pool = require('../database');
+
 
 async function getCourseName(courseCode) {
   const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
@@ -144,6 +136,29 @@ async function getRecommendation(courseCode, term, username) {
   return rows.length > 0 ? rows[0].statment : ''; // return an empty string if no recommendation exists
 }
 
+async function getRec(courseCode, term) {
+  const sql = `
+      SELECT statment
+      FROM recommendation
+      WHERE courseCode = ? AND semester = ? ;
+  `;
+
+  const [rows] = await pool.execute(sql, [courseCode, term]);
+  return rows.length > 0 ? rows[0].statment : ''; // return an empty string if no recommendation exists
+}
+
+
+async function getSelectedActionPlan(courseCode, semester) {
+  const sql = `
+    SELECT *
+    FROM action_plan
+    WHERE courseCode = ? AND semester = ? AND selected ='1';
+  `;
+
+  const [rows] = await pool.execute(sql, [courseCode, semester]);
+  return rows;
+}
+
 
 
 
@@ -159,5 +174,6 @@ async function getRecommendation(courseCode, term, username) {
     saveRecommendation,
     updateSelectedActionPlans,
     getRecommendation,
-  
+    getRec, //for viewing course report controller
+    getSelectedActionPlan //for viewing course report controller
   };

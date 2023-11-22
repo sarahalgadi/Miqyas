@@ -1,5 +1,28 @@
 form {
     margin-left: 10%;
-    margin-right: 40%;
+    margin-right: 10%;
     font-size: 16px;
+}
+.tab{
+    background-color: #15416e;
+    color: white;
+}
+.tab:hover{
+    color: #15416e;
+    background-color: white;
+}
+.error-text {
+    color: maroon;
+    margin-top: 8px;
+}
+#saveButton{
+    float: right;
+    width: 8rem;
+}
+#saveButton[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.weight{
+    width: 50%;
 }

@@ -1,8 +1,10 @@
 const courseReportModel = require('../models/courseReport');
 
-//todo: error handling here... etc.
+//todo: error handling here...  etc.
 //viewing course report..editing..
-async function editCourseReport(req, res) {
+//NOTEEEE: this is different from courseReport controller in many details that matter in ejs. that's why
+//i separated them :)
+async function viewCourseReport(req, res) {
     const { courseCode, term } = req.params;
   
     try {
@@ -13,7 +15,7 @@ async function editCourseReport(req, res) {
         const categoryCounts = await courseReportModel.getCategoryCounts(courseCode, term);
         const departments = await courseReportModel.getDepartments();
         const indirectSums = await courseReportModel.calculateIndirectPerCLO(courseCode, term);
-        const actionPlans = await courseReportModel.getActionPlan(courseCode, term);
+        const actionPlans = await courseReportModel.getSelectedActionPlan(courseCode, term);
         
         // Total for all indirect assessments
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
@@ -29,9 +31,9 @@ async function editCourseReport(req, res) {
         );
   
         // Get recommendation if it exists, as well as action plan
-        const recommendation = await courseReportModel.getRecommendation(courseCode, term, "rjan");
+        const recommendation = await courseReportModel.getRec(courseCode, term);
   
-        res.render('courseReport', {
+        res.render('viewCourseReport', {
           courseCode,
           term,
           courseName,
@@ -61,7 +63,7 @@ async function editCourseReport(req, res) {
     const { courseCode, term, department } = req.params;
   
     if (department === 'All') {
-      return res.redirect(`/course-report/${courseCode}/${term}`);
+      return res.redirect(`/view-course-report/${courseCode}/${term}`);
     }
   
     try {
@@ -72,7 +74,7 @@ async function editCourseReport(req, res) {
         const categoryCounts = await courseReportModel.getCategoryCounts(courseCode, term, department);
         const departments = await courseReportModel.getDepartments();
         const indirectSums = await courseReportModel.calculateIndirectPerCLO(courseCode, term);
-        const actionPlans = await courseReportModel.getActionPlan(courseCode, term);
+        const actionPlans = await courseReportModel.getSelectedActionPlan(courseCode, term);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
   
         // Calculate results for each CLO number per department
@@ -88,9 +90,9 @@ async function editCourseReport(req, res) {
         );
   
         // Get recommendation if it exists, as well as action plan
-        const recommendation = await courseReportModel.getRecommendation(courseCode, term, "rjan"); // temporary username. SESSION MANAGEMENT!!!!!
+        const recommendation = await courseReportModel.getRec(courseCode, term); 
   
-        res.render('courseReport', {
+        res.render('viewCourseReport', {
           courseCode,
           term,
           courseName,
@@ -204,28 +206,10 @@ async function editCourseReport(req, res) {
     return [clonumbers, indirectResults, directResults];
   }
 
-  async function saveCourseReport(req, res) {
-    try {
-      const { courseCode, term } = req.params;
-      const username = "rjan"; //coordinator name is taken through session mgmnt.. I'm just using a placeholder
-      const recommendation = req.body.recommendation.trim();
   
-      // Update the recommendation table
-      await courseReportModel.saveRecommendation(courseCode, term, username, recommendation);
-  
-      // Update the selected action plans
-      await courseReportModel.updateSelectedActionPlans(courseCode, term, req.body);
-  
-      res.redirect('/'); //todo: is this the place to go to after report is saved?
-    } catch (error) {
-      console.error(error);
-      res.render('error', { message: 'Could not save the course report' });
-    }
-  }
   
   
   module.exports = {
-    editCourseReport,
-    displayByDepartment,
-    saveCourseReport
+    viewCourseReport,
+    displayByDepartment
   };

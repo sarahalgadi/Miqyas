@@ -1,26 +1,15 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-// Function to create and establish the database connection
-function connectDatabase() {
-  // Create the database connection
-  const database = mysql.createConnection({
+const pool = mysql.createPool({
     host: 'localhost',
-    port: 3306,
-    database: 'miqyasdb',
     user: 'root',
     password: 'root',
-  });
+    database: 'miqyasdb',
+    waitForConnection: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+});
 
-  // Connect to the database
-  database.connect((err) => {
-    if (err) {
-      console.error('Error connecting to database:', err);
-      return;
-    }
-    console.log('Connected to database');
-  });
+console.log('Connected to the database!');
 
-  return database;
-}
-
-module.exports = connectDatabase;
+module.exports = pool;
