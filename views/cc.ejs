@@ -3,100 +3,107 @@
 
 <head>
     <%-include("./partials/head.ejs")%>
-</head>
+        <link rel="stylesheet" href="../stylesheets/cc.css">
+    </head>
 
 <body>
     <%- include('./partials/nav.ejs')%>
         <div>
             <div class="row container-fluid">
                 <div class="col-md-8">
-                    <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">Test Name</h1>
+                    <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;"><%= courseName %></h1>
                 </div>
                 <div class="col-md-4">
-                    <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Term:</h2>
+                    <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Term: <%= term %></h2>
                 </div>
             </div>
         </div>
 
         <div class="container">
+            <!--Tabs-->
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#viewReports">View Reports</a>
+                    <a class="nav-link active tab" data-bs-toggle="tab" href="#editActivites">Edit Activities</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#editActivites">Edit Activites</a>
+                    <a class="nav-link tab" data-bs-toggle="tab" href="#viewReports">View Past Reports</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="tab" href="#generateReport">Generate Report</a>
+                    <a class="nav-link tab" data-bs-toggle="tab" href="#generateReport">Generate Report</a>
                 </li>
             </ul>
 
-
-            <div id="editActivites" class="tab-pane container fade p-4 mt-4">
-                <h3>Edit Activites</h3>
-                <div class="row" style="margin-left: 40%; text-align: left;">
+            <!--Tab Panes-->
+            <div class="tab-content">
+                <!--Specifying activities-->
+                <div id="editActivites" class="tab-pane container active p-4 mt-4">
+                    <h3>Select Assessment Activities to be Considered in CLO Assessment:</h3>
+                    <hr>
                     <form action="/submit_form" method="post">
-                        <div class="row">
-                            <h4>Choose Assessment Activities:</h4>
-                            <div class="form-check p-2">
-                                <input class="form-check-input" type="checkbox" name="project" id="projectCheckbox"
-                                    onchange="toggleWeightInput('projectWeight')">
-                                <label class="form-check-label" for="projectCheckbox">Project</label>
-                                <input class="form-control d-none" type="number" name="project_weight"
-                                    id="projectWeight" placeholder="Enter weight (%)" min="0" max="100">
-                            </div>
-                            <div class="form-check p-2">
-                                <input class="form-check-input" type="checkbox" name="major" id="majorCheckbox"
-                                    onchange="toggleWeightInput('majorWeight')">
-                                <label class="form-check-label" for="majorCheckbox">Major</label>
-                                <input class="form-control d-none" type="number" name="major_weight" id="majorWeight"
-                                    placeholder="Enter weight (%)" min="0" max="100">
-                            </div>
-                            <div class="form-check p-2">
-                                <input class="form-check-input" type="checkbox" name="assignment"
-                                    id="assignmentCheckbox" onchange="toggleWeightInput('assignmentWeight')">
-                                <label class="form-check-label" for="assignmentCheckbox">Assignment</label>
-                                <input class="form-control d-none" type="number" name="assignment_weight"
-                                    id="assignmentWeight" placeholder="Enter weight (%)" min="0" max="100">
-                            </div>
-                            <div class="form-check p-2">
-                                <input class="form-check-input" type="checkbox" name="quiz" id="quizCheckbox"
-                                    onchange="toggleWeightInput('quizWeight')">
-                                <label class="form-check-label" for="quizCheckbox">Quiz</label>
-                                <input class="form-control d-none" type="number" name="quiz_weight" id="quizWeight"
-                                    placeholder="Enter weight (%)" min="0" max="100">
-                            </div>
-                            <div class="form-check p-2">
-                                <input class="form-check-input" type="checkbox" name="final_exam" id="finalExamCheckbox"
-                                    onchange="toggleWeightInput('finalExamWeight')">
-                                <label class="form-check-label" for="finalExamCheckbox">Final Exam</label>
-                                <input class="form-control d-none" type="number" name="final_exam_weight"
-                                    id="finalExamWeight" placeholder="Enter weight (%)" min="0" max="100">
-                            </div>
-                            <div class="form-check p-2">
-                                <input class="form-check-input" type="checkbox" name="other" id="otherCheckbox"
-                                    onchange="toggleWeightInput('otherWeight')">
-                                <label class="form-check-label" for="otherCheckbox">Other</label>
-                                <input class="form-control d-none" type="number" name="other_weight" id="otherWeight"
-                                    placeholder="Enter weight (%)" min="0" max="100">
-                            </div>
-                            <button type="button" onclick="validateWeights()" class="custom-button mt-4">Save</button>
+
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="project" id="projectCheckbox"
+                                onchange="toggleWeightInput('projectWeight')">
+                            <label class="form-check-label" for="projectCheckbox">Project</label>
+                            <input class="form-control d-none weight" type="number" name="project_weight" id="projectWeight"
+                                placeholder="Enter weight (%)" min="0" max="100">
                         </div>
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="major" id="majorCheckbox"
+                                onchange="toggleWeightInput('majorWeight')">
+                            <label class="form-check-label" for="majorCheckbox">Major</label>
+                            <input class="form-control d-none weight" type="number" name="major_weight" id="majorWeight"
+                                placeholder="Enter weight (%)" min="0" max="100">
+                        </div>
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="assignment" id="assignmentCheckbox"
+                                onchange="toggleWeightInput('assignmentWeight')">
+                            <label class="form-check-label" for="assignmentCheckbox">Assignment</label>
+                            <input class="form-control d-none weight" type="number" name="assignment_weight"
+                                id="assignmentWeight" placeholder="Enter weight (%)" min="0" max="100">
+                        </div>
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="quiz" id="quizCheckbox"
+                                onchange="toggleWeightInput('quizWeight')">
+                            <label class="form-check-label" for="quizCheckbox">Quiz</label>
+                            <input class="form-control d-none weight" type="number" name="quiz_weight" id="quizWeight"
+                                placeholder="Enter weight (%)" min="0" max="100">
+                        </div>
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="final_exam" id="finalExamCheckbox"
+                                onchange="toggleWeightInput('finalExamWeight')">
+                            <label class="form-check-label" for="finalExamCheckbox">Final Exam</label>
+                            <input class="form-control d-none weight" type="number" name="final_exam_weight"
+                                id="finalExamWeight" placeholder="Enter weight (%)" min="0" max="100">
+                        </div>
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="other" id="otherCheckbox"
+                                onchange="toggleWeightInput('otherWeight')">
+                            <label class="form-check-label" for="otherCheckbox">Other</label>
+                            <input class="form-control d-none weight" type="number" name="other_weight" id="otherWeight"
+                                placeholder="Enter weight (%)" min="0" max="100">
+                        </div>
+                        <!--In case of error in validating the weights, message would be shown here-->
+                        <div class="error-text" id="errorText"></div>
+                        <button type="button" onclick="validateWeights()" id="saveButton"
+                            class="custom-button mt-4">Save</button>
+                    </form>
+                </div>
+                <!--Viewing a report; Ayat this is missing I just placed here the structure-->
+                <div id="viewReports" class="tab-pane fade p-4 mt-4">
+
+                </div>
+                <!--Generating a report-->
+                <div id="generateReport" class="tab-pane fade p-4 mt-4">
+                    <h3>Generate Report</h3>
+                    <form id="report" action="/course-report/<%= courseCode %>/<%= term %>" method="get">
+                        <p>Do we view the report here? it's too big.</p>
+                        <input type="button" value="Print" class="custom-button">
+                        <input type="submit" value="Edit" class="custom-button">
                     </form>
                 </div>
             </div>
-            <div id="generateReport" class="tab-pane fade p-4 mt-4">
-                <h3>Generate Report</h3>
-                <form id="report" action="" method="get">
-                    <p>Do we view the report here? it's too big.</p>
-                    <input type="button" value="Print" class="custom-button">
-                    <input type="submit" value="Edit" class="custom-button">
-                </form>
-            </div>
-
-
         </div>
-
         </div>
-        <script src="/public/"></script>
+    <script src="../javascript/weightValidation.js"></script>
 </body>

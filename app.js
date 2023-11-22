@@ -11,8 +11,8 @@ const e = require('express');
 const app = express();
 
 const connectDatabase = require('./database');
-//commenting this out later
-//const database = connectDatabase();
+
+const database = connectDatabase();
 
 // Now you can use the 'database' object for your queries or operations
 
@@ -39,10 +39,6 @@ const courses = [
   { code: 'SE322', name: 'Course 3', term: "222" },
 ];
 
-//this is dumbb i'll remove; i have it only so i can view the page and edit css
-app.get('/cc', (req,res)=>{
-  res.render('cc', { title: 'Home' })
-});
 
 //error. we may need to go over the diff types of errors..
 app.get('/',  async (req, res)=>{

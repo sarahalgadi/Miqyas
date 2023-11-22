@@ -1,3 +1,5 @@
+//Javascript for cc.ejs
+
 function toggleWeightInput(weightInputId) {
     var checkbox = document.getElementById(weightInputId);
     checkbox.classList.toggle('d-none', !checkbox.classList.contains('d-none'));
