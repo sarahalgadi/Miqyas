@@ -1,21 +1,24 @@
-.left-panel{
-    margin-left: 10%;
-    width: 15rem;
-}
-#iframeContent {
-    width: 100%;
-    height: 100%; /* Full viewport height */
-    border: none;
+h2 {
+    font-weight: 600;
+    margin: 1rem;
+    padding: 1rem;
 }
 
-/* Adjustments for smaller screens */
-@media (max-width: 768px) {
-    #iframeContent {
-        height: 70vh; /* Adjust for smaller screens */
-    }
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    /* Allow items to wrap to the next line */
 }
-h2{
-    font-weight: 600;
+
+.custom-button {
+    width: 30%;
+    height: 150px;
+    margin: 10px;
+    font-size: 18px;
+}
+h3{
     margin: 1rem;
     padding: 1rem;
 }
