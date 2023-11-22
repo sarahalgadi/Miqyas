@@ -51,19 +51,20 @@ async function getActionReports (courseCode,semester){
 //add the assessment type and weight
 async function addTypeAndWeight (){
     const [rows, fields] = await pool.execute
-    ('INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?,?,?,?)');
+    ('INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE weight, type = VALUES(weight, type) ');
     return rows;
     //I dont know what to return if i am inserting into the databse
 }
 
 
 //chnage the assesment type 
+/* try using the add bdal el updates
 async function updateAssessmentType (courseCode,semester){
     const [rows, fields] = await pool.execute
     ('UPDATE direct_assessment SET type = ? WHERE coursecode = ? AND semester = ?');
     return rows;
     //I dont know what to return if i am inserting into the databse
-}
+}*/ 
 
 //get the assessment type
 async function getAssessmentType (courseCode, semester){
@@ -73,20 +74,20 @@ async function getAssessmentType (courseCode, semester){
 }
 
 //change the assessment weight 
-async function updateAssessmentWeight (courseCode,semester){
+/*async function updateAssessmentWeight (courseCode,semester){
     const [rows, fields] = await pool.execute
     ('UPDATE direct_assessment SET weight = ? WHERE coursecode = ? AND semester = ?');
     return rows;
     //I dont know what to return if i am inserting into the databse
-}
+}*/ 
 //getting the assessment weight
 async function getAssessmentWeight (courseCode, semester){
     const [rows, fields] = await pool.execute
     ('SELECT weight FROM direct_assessment WHERE courseCode=? AND semester=?');
     return rows;
 }
-module.exports ={getSemester,getActionReports, updateAssessmentType,
-     getAssessmentType, updateAssessmentWeight ,getAssessmentWeight, addTypeAndWeight,
+module.exports ={getSemester,getActionReports, 
+     getAssessmentType,getAssessmentWeight, addTypeAndWeight,
      getFullName, coursesTeaching, coursesCoordinating};
 
 

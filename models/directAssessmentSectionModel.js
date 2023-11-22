@@ -31,7 +31,7 @@ async function getCLO (courseCode, semester){
 //insert assessment dets
 async function addAssessmentDetails(courseCode,semester,type, sectionNumber){
   const [rows, fields] = await pool.execute
-  ('INSERT INTO assessment_details (courseCode, assessmentNumber, statment, grade, CLONumber, semester, type, sectionNumber) VALUES (?,?,?,?,?,?,?)');
+  ('INSERT INTO assessment_details (courseCode, assessmentNumber, statment, grade, CLONumber, semester, type, sectionNumber) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE statment, grade, CLONumber = VALUES(statment, grade, CLONumber)');
   return rows;
   //I dont know what to return if i am inserting into the databse
 }
@@ -55,26 +55,27 @@ async function getAssessmentDetails (courseCode, semester,sectionNumber,type){
 
 
 //updating assessment Description
-async function updateAssessmentDescription (courseCode,semester,sectionNumber,type,assesmentNumber){
+/*async function updateAssessmentDescription (courseCode,semester,sectionNumber,type,assesmentNumber){
   const [rows, fields] = await pool.execute
   ('UPDATE assessment_details SET statment = ? WHERE coursecode = ? AND semester = ? AND sectionNumber=? AND type=?, assesmentNumber=?');
   return rows;
   //I dont know what to return if i am inserting into the databse
-}
+}*/
 
 //updating assessment weight
-async function updateAssessmentWeight (courseCode,semester,sectionNumber,type,assesmentNumber){
+/*async function updateAssessmentWeight (courseCode,semester,sectionNumber,type,assesmentNumber){
   const [rows, fields] = await pool.execute
   ('UPDATE assessment_details SET weight = ? WHERE coursecode = ? AND semester = ? AND sectionNumber=? AND type=?, assesmentNumber=?');
   return rows;
   //I dont know what to return if i am inserting into the databse
-}
+}*/
 
 //updating assessment CLO mapping
+/*
 async function updateAssessmentCLO (courseCode,semester,sectionNumber,type,assesmentNumber){
   const [rows, fields] = await pool.execute
   ('UPDATE assessment_details SET CLONumber = ? WHERE coursecode = ? AND semester = ? AND sectionNumber=? AND type=?, assesmentNumber=?');
   return rows;
   //I dont know what to return if i am inserting into the databse
-}
-module.exports ={getAssessmentType, addAssessmentDetails, getAssessmentDetails, updateAssessmentDescription, updateAssessmentWeight,getCLO};
+}*/ 
+module.exports ={getAssessmentType, addAssessmentDetails, getAssessmentDetails,getCLO};

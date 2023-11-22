@@ -44,25 +44,28 @@ async function getCourses (department, semester){
 
 async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
     const [rows, fields] = await pool.execute
-    ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?)');
+    ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statment, domain = VALUES(statment, domain)');
     return rows;
     //I dont know what to return if i am inserting into the databse
 }
 
 //chnage the CLO 
+/*
 async function updateCLO(CLONumber, courseCode,semester){
     const [rows, fields] = await pool.execute
     ('UPDATE course_learning_outcomes SET  statement = ?, domain = ?  WHERE CLONumber = ?,coursecode = ? AND semester = ?');
     return rows;
     //I dont know what to return if i am inserting into the databse
 }
+*/
 
-//delete
+//delete (this is wrong)
+/* 
 async function updateCLO(CLONumber, courseCode,semester){
     const [rows, fields] = await pool.execute
     ('DELETE course_learning_outcomes SET  statement = ?, domain = ?  WHERE CLONumber = ?,coursecode = ? AND semester = ?');
     return rows;
     //I dont know what to return if i am inserting into the databse
-}
+}*/ 
 
-module.exports ={getSemesters, getCourses ,addCLOs, updateCLO, getFullName, getDepartment};
+module.exports ={getSemesters, getCourses ,addCLOs,getFullName, getDepartment};
