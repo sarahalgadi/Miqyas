@@ -151,8 +151,16 @@ app.get('/course-report/:courseCode/:term/:department', async (req, res) => {
       const actionPlans = await courseReport.getActionPlan(courseCode, term);
       const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
 
-      // Calculate results for each CLO number
+
+      // Calculate results for each CLO number per department
       const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
+      //calculate results for all (just for the histogram's direct assessment)
+      const allcategory = await courseReport.getCategoryCounts(courseCode, term);
+      const histo = calculateResultsPerCLO(allcategory);
+      const [clohisto, indirecthisto, directhisto] =  prepareHistogramData(learningOutcomes.CLOnumbers, totalIndirectPerCLO, histo);
+      //rec. in case it exists. as well as action plan
+     
+      const recommendation = await courseReport.getRecommendation(courseCode, term, "rjan");// temporary username. SESSION MANAGEMENT!!!!!
 
       res.render('courseReport', {
         courseCode,
@@ -165,7 +173,11 @@ app.get('/course-report/:courseCode/:term/:department', async (req, res) => {
         resultsPerCLO,
         indirectSums,
         actionPlans,
-        totalIndirectPerCLO
+        totalIndirectPerCLO,
+        clohisto,
+        directhisto,
+        indirecthisto,
+        recommendation
       });
     } else {
       res.render('error', { message: 'Course not found' });

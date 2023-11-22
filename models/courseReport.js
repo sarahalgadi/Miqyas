@@ -108,24 +108,31 @@ async function saveRecommendation(courseCode, term, username, recommendation) {
 
   await pool.execute(sql, [courseCode, term, username, recommendation]);
 }
+async function updateSelectedActionPlans(courseCode, term, formData) { // here im updating action plan value.. in case it was selected/ deselected
+  const sqlGetActionPlans = `
+    SELECT sectionNumber, CLONumber
+    FROM action_plan
+    WHERE courseCode = ? AND semester = ?;
+  `;
 
-async function updateSelectedActionPlans(courseCode, term, formData) {
-  for (const key in formData) {
-    if (key.startsWith('selection_')) {
-      const [sectionNumber, CLONumber] = key.split('_').slice(1);
-      const isSelected = formData[key] === '1';
+  const sqlUpdate = `
+    UPDATE action_plan
+    SET selected = ?
+    WHERE courseCode = ? AND semester = ? AND sectionNumber = ? AND CLONumber = ?;
+  `;
 
-      // Update the selected column in the action_plan table
-      const sql = `
-        UPDATE action_plan
-        SET selected = ?
-        WHERE courseCode = ? AND semester = ? AND sectionNumber = ? AND CLONumber = ?;
-      `;
+  const [actionPlans] = await pool.execute(sqlGetActionPlans, [courseCode, term]);
 
-      await pool.execute(sql, [isSelected, courseCode, term, sectionNumber, CLONumber]);
-    }
+  for (const actionPlan of actionPlans) {
+    const { sectionNumber, CLONumber } = actionPlan;
+    const key = `selection_${sectionNumber}_${CLONumber}`;
+    const isSelected = formData[key] === '1' ? 1 : 0;
+
+    // Update the selected column in the action_plan table
+    await pool.execute(sqlUpdate, [isSelected, courseCode, term, sectionNumber, CLONumber]);
   }
 }
+
 async function getRecommendation(courseCode, term, username) {
   const sql = `
       SELECT statment
@@ -138,7 +145,7 @@ async function getRecommendation(courseCode, term, username) {
 }
 
 
-//function for get and update recommendation..and get selected action plans.. logic soon bc i need to add ejs conditions too:).
+
 
 
 
