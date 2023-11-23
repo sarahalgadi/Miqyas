@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--  Bootstrap CSS link -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Login css -->
+  <link rel="stylesheet" href="public\stylesheets\login.css">
+
+  <script type="text/javascript"
+    src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=cvmTVo3MRqfKV-BX00NKmhU0PnuR_DejrefgbO1v_11Pa4r4ugNI7LmEsnkZn_adz3iijiP9aP1tKLymZpg6g3BIcVBEbdNmrGZlNoFEaAVi7Lqt3QqhkpRtWSneQLdTIzrdEqvdcKNDbkcIlAs7OvSWxSTH24D0g_UkDWfVqgUiIPc7kTOMkw7X0NjSzx2GNL1LLlm0OqGTK4zB2Q-N9hYuQJLp-9RsOM3IJpr6IGx9P5AeQafThSH6SeO4TdNnzY2xyW2ZzjPdbP9DNW-3-VrK8USz0qmwcFoL8O6L6K1uXWtdQDSWXBwFlOd5njgAdDZ_L5LTzSBuzjTJihW4aeN0eJ8CQ4q2OpTD0GQNIjWKoHCIyKZKYIYIjj9nqFzOKobsB30fROezctwcrUFpwFolNCmX80j91I7in1IBdcn5x_ESzxiu3q83OVfRqD7Ii9PlfYr0Plo0_4fP1_mmAuuMbOQP1uICptvDq_GX0kaJnil96lYXkImbfNTFAX8SgU8-AwL3BJtv98POH_NKvKx2C_j8TBuF9N2dMaYmBn11i6yl2E-eaeukW3LeJ-B4NczgB8HFbZ7GFGma5NlzhRVtpd4Wm7Q4CY8xObGOPrTRCJWxdeafgqBGaX8erPJpYkIKei6Elvoyazzwa9TOwYrOpQZSkHg7fdlwI60r6lZdiZLhZJw_FLGH-zie9Z3qaBOMeHh3ujYlY73lkiucb1PAaLtWDbhn9JH27TAfvOYnCAzvcuOtTFSJMmXAl9sGktLsPX71SV-W3rYWU5ZTVlvRZ50nhLwWCwgx7I2eb7WIYZLXf9caMBouAj9YsKKHcgJvy8sQ-lUAxaH-gAOT-F1YrJGMVQFMYEal0CrFjCegjJhI4HIN9d4-wsrMEgHw_y7Tjz1qJERnzYcSDKI7gfyu_12LJYfiRnxJex4Xnn2IXps-X-9aDiVxPGcEnARWWd84jpRkErBPHE2L-I2BnQkmzNY8ycki8i_baw8ecKxg7FlKs5b3Bf3JauqxarpOBCGqLXA1g7Dq5Hsennx5UFwrfkfdDo54pq6Ae5Z80mmtjLS8qrtEJhkxY7RYhdR4HntzT1AASql4jEItY-uNxOU3I9gbJUt43nbzNZXu-NmGHi3wuDKhikEeH1w-R9PeBePNIrIgcz88oNWUyuv7UiHS0D0EjNGO0r_PexcguaUplJO9GIiL7mxBH4uIhTY9dRuI732uucabN0HNgMMO7PDFkR-fD5MNvvkfeeGqjm1GIkr2s2_Z9EQgOUnyOevhcAe8Y7PozamsxasIHMu7AYG5E82Y2Io9nvhAtRa58NdtdPaRzBq7FAZyLhDUAe0xVXtHSOytt3DFvwVDXUDrO-dEqb2krZdpIm7_VexkrVjUPLXWgr-6XBk-qQJdg8byR9fg3UOua6DPLGEY2NnLQcMqR73jtsMBPx0XS7XH8XZHXUKv0QBznkL2wNUKgYIglIpMtBqoVyIbjbh9GPzm2stAwQoZL7ZKbw5izzw2ihllDjN7kW6od7ekBDCYIJ8f8UWtYxibM92d76WKS3hroRF_QTINbF369aXU13aCXAlpdWuyW5JcplFA6F84NhsIJ5f7v-kDo0xXtqfEZWnQSHFPZosoTnuZbjK9ShBDqojMILi_qr2qP34nI5C9o7_NN9Qg_Lu-c4gfNCB7e2Dm3iJ8UTUGwsl6a-c4sNINtnbsJp18Ja-MHi-R6l2cbRZqvQgx-kaIAkjwuPuplDKwlhWqgv6op_AQn5bbGV3UtCiTk0SFoh89JEGLuUXE_CFdHYqDeaCg5imWlx_ruQ8M4A"
+    charset="UTF-8"></script>
+  <link rel="stylesheet" crossorigin="anonymous"
+    href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9kb2MtMDgtYmstZG9jcy5nb29nbGV1c2VyY29udGVudC5jb20vZG9jcy9zZWN1cmVzYy9xaDJjZHM3YW01a3Vxc2wyMDNiMWZsNTkwNWdpMGtjaS83c2pxcXFsNzJnbjlxYXU4MTQ0Nmg0bGdlM3IyOTBpOS8xNjgzNTUyODI1MDAwLzEyMTIzMTMwNjU5NzEwNzgwNjYxLzEwMjEyODgzMzEwNjUxNjYzNzU1LzFsb204alE2cnBDY1UxSUg2TFl4TlhuTmtTcm11eFBZRD9lPWRvd25sb2FkJmF4PUFEV0NQS0NjUlNYc1hWTktsdkpwVjV2UWdRQmxELUtvYWV1Mk9DSFNqOVpOTnN4dHdMVFhZZGc4aDFkMlZxbS1UWVpNbVd3QS1oVDk4bzBHcmVyelRWTDd5YkNXQzREWk5FdGhFZHYtQXM0ay0wSXZGTEhvQm50MWhVTnRSNkljekF2WkJpX2lzTU0wU1JFRkNlZlN2bGRySUE0UTRJaXJNa3dabmhSanRERHg2bWo2SFA4b1AyanFqUnlZYnMtYzd5LVFyUEotLVhwQ2xFdTNuN0Rjc1ZmcElfbjNVQy1heTdPOUZEWS02T1BXbG43aE9ZTzRCOWZrUk5FUk9UdGpBWjNvblNQbUFSdGJxb1RscmFKSG44WmhKRW5YamxDb2ZtMDJGR0VEOVp6enJjTjhXeTdVYVZXdlN0emZNZW5nWHRMdXFLYXUyWjEycVRjbnc1MU9GbmNGanhKNmZ6R3Z3MUs4Yk1QamFtQ3BJUS1tdGJ3LU5NbTd3NERYNURJZXdqalJfYmhGRTV6cHFwYjhzWkc5T1MyVWRmZFJNd2pDc2ExR3AtOW5ScE1VcVNXZkFEbGU5eldQd2k4REpWeFNrdjlpTnFMNGtZNG1wTlZXWHFuRGFrbnBwX3hrTjlRN1NwbVdYMlcwblBtaE4wTGhnOEpyNnBJa3BCQWczbzFhNkZ1eVdzM2hNc2JkSjBmVHY5bXFQLXB1NWtSc2RGNU8zbGlNeXlISXVWQ2tfN2dnVU1zY3FfSEtrc3d1UUEzTlc2Z1N1UjdWWElrYkkyYWQ4b25RTmxRZnpsUGpyNUw0cHpFLWJ2MFRnbHRFelhlYWUxb19mSGg4Mm42LUdpYnlNcUVydHdETGVpbHhoS0EwUXJMNk9jTnFJQ0NsQnhsOTJPZ09LMmxROFFrTnBoOHJVQTJwMTFaaHJHSjJ0WHJFNEY3cVdWRjhfSzBkUUVKTlh1VXE5c0JfMElyT0hQMmhZeXFyQ3BEalhSQTVzdkNmaWtFcldTQzczV1JHU09LdlZvbEJZZXpiTnVyemtNbDVycTRCeDM1WnpYbHR3ckMtUV9UcnNCM1NmejRjeDVxcTNuOG1DUnNJYWRlWGZxa0tPdXpWSEZEWVJ4Zk1uN1BlRVczRDBVWFVzUG8zcXVqLU9xVGxMQU9uWVFfdTgxcmpSbXVmcW1zWndHRHVOVkJvb2FFWHM5XzZ0ZzltVzlNbW9uYm9rTy11WHBVZTYzWWdETmJGd0VLbDVKZktRSXpJZWtWWmRrX2FSRU9lZWZFSVl5eEhTckZvZjZXRnNnJnV1aWQ9MjNhYjMzNzUtOGZlYS00MWVkLWI3N2EtZjEzNDkwMDdhNWVlJmF1dGh1c2VyPTAmbm9uY2U9NGViNmFkZjJ0bm0zOCZ1c2VyPTEwMjEyODgzMzEwNjUxNjYzNzU1Jmhhc2g9c3UzbTQ1MmNtN3U2MTIwZmFnbGoxbTloZnNhc3JyNmo" />
+    <title>Miqyas: Login</title>
+</head>
+
+<body>
+  <header>
+    <%-include(". /partials/head.ejs")%>
+  </header>
+
+  <main class="mt-4">
+    <div class="row">
+      <div class="col-md-4">
+        <!-- miqyas name  -->
+        <h1 style="color: white;  font-style: italic; font-family: Helvetica, sans-serif; padding: 4rem;">Miqyas</h1>
+      </div>
+      <div class="col-md-6">
+        <!-- miqyas description  -->
+        <p style="color: white; text-align: justify; padding: 4rem; font-family: Arial, Helvetica, sans-serif;">
+          A seamless blend of precision on the pathway to educational excellence.</p>
+      </div>
+      <hr>
+      <div id="login" class="card">
+        <h2 class="card-title">Login</h2>
+        <hr id="divider">
+        <form action="" method="post" id="loginForm">
+          <div class="container">
+            <!-- user type  -->
+            <label for="type">User Type:</label>
+            <select name="type" id="type">
+              <option value="CI">Course Instructor</option>
+              <option value="CC">Course Coordinator</option>
+              <option value="CP">Chairperson</option>
+              <option value="DCC">Curriculum Committee</option>
+              <option value="QA">Quality Assurance</option>
+            </select>
+            <br>
+            <!-- username feild  -->
+            <label for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" id="username" name="username" required>
+            <span id="usernameError" class="text-danger"></span><br>
+            <!-- password feild  -->
+            <label for="password"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" id="password" name="password" required>
+            <br>
+            <button id="submit" type="submit login-btn" class="login-btn">Login</button>
+
+            <!-- redirect according to chosen user type  -->
+            <!-- should be handled here or in the controller?   -->
+            <script> 
+              function redirectBasedOnType() {
+                var username = document.getElementById('type').value;
+                var form = document.getElementById('loginForm');
+                switch (type) {
+                  case 'QA':
+                    window.location.href = "/qaHome";
+                    break;
+                  case 'CC':
+                    window.location.href = "/ccHome";
+                    break;
+                  case 'CP':
+                    window.location.href = "/cpHome";
+                    break;
+                  case 'DCC':
+                    window.location.href = "/dccHome";
+                    break;
+                  default:
+                    // CI (default)
+                    window.location.href = "/ciHome";
+
+                    break;
+                }
+              }
+              var form = document.getElementById('loginForm');
+              form.addEventListener('submit', function (Event) {
+                Event.preventDefault(); // Prevents the default form submission 
+                redirectBasedOnUsername(); // 
+              });
+            </script>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+  </main>
+  <%-include(".partials /footer.ejs")%>
+</body>
+
+</html>
