@@ -102,9 +102,78 @@
                         class="custom-button mt-4">Save</button>
                 </form>
             </div>
-            <!--Viewing a report; Ayat this is missing I just placed here the structure-->
+            <!--so here, if course coordinator chooses course section report, only options are for course coordinating in the same term. -->
+            <!--if course coordinator chooses course report, previous semester reports.-->
             <div id="viewReports" class="tab-pane fade p-4 mt-4">
-
+                <h3>Viewing <%= title %> Reports:</h3>
+                <form method="POST">
+                <label for="reportType" class="form-label">Select Report type:</label>
+                <select id="reportType" name="reportType" class="form-select" onchange="handleReportTypeChange()">
+                    <option value="" selected disabled>Select report type</option>
+                    <option value="courseReport">Course Report</option>
+                    <option value="sectionReport">Current Section Reports</option>
+                </select>
+                <br>
+                <br>
+                <label for="section" id="sectionLabel" class="form-label">Select Section or Semester:</label>
+                <select id="section" name="section" class="form-select" disabled>
+                    <option value="" selected disabled>Choose one</option>
+                </select>
+                <br>
+                <br>
+                <button type="button" class="custom-button" onclick="viewReport()">View Report</button>
+            </form>
+            
+            <script>
+                function handleReportTypeChange() {
+                    var reportType = document.getElementById("reportType").value;
+                    var sectionDropdown = document.getElementById("section");
+                    var sectionLabel = document.getElementById("sectionLabel");
+            
+                    // Clear existing options and reset label
+                    sectionDropdown.innerHTML = '<option value="" selected disabled>Choose one</option>';
+                    sectionLabel.innerHTML = (reportType === "sectionReport") ? "Select Section:" : "Select Semester:";
+            
+                    if (reportType === "courseReport") {
+                        // Add section options
+                        // Replace this with the logic to fetch and iterate over your section data
+                        var semesters = <%= JSON.stringify(pastCoordinatedSemesters) %>;
+                        semesters.forEach(function (semester) {
+                            var option = document.createElement("option");
+                            option.value = semester;
+                            option.text = "Term " + semester;
+                            sectionDropdown.add(option);
+                        });
+                    } else if (reportType === "sectionReport") {
+                        // Add semester options
+                        
+                        var coordinatedSections = <%= JSON.stringify(coordinatedSections) %>;
+                        coordinatedSections.forEach(function (section) {
+                            var option = document.createElement("option");
+                            option.value = section;
+                            option.text = "Section " + section; // Add "Section " before the section number
+                            sectionDropdown.add(option);
+                        });
+                        
+                    }
+            
+                    // enable the dropdown. bc i initially disabled.
+                    sectionDropdown.disabled = false;
+                }
+                function viewReport() {
+                    //will be modified later
+                    // Get selected values and perform further actions as needed
+                    var reportType = document.getElementById("reportType").value;
+                    var selectedSection = document.getElementById("section").value;
+            
+                   
+                    if (reportType === "sectionReport") {
+                        window.location.href = '/section-report/' + encodeURIComponent(selectedSection);
+                    } else if (reportType === "courseReport") {
+                        window.location.href = '/course-report/' + encodeURIComponent(selectedSection);
+                    }
+                }
+            </script>
             </div>
             <!--Generating a report-->
             <div id="generateReport" class="tab-pane fade p-4 mt-4">

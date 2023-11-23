@@ -30,7 +30,37 @@ async function getDirect(courseCode, term) {
     }
 }
 
-module.exports ={getCourseName, addTypeAndWeight, getDirect};
+async function getCoordinatedSections(courseCode, term) {
+    const sql = 'SELECT sectionNumber FROM course_section WHERE courseCode = ? AND semester = ?';
+    try {
+        const [rows] = await pool.execute(sql, [courseCode, term]);
+        const sectionNumbers = rows.map(row => row.sectionNumber);
+        return sectionNumbers;
+    } catch (error) {
+        console.error('Error fetching course sections:', error);
+        throw error;
+    }
+}
+
+async function getPastCourseReportSemesters(courseCode){
+    const sql = 'SELECT semester FROM recommendation WHERE courseCode = ?';// we use recommendation for fetching course report since it's the only thing that can be traced back to coordinator reports.
+    try{
+        const[rows] = await pool.execute(sql, [courseCode]);
+        const semesters = rows.map(row => row.semester);
+        return semesters;
+    } catch(error){
+        console.error('error fetching course report semesters:', error);
+        throw error;
+    }
+}
+
+//todo: handling the case where the user clicks "view report"; will be done after section report is finalized
+
+module.exports ={getCourseName, 
+    addTypeAndWeight,
+     getDirect, 
+     getCoordinatedSections,
+    getPastCourseReportSemesters};
 
 
 
