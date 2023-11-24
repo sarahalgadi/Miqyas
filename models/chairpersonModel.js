@@ -21,7 +21,7 @@ async function getDepartment (username){
     return rows;
 }
 
-async function addRoles ( semester){
+async function addRoles ( username, role, semester){
     const [rows, fields] = await pool.execute
     ('INSERT INTO faculty_role (username, role, semester) VALUES (?,?,?) ON DUPLICATE KEY UPDATE role = VALUES(role)');
     return rows;

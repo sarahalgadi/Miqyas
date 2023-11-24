@@ -1,59 +1,37 @@
+var createError = require('http-errors');
 var express = require('express');
+var path = require('path');
 var cookieParser = require('cookie-parser');
-
-
-//db 
-//const db = require('database');
-
-//express app
-var app = express();
+var logger = require('morgan');
+const port = process.env.PORT || 3000;
+const app = express();
+const pool = require('./database.js');
+const bodyParser = require('body-parser');
 
 // view engine setup
-
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(logger('dev'));
 app.use(cookieParser());
-//app.use((req, res, next) => {
-  //req.db = db; // Make the database accessible in the request object
-  //next();
-//});
+app.use(express.static(path.join(__dirname, 'public')));
+const chairRouter = require('./routes/chairRouter');
 
-var chairRouter = require('./routes/chairRouter');
-//const { database } = require('./database');
-const connectDatabase = require('./database');
-
-const database = connectDatabase();
-
-app.get('/roleAssign',  (request, response) => {
-  response.render('roleAssign', { title: 'Roles' });
+app.get('/',async(req,res)=>{
+  res.render('index')
 });
 
+app.use('/', chairRouter);
 
-app.use('/roleAssign', chairRouter);
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
+app.use((req, res)=>{
+  res.status(404).render('error');
+})
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
+module.exports = app;
+

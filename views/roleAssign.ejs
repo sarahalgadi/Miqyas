@@ -8,40 +8,30 @@
   <title>Faculty List</title>
 </head>
 <body>
-  <tbody>
-    <% facultyNames.forEach(faculty => { %>
-        <tr>
-            <td><%= faculty.name %></td>
-            <td>
-                <button type="button" class="btn custom-button" data-bs-toggle="modal"
-                        data-bs-target="#roleModal" data-name="<%= faculty.name %>" data-role="<%= faculty.role %>">
-                    Assign Role
-                </button>
-            </td>
-        </tr>
-    <% }); %>
-  </tbody>
-  
-  <!-- ... (rest of the HTML code) ... -->
-  
-  <div id="roleModal" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">Assign role to Faculty Member</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body m-2">
-                <form id="roleForm" method="post" action="/assign-roles">
-                    <input type="hidden" name="facultyName" id="facultyNameInput" value="">
-                    <!-- ... Other form fields ... -->
-                    <button type="button" class="custom-button" onclick="assignRoles()">Assign Roles</button>
-                </form>
-            </div>
-        </div>
-    </div>
-  </div>
-  
+    <div class="container">
+        <h1>Department Faculty Memebers</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Faculty Name</th>
+              <th>User Name</th>
+              <th>Roles</th>
+              <th><form action="/save-roles/<%= department %>/<%= semester %>/username" method="post"><button type="submit"></button></form></th> 
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 0; i < data.length; i++) { %>
+              <tr>
+                <td><%= data[i].facultyName %></td>s
+                <td><%= data[i].userName %></td>
+                <td><%= data[i].roles %></td>
+                <td><button class="btn btn-primary">Button</button></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+  <!--
   <script>
     var modalTitleElement = document.getElementById("modalTitle");
     var facultyNameInput = document.getElementById("facultyNameInput");
@@ -77,7 +67,10 @@
         document.getElementById("roleForm").submit();
     }
   </script>
-</body>
+</body>-->
+ <form action="/save-roles/<%= department %>/<%= semester %>/username" method="post">
+    <button type="submit"></button>
+ </form>
 </html> 
   
 
