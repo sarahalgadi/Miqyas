@@ -80,6 +80,8 @@ async function calculateIndirectPerCLO(courseCode, semester) {
   return rows;
 }
 
+//todo: date here is retrieved as yyyy-mm-dd:hh-mm-ss... change it to look more userfriendly.
+
 async function getActionPlan(courseCode, semester) {
   const sql = `
     SELECT *

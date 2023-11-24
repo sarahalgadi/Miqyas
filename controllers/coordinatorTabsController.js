@@ -4,7 +4,9 @@ const courses = [
     { code: 'COURSE001', name: 'Course 1', term: "223"},
     { code: 'COURSE002', name: 'Course 2', term:"224"},
     { code: 'SE322', name: 'Course 3', term: "223" },
-  ]; //fixme: this is just for temp... it iwll be removed.
+  ];
+  const name = 'SE322';
+  //fixme: this is just for temp... it iwll be removed.
 
 async function getCoordinatedCourse (req,res) {
     const {courseCode, term} = req.params;
@@ -30,7 +32,6 @@ async function getCoordinatedCourse (req,res) {
 };
 
 async function saveDirectAssessmentTypes (req, res){
-
         const {courseCode, term} = req.params;
         const formData = {
           project: req.body.project === 'on' ? parseInt(req.body.project_weight) : null,
@@ -54,7 +55,7 @@ async function saveDirectAssessmentTypes (req, res){
                   }
               }
           }
-          res.render('temp', {courses});//todo: how about we tell the user they correctly saved the report instead ..
+          res.render('temp', {courses, name});//todo: how about we tell the user they correctly saved the report instead ..
 };
 
 module.exports = {

@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const courseReportRoutes = require('./routes/courseReportRoutes');
 const cc = require('./routes/cc');
 const ccModel = require('./models/cc');
-
+const sectionReportRoutes = require('./routes/sectionReport');
 
 
 //specifying the port
@@ -34,14 +34,19 @@ const courses = [
 //error. we may need to go over the diff types of errors..
 //this is just temp...temp is the page displaying coordinator courses. reemas part.
 app.get('/',  async (req, res)=>{
- res.render('temp', {courses})
+  const name = "SE322";
+ res.render('temp', {courses, name})
 });
 
 //todo: for controllers: error handling + agree on where res should go after any info is saved!
 
 app.use('/', courseReportRoutes);//editing courseReport routes.. for coordinator.
 app.use('/', cc); //this is just for cc.ejs aka the page where there are tabs for a chosen coordinated course
-
+app.use('/', sectionReportRoutes);
+app.post('/save-section-report', (req, res)=>{
+  console.log(req.body.allActionPlanData);
+  console.log(req.body.calculatedResults);
+})
 
 app.use((req, res)=>{
   res.status(404).render('404error');
