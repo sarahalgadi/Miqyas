@@ -1,15 +1,4 @@
-
-const mysql = require('mysql2/promise');
-
-const pool = mysql.createPool({
-  host:'localhost',
-  user:'root',
-  password:'1234',
-  database:'miqyas',
-  waitForConnection: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const pool = require('../database');
 
 //Repeated code from DCC Model
 //coordinator name 
@@ -51,7 +40,7 @@ async function getActionReports (courseCode,semester){
 //add the assessment type and weight
 async function addTypeAndWeight (){
     const [rows, fields] = await pool.execute
-    ('INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE weight, type = VALUES(weight, type) ');
+    ('INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE weight = VALUES(weight), type = VALUES(type) ');
     return rows;
     //I dont know what to return if i am inserting into the databse
 }

@@ -1,14 +1,5 @@
-const mysql = require('mysql2/promise');
+const pool = require('../database');
 
-const pool = mysql.createPool({
-  host:'localhost',
-  user:'root',
-  password:'1234',
-  database:'miqyas',
-  waitForConnection: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
 
 //probably need to restructure the models :) 
 
@@ -78,4 +69,5 @@ async function updateAssessmentCLO (courseCode,semester,sectionNumber,type,asses
   return rows;
   //I dont know what to return if i am inserting into the databse
 }*/ 
+
 module.exports ={getAssessmentType, addAssessmentDetails, getAssessmentDetails,getCLO};

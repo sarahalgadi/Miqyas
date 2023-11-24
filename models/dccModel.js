@@ -1,14 +1,5 @@
-const mysql = require('mysql2/promise');
+const pool = require('../database');
 
-const pool = mysql.createPool({
-  host:'localhost',
-  user:'root',
-  password:'1234',
-  database:'miqyas',
-  waitForConnection: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
 
 //all the semesters
 async function getSemesters (){
@@ -44,7 +35,7 @@ async function getCourses (department, semester){
 
 async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
     const [rows, fields] = await pool.execute
-    ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statment, domain = VALUES(statment, domain)');
+    ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statment = VALUES(statment) , domain = VALUES(domain)');
     return rows;
     //I dont know what to return if i am inserting into the databse
 }

@@ -8,19 +8,76 @@
   <title>Faculty List</title>
 </head>
 <body>
-  <%-include("./partials/nav.ejs")%>
-  <h1>Faculty List</h1>
-  <ul>
-    <% faculty_role.forEach(function(username) { %>
-      <li>
-        <%= faculty.username %>
-        <form action="/assign-role" method="POST">
-          <input type="hidden" name="username" value="<%= faculty_role.username %>">
-          <input type="text" name="role" placeholder="Enter role...">
-          <button type="submit">Assign Role</button>
-        </form>
-      </li>
+  <tbody>
+    <% facultyNames.forEach(faculty => { %>
+        <tr>
+            <td><%= faculty.name %></td>
+            <td>
+                <button type="button" class="btn custom-button" data-bs-toggle="modal"
+                        data-bs-target="#roleModal" data-name="<%= faculty.name %>" data-role="<%= faculty.role %>">
+                    Assign Role
+                </button>
+            </td>
+        </tr>
     <% }); %>
-  </ul>
+  </tbody>
+  
+  <!-- ... (rest of the HTML code) ... -->
+  
+  <div id="roleModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Assign role to Faculty Member</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body m-2">
+                <form id="roleForm" method="post" action="/assign-roles">
+                    <input type="hidden" name="facultyName" id="facultyNameInput" value="">
+                    <!-- ... Other form fields ... -->
+                    <button type="button" class="custom-button" onclick="assignRoles()">Assign Roles</button>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <script>
+    var modalTitleElement = document.getElementById("modalTitle");
+    var facultyNameInput = document.getElementById("facultyNameInput");
+  
+    $('#roleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var facultyName = button.data('name');
+       
+        modalTitleElement.innerHTML = "Assign role to " + facultyName;
+       
+        // Set the faculty name in the form input
+        facultyNameInput.value = facultyName;
+    });
+  
+    function assignRoles() {
+        // Assuming you have checkboxes for role selection
+        var selectedRoles = document.querySelectorAll('input[name="roles[]"]:checked');
+       
+        // Create an array to store the selected roles
+        var rolesArray = [];
+        selectedRoles.forEach(function (role) {
+            rolesArray.push(role.value);
+        });
+  
+        // Create a hidden input field in the form and set its value
+        var rolesInput = document.createElement("input");
+        rolesInput.setAttribute("type", "hidden");
+        rolesInput.setAttribute("name", "selectedRoles");
+        rolesInput.setAttribute("value", rolesArray.join(',')); // Join roles with a comma or any delimiter
+        document.getElementById("roleForm").appendChild(rolesInput);
+  
+        // Submit the form
+        document.getElementById("roleForm").submit();
+    }
+  </script>
 </body>
-</html>
+</html> 
+  
+
