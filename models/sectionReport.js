@@ -77,13 +77,44 @@ async function getCourseName(courseCode) {
     const [rows] = await pool.execute(sql, [courseCode, semester, section]);
     return rows;
   }
-  
-  //todo: for action plan: delete and update!!!
+
+  async function getActionPlans(courseCode, semester, sectionNumber) {
+    const sql = `
+        SELECT statement, resources, startDate, endDate, responsibility, CLONumber
+        FROM action_plan
+        WHERE courseCode = ? AND semester = ? AND sectionNumber = ?;
+    `;
+
+    try {
+        const [rows] = await pool.execute(sql, [courseCode, semester, sectionNumber]);
+
+        const actionPlans = rows.map((row) => ({
+            statement: row.statement,
+            resources: row.resources,
+            startDate: row.startDate,
+            endDate: row.endDate,
+            responsibility: row.responsibility,
+            courseCode: row.courseCode,
+            sectionNumber: row.sectionNumber,
+            semester: row.semester,
+            CLONumber: row.CLONumber,
+        }));
+
+        return actionPlans;
+    } catch (error) {
+        // Handle error appropriately (e.g., log or throw an exception)
+        console.error('Error in getActionPlans:', error);
+        throw error;
+    }
+}
+
+  //todo: for action plan: delete and update and save!!!
 
   module.exports = {
     getCourseName,
     getCLOInfo,
     getCategoryCounts,
     getDepartments,
-    getIndirectPerCLOPerSection
+    getIndirectPerCLOPerSection,
+    getActionPlans
   }

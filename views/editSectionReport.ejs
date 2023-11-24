@@ -7,7 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 </head>
 
+
 <body>
+
+
     <%- include('./partials/nav.ejs')%>
     <hr>
 
@@ -123,7 +126,7 @@
 
 
     <!-- ill start the form here.. input type hidden for cloresults.. this is to save it in direct clo per section-->
-    <form id="sectionForm" action="/save-section-report" method="POST" onsubmit="submitForm()">
+    <form id="sectionForm" action="/save-section-report" method="POST">
         <input type="hidden" name="calculatedResults" value="<%= JSON.stringify(resultsPerCLO) %>">
         <!--Instructor chooses action plan!-->
         <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
@@ -135,28 +138,58 @@
                 <thead>
                     <tr>
                         <th rowspan="2">CLO Number</th>
-                        <th colspan="7">Action Plan & Recommendation
-                            <tr>
-                                <th>Action</th>
-                                <th>Responsible</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                                <th>Resources</th>
-                                <th>Delete</th>
-                            </tr>
-                        </th>
+                        <th colspan="6">Action Plan & Recommendation</th>
                     </tr>
-                    
+                    <tr>
+                        <th>Action</th>
+                        <th>Responsible</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Resources</th>
+                        <th>Delete</th>
+                    </tr>
                 </thead>
-                <tbody>
+                <tbody id="action-plan-body">
+                    <% if (actionPlans && actionPlans.length > 0) { %>
+                        <% actionPlans.forEach((actionPlan) => { %>
+                            <tr>
+                                <td>
+                                    <select class="form-select" name="cloNumber">
+                                        <% CLOnumbers.forEach(cloNumber => { %>
+                                            <option value="<%= cloNumber %>" <%= actionPlan.CLONumber === cloNumber ? 'selected' : '' %>>
+                                                <%= cloNumber %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                </td>
+                                <td><textarea name="statement"><%= actionPlan.statement || '' %></textarea></td>
+                                <td><input type="text" name="responsible" value="<%= actionPlan.responsibility || '' %>"></td>
+                                <td><input type="date" name="startDate" value="<%= actionPlan.startDate || '' %>"></td>
+                                <td><input type="date" name="endDate" value="<%= actionPlan.endDate || '' %>"></td>
+                                <td><textarea name="resources"><%= actionPlan.resources || '' %></textarea></td>
+                                <td>
+                                    <!-- Add a delete button (you can customize this part) -->
+                                    <button onclick="deletePlan(this)">Delete</button>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
                 </tbody>
             </table>
+            
     
                 <div class="error-text" id="errorText"></div>
                 <input type="hidden" name="allActionPlanData" id="allActionPlanDataInput">
-        
-                <button type="submit" class="btn custom-button mt-4" id="submitButton">Save Assessment</button>
+                <!--if we're displaying by department.. user should not submit!-->
+                <% if (condition) { %>
+                <button type="submit" class="btn custom-button mt-4" id="submitButton" onclick="submitForm(event)">Save Assessment</button>
+                <% } %>
+                <% if (!condition) { %>
+                    <p>you can only submit this report by displaying all departments!</p>
+               <% } %>
             </form>
+
+
         </body>
     
         <script>
@@ -217,87 +250,66 @@
                 const table = document.getElementById('action-plan');
                 const rowIndex = row.parentNode.parentNode.rowIndex;
                 table.deleteRow(rowIndex);
+                setTimeout(handleInputChange, 100);
             }
     
-            var allActionPlanData = [];
     
             function addActionPlan(event) {
                 event.preventDefault();
-              
-                // After clicking on the "Add Action Plan" button.
+            
                 var tableBody = document.querySelector('#action-plan tbody');
                 var newRow = tableBody.insertRow(tableBody.rows.length);
-              
-                // Object to store data for the new action plan
-                var actionPlanData = {};
-              
+            
                 // Iterating over each cell in the new row.
                 for (var i = 0; i < 7; i++) {
-                  var cell = newRow.insertCell(i);
-              
-                  // Adding elements as needed for each action plan.
-                  if (i === 0) {
-                    // CLO number
-                    var select = document.createElement('select');
-                    select.className = 'form-select';
-                    populateCLODropdown(select); // Pass the select element to the function
-              
-                    select.addEventListener('change', function () {
-                      actionPlanData.cloNumber = this.value;
-                    });
-                    cell.appendChild(select);
-                  } else if (i === 5) {
-                    // Resources
-                    var textarea = document.createElement('textarea');
-                    textarea.className = 'form-control';
-                    cell.appendChild(textarea);
-              
-                    // No need to store Resources here
-                  } else if (i === 6) {
-                    // Delete button
-                    var deleteButton = document.createElement('button');
-                    deleteButton.className = 'btn';
-                    deleteButton.style.backgroundColor = '#15416e';
-                    deleteButton.innerHTML = '<i class="fas fa-times" style="color: white"></i>';
-                    deleteButton.onclick = function () {
-                      deletePlan(this);
-                    };
-                    cell.appendChild(deleteButton);
-                  } else {
-                    // Dates and the action plan statement n resources
-                    var input = document.createElement('input');
-                    input.type = i === 4 || i === 3 ? 'date' : 'text';
-                    input.className = 'form-control';
-                    cell.appendChild(input);
-                    
-                    // Store other data here
-                    if (i === 1) {
-                      input.addEventListener('input', function () {
-                        actionPlanData.statement = this.value;
-                      });
-                    } else if (i === 2) {
-                      input.addEventListener('input', function () {
-                        actionPlanData.responsible = this.value;
-                      });
-                    } else if (i === 3) {
-                      input.addEventListener('input', function () {
-                        actionPlanData.startDate = this.value;
-                      });
-                    } else if (i === 4) {
-                      input.addEventListener('input', function () {
-                        actionPlanData.endDate = this.value;
-                      });
-                    }
-                  }
-                }
+                    var cell = newRow.insertCell(i);
             
-                // Push the new action plan data into the array
-                allActionPlanData.push(actionPlanData);
-              
-                // Update the hidden input field value with the serialized JSON representation
-                document.getElementById("allActionPlanDataInput").value = JSON.stringify(allActionPlanData);
-                document.getElementById("errorText").innerText = JSON.stringify(allActionPlanData);
+                    // Adding elements as needed for each action plan.
+                    if (i === 0) {
+                        var select = document.createElement('select');
+                        select.className = 'form-select';
+                        populateCLODropdown(select); // Pass the select element to the function
+                        select.setAttribute('name', 'cloNumber');
+                        cell.appendChild(select);
+                    
+                    } else if (i === 1){
+                        var textarea = document.createElement('textarea');
+                        textarea.className = 'form-control';
+                        textarea.setAttribute('name', 'statement');
+                        cell.appendChild(textarea);
+                    }
+                    else if (i === 5) {
+                        // Resources
+                        var textarea = document.createElement('textarea');
+                        textarea.className = 'form-control';
+                        textarea.setAttribute('name', 'resources');
+                        cell.appendChild(textarea);
+            
+                        // No need to store Resources here
+                    } else if (i === 6) {
+                        // Delete button
+                        var deleteButton = document.createElement('button');
+                        deleteButton.className = 'btn';
+                        deleteButton.style.backgroundColor = '#15416e';
+                        deleteButton.innerHTML = '<i class="fas fa-times" style="color: white"></i>';
+                        deleteButton.onclick = function () {
+                            deletePlan(this);
+                        };
+                        cell.appendChild(deleteButton);
+                    } else {
+                        // Dates and the action plan statement n resources
+                        var input = document.createElement('input');
+                        input.type = i === 4 || i === 3 ? 'date' : 'text';
+                        input.className = 'form-control';
+                        input.setAttribute('name', 
+                                              i === 2 ? 'responsible' :
+                                              i === 3 ? 'startDate' :
+                                              i === 4 ? 'endDate' : '');
+                        cell.appendChild(input);
+                    }
+                }
             }
+            
             
             function populateCLODropdown(selectDropdown) {
                 // Populate options with CLO numbers
@@ -309,48 +321,102 @@
                     option.text = cloNumber;
                     selectDropdown.appendChild(option);
                 });
+
             }
            
-    
-            function submitForm() {
-                // Retrieve the input field values
-                const actionPlanRows = document.querySelectorAll('#action-plan tbody tr');
-                const allActionPlanData = [];
-                let error = false;
-                actionPlanRows.forEach(function (row) {
-                  const cells = row.cells;
-                  const actionPlanData = {
-                    cloNumber: cells[0].querySelector('select').value,
-                    statement: cells[1].querySelector('input').value,
-                    responsible: cells[2].querySelector('input').value,
-                    startDate: cells[3].querySelector('input').value,
-                    endDate: cells[4].querySelector('input').value,
-                    resources: cells[5].querySelector('textarea').value,
-                  };
+            function submitForm(event) {
+                event.preventDefault();
             
-                  allActionPlanData.push(actionPlanData);
-                });
-                const cloNums = new Set();
+                var tableBody = document.querySelector('#action-plan tbody');
+                let allActionPlanData = Array.from(tableBody.querySelectorAll('tr')).map(function (row) {
+                    var actionPlanData = {};
+            
+                    row.querySelectorAll('td').forEach(function (cell) {
+                        if (cell.querySelector('textarea')) {
+                            const index = cell.querySelector('textarea');
+                            actionPlanData[index.name] = index.value;
+                        } else if (cell.querySelector('input[type="text"]')) {
+                            const index = cell.querySelector('input[type="text"]');
+                            actionPlanData[index.name] = index.value;
+                        } else if (cell.querySelector('input[type="date"]')) {
+                            const index = cell.querySelector('input[type="date"]');
+                            actionPlanData[index.name] = index.value;
+                        } else if (cell.querySelector('select')) {
+                            const index = cell.querySelector('select');
+                            actionPlanData[index.name] = index.value;
+                        }
+                    });
+            
+                    return actionPlanData; // Return the data object
+                }).filter(Boolean); // Filter out null values
+            
+                document.getElementById("allActionPlanDataInput").value = JSON.stringify(allActionPlanData);
+                console.log(document.getElementById("allActionPlanDataInput").value);
+                document.getElementById("sectionForm").submit();
+            }
+            
 
-                allActionPlanData.forEach(action=>{
-                    if cloNums.has(action[cloNumber]){
-                        //error
-                        document.getElementById("submitButton").disabled = true;
-                        document.getElementById("errorText").innerText = "you can only submit one action plan per clo!";
+            function validateActionPlan() {
+
+                // Retrieve the input field values
+                var tableBody = document.querySelector('#action-plan tbody');
+                let allActionPlanData = [];
+                let error = false;
+                let cloNums = new Set();
+                const submitButton = document.getElementById("submitButton");
+            
+                // Use map instead of forEach
+                allActionPlanData = Array.from(tableBody.querySelectorAll('tr')).map(function (row) {
+                    var actionPlanData = {};
+            
+                    row.querySelectorAll('td').forEach(function (cell) {
+                        if (cell.querySelector('textarea')) {
+                            const index = cell.querySelector('textarea');
+                            actionPlanData[index.name] = index.value;
+                        } else if (cell.querySelector('input[type="text"]')) {
+                            const index = cell.querySelector('input[type="text"]');
+                            actionPlanData[index.name] = index.value;
+                        } else if (cell.querySelector('input[type="date"]')) {
+                            const index = cell.querySelector('input[type="date"]');
+                            actionPlanData[index.name] = index.value;
+                        } else if (cell.querySelector('select')) {
+                            const index = cell.querySelector('select');
+                            actionPlanData[index.name] = index.value;
+                        }
+                    });
+            
+                    if (cloNums.has(actionPlanData.cloNumber)) {
                         error = true;
+                        return null; // Return null for duplicates
+                    } else {
+                        cloNums.add(actionPlanData.cloNumber);
+                        return actionPlanData;
                     }
-                    else{
-                        cloNums.add(action[cloNumber]);
-                    }
-
-                    if(!error){
-                        document.getElementById("allActionPlanDataInput").value = JSON.stringify(allActionPlanData);
-                        document.getElementById("sectionForm").submit();
-                    }
-                })
-                           
-              }
-    
+                }).filter(Boolean); // Filter out null values
+            
+                // Check if there was an error before submitting the form
+                if (!error) {
+                
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                    document.getElementById("errorText").innerText = "You can only submit one action plan per CLO!";
+                }
+            }
+            
+            function handleInputChange() {
+                // Clear error messages and re-enable the save button on input change
+                const errorText = document.getElementById('errorText');
+                const submitButton = document.getElementById('submitButton');
+            
+                errorText.innerText = '';
+                submitButton.disabled = false;
+            
+                // Validate weights again
+                validateActionPlan();
+            }
+            // Attach handleInputChange to input elements
+            document.getElementById('action-plan-body').addEventListener('change', handleInputChange);
                         
         </script>
 

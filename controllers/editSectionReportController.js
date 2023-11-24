@@ -14,6 +14,9 @@ async function editSectionReport(req, res){
         const departments = await sectionReportModel.getDepartments();
         const indirectSums = await sectionReportModel.getIndirectPerCLOPerSection(courseCode, term, section);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
+        const condition = true; // this is for the submit button..explanation in the function below (per deparmtnet)
+        const actionPlans = await sectionReportModel.getActionPlans(courseCode, term, section);
+
         // Separate data into arrays for rendering in the histogram script.. inefficient but i had to hardcode this to make it work.
         const [clohisto, indirecthisto, directhisto] = prepareHistogramData(
             CLOnumbers,
@@ -38,7 +41,9 @@ async function editSectionReport(req, res){
         totalIndirectPerCLO,
         clohisto,
         indirecthisto,
-        directhisto
+        directhisto,
+        condition,
+        actionPlans
         } );
     }catch (error){
         console.error(error);
@@ -68,7 +73,9 @@ async function editSectionReportDepartment(req, res){
         const departments = await sectionReportModel.getDepartments();
         const indirectSums = await sectionReportModel.getIndirectPerCLOPerSection(courseCode, term, section);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
-
+        const condition = false; //i want to disable the submit button when we're displaying by department so that resultsPerCLO aren't saved into the db per department.. 
+        //bc clicking on the submit button will save resultsperclo into the direct per section.. if we use per department.. inaccurate results overwriting original one!
+        const actionPlans = await sectionReportModel.getActionPlans(courseCode, term, section);
           // Calculate results for all depts (just for the histogram's direct assessment)
           const allcategory = await sectionReportModel.getCategoryCounts(courseCode, term, section);
           const histo = calculateResultsPerCLO(allcategory);
@@ -93,7 +100,9 @@ async function editSectionReportDepartment(req, res){
         totalIndirectPerCLO,
         clohisto,
         indirecthisto,
-        directhisto
+        directhisto,
+        condition,
+        actionPlans
         } );
     }catch (error){
         console.error(error);
