@@ -2,14 +2,14 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <%-include("./partials/head.ejs")%>
+ 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="../stylesheets/style.css">
   <title>Faculty List</title>
 </head>
 <body>
     <div class="container">
-        <h1>Department Faculty Memebers</h1>
+        <h1><%= department %> Department Faculty Memebers</h1>
         <table class="table">
           <thead>
             <tr>
@@ -20,11 +20,11 @@
             </tr>
           </thead>
           <tbody>
-            <% for (var i = 0; i < data.length; i++) { %>
+            <% for (facultyName in facultyNames) { %>
               <tr>
-                <td><%= data[i].facultyName %></td>s
-                <td><%= data[i].userName %></td>
-                <td><%= data[i].roles %></td>
+                <td><%= facultyName %></td>
+               
+                <td>checkboxes</td>
                 <td><button class="btn btn-primary">Button</button></td>
               </tr>
             <% } %>

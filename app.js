@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const chairRouter = require('./routes/chairRouter');
 
 app.get('/',async(req,res)=>{
-  res.render('index')
+  res.render('roleAssign')
 });
 
 app.use('/', chairRouter);
