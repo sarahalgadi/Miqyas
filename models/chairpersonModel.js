@@ -2,16 +2,25 @@ const pool = require('../database');
 
 //getting faulty name in the department
 async function getFullNameDepartment ( department){
-    const [rows, fields] = await pool.execute
-    ('SELECT fullname FROM faculty WHERE department= ?');
+    const sql= 'SELECT fullName FROM faculty WHERE department = ?';
+    try{
+        const [rows] = await pool.execute(sql, [department]);
     return rows;
+    }catch(error){
+        console.log(error);
+    }
+    
 }
 
 //getting faulty usernames from department
 async function getUsernamesDepartment ( department){
-    const [rows, fields] = await pool.execute
-    ('SELECT username FROM faculty WHERE  department= ?');
+    const sql= 'SELECT username FROM faculty WHERE department = ?';
+    try{
+        const [rows] = await pool.execute(sql, [department]);
     return rows;
+    }catch(error){
+        console.log(error);
+    }
 }
 
 //get department name 
