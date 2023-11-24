@@ -108,6 +108,84 @@ async function getCourseName(courseCode) {
     }
 }
 
+async function saveActionPlan(
+    statement,
+    resources,
+    startDate,
+    endDate,
+    responsibility,
+    courseCode,
+    sectionNumber,
+    semester,
+    CLONumber
+) {
+    const sql = `
+        INSERT INTO action_plan 
+        (statement, resources, startDate, endDate, responsibility, courseCode, sectionNumber, semester, CLONumber)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        statement = VALUES(statement),
+        resources = VALUES(resources),
+        startDate = VALUES(startDate),
+        endDate = VALUES(endDate),
+        responsibility = VALUES(responsibility);
+    `;
+
+    const values =
+     [
+        statement,
+        resources,
+        startDate,
+        endDate,
+        responsibility,
+        courseCode,
+        sectionNumber,
+        semester,
+        CLONumber
+    ];
+
+    try {
+        console.log("SQL QUERY: ", sql);
+        console.log("values:", values)
+        const [result] = await pool.execute(sql, values);
+        console.log('Action plan saved:', result);
+    } catch (error) {
+        // Handle error appropriately (e.g., log or throw an exception)
+        console.error('Error in saveActionPlan:', error);
+        throw error;
+    }
+}
+
+
+async function saveDirectCLOPerSection(CLONumber, courseCode, sectionNumber, percentageOfCLOAchievement, semester){
+    const sql = `
+    INSERT INTO directclo_per_section 
+    (CLONumber, courseCode, sectionNumber, percentageOfCLOAchievment, semester)
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+    percentageOfCLOAchievment = VALUES(percentageOfCLOAchievment);
+`;
+
+    const values = [
+        CLONumber,
+        courseCode,
+        sectionNumber,
+        percentageOfCLOAchievement,
+        semester
+    ];
+
+    try {
+        const [result] = await pool.execute(sql, values);
+        console.log('Direct CLO per section saved:', result);
+    } catch (error) {
+        console.error('Error in saveDirectCLOPerSection:', error);
+        throw error;
+    }
+}
+
+
+
+
   //todo: for action plan: delete and update and save!!!
 
   module.exports = {
@@ -116,5 +194,7 @@ async function getCourseName(courseCode) {
     getCategoryCounts,
     getDepartments,
     getIndirectPerCLOPerSection,
-    getActionPlans
+    getActionPlans,
+    saveActionPlan,
+    saveDirectCLOPerSection
   }

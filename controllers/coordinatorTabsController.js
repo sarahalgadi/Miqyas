@@ -1,5 +1,5 @@
 const ccModel = require('../models/cc');
-
+//todo: saving assessment.. where to go after??!
 const courses = [
     { code: 'COURSE001', name: 'Course 1', term: "223"},
     { code: 'COURSE002', name: 'Course 2', term:"224"},

@@ -41,10 +41,8 @@ app.get('/',  async (req, res)=>{
 app.use('/', courseReportRoutes);//editing courseReport routes.. for coordinator.
 app.use('/', cc); //this is just for cc.ejs aka the page where there are tabs for a chosen coordinated course
 app.use('/', sectionReportRoutes);
-app.post('/save-section-report', (req, res)=>{
-  console.log(req.body.allActionPlanData);
-  console.log(req.body.calculatedResults);
-})
+
+
 
 app.use((req, res)=>{
   res.status(404).render('404error');

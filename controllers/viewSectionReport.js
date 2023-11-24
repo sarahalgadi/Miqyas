@@ -1,7 +1,10 @@
 const sectionReportModel = require('../models/sectionReport');
-//todo: error handling here as well .. and saving course section report.. what happens then?
-//fixme: saving report.. i did not redirect anywhere.. we need to figure this out.
-async function editSectionReport(req, res){
+//todo: error handling..
+//same controller as edit section report but without saving.. im just doing this bc viewing is in a separate ejs file.
+//todo: we need to add a code part which checks if there are entries in directclo_per_section
+//todo: because that table is the only proof we have that the instructor submitted the final section report.. 
+//todo: if the instructor did not.. we should render a page that says "no section report submitted!"
+async function viewSectionReport(req, res){
     const {courseCode, term, section} = req.params;
 
     try{
@@ -17,6 +20,7 @@ async function editSectionReport(req, res){
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
         const condition = true; // this is for the submit button..explanation in the function below (per deparmtnet)
         const actionPlans = await sectionReportModel.getActionPlans(courseCode, term, section);
+        console.log(actionPlans);
 
         // Separate data into arrays for rendering in the histogram script.. inefficient but i had to hardcode this to make it work.
         const [clohisto, indirecthisto, directhisto] = prepareHistogramData(
@@ -26,7 +30,7 @@ async function editSectionReport(req, res){
           );
         console.log(resultsPerCLO);
         
-        res.render('editSectionReport',{
+        res.render('viewSectionReport',{
         title,
         courseCode,
         term,
@@ -55,10 +59,10 @@ async function editSectionReport(req, res){
 
 
 //this is for the route's filtering
-async function editSectionReportDepartment(req, res){
+async function viewSectionReportDepartment(req, res){
     const {courseCode, term, section, department} = req.params;
     if (department === 'All') {
-        return res.redirect(`/edit-section-report/${courseCode}/${term}/${section}`);
+        return res.redirect(`/view-section-report/${courseCode}/${term}/${section}`);
       }
     
 
@@ -85,7 +89,7 @@ async function editSectionReportDepartment(req, res){
             histo
           );
 
-        res.render('editSectionReport',{
+        res.render('viewSectionReport',{
         title,
         courseCode,
         term,
@@ -198,84 +202,14 @@ function calculateResultsPerCLO(categoryCounts) {
     return [clonumbers, indirectResults, directResults];
   }
 
-  async function saveSectionReport(req, res){
-
-    let {courseCode, term, section} = req.params;
-
-    section = parseInt(section);
-    
-    //saving action plan!
-
-    const actionPlanData = JSON.parse(req.body.allActionPlanData);
-    
-       for (const plan of actionPlanData) {
-        console.log("this is plan:", plan);
-        let statement = plan.statement;
-        let resources = plan.resources;
-        let startDate = plan.startDate;
-        let endDate = plan.endDate;
-        let responsible = plan.responsible;
-        let cloNumber = parseInt(plan.cloNumber);
-
-
-        // Check and handle undefined values
-         statement = statement !== undefined ? statement : "none";
-         resources = resources !== undefined ? resources : null;
-        startDate = startDate !== undefined && startDate !== "" ? startDate : null;
-         endDate = endDate !== undefined && endDate !== "" ? endDate : null;
-        responsible = responsible !== undefined ? responsible : null;
-
-        try {
-            await sectionReportModel.saveActionPlan(
-                statement,
-                resources,
-                startDate,
-                endDate,
-                responsible,
-                courseCode,
-                section,
-                term,
-                parseInt(cloNumber)
-            );
-        } catch (error) {
-            console.error('Error saving action plan:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-        }
-    }
-    //saving directclo_per_section
-
-    const calculatedResults = JSON.parse(req.body.calculatedResults);
-    for (const cloNumber in calculatedResults) {
-        const cloData = calculatedResults[cloNumber];
-     try {
-        await sectionReportModel.saveDirectCLOPerSection( ////fixme: AFTER SAVING REPORT, what to render?????  we need to discuss this
-            parseInt(cloNumber),
-            courseCode,
-            section,
-            cloData.results.toFixed(2), 
-            term
-        );
-    } catch (error) {
-        // Handle the error appropriately (e.g., log or send an error response)
-        console.error('Error saving direct CLO per section:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-        return; // Stop processing further if an error occurs
-    }
-
-}
-   
-    }
-
-
-    
+     
 
 
 
   
 
 module.exports = {
-    editSectionReport,
-    editSectionReportDepartment,
-    saveSectionReport
+    viewSectionReport,
+    viewSectionReportDepartment,
+    
 }

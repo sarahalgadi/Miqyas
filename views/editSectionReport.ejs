@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!--todo: more client side error validation might be needed here.. idk.. like statement should not be empty?-->
 <head>
     <%- include("./partials/head.ejs") %>
     <link rel="stylesheet" href="/stylesheets/courseReport.css">
@@ -126,7 +126,7 @@
 
 
     <!-- ill start the form here.. input type hidden for cloresults.. this is to save it in direct clo per section-->
-    <form id="sectionForm" action="/save-section-report" method="POST">
+    <form id="sectionForm" action="/save-section-report/<%= courseCode %>/<%= term %>/<%= section %>"  method="POST">
         <input type="hidden" name="calculatedResults" value="<%= JSON.stringify(resultsPerCLO) %>">
         <!--Instructor chooses action plan!-->
         <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
