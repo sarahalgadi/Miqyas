@@ -21,17 +21,10 @@ const chairModel = require('./models/chairpersonModel.js');
 
 
 app.get('/',async(req,res)=>{
-  const department = "Software Engineering";
-  const semester = 223; //we're gonna get them as req.params later.
-  try{
-    const facultyNames = await chairModel.getFullNameDepartment(department);
-    const userNames = await chairModel.getUsernamesDepartment(department);
-    res.render('roleAssign',{facultyNames, userNames, department, semester})
-  } catch(error){
-    console.error(error);
-    res.render('error', {message: "course not found!"});
-}});
+ res.render('index');
+});
 
+app.use('/', chairRouter);
 
 
 
