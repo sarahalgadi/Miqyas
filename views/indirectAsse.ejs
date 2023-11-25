@@ -11,86 +11,20 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-    <style>
-        .navbar-nav {
-            margin-left: 60%;
-        }
+    <link rel="stylesheet" href="../public/stylesheets/indirectAsses.css">
+    <link rel="stylesheet" href="../public/stylesheets/style.css">
 
-        .navbar-nav .nav-link {
-            color: #15416e;
-            margin: 1rem;
-            font-size: large;
-            font: weight 500px;
-        }
-
-        .custom-button {
-            background-color: #15416e;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-family: Arial, sans-serif;
-            margin: 0.5rem;
-            margin-left: 7%;
-            width: 250px;
-            text-decoration: none;
-        }
-
-        .custom-button:hover {
-            background-color: #507eac;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        #project,
-        #majors,
-        #final {
-            padding: 4rem;
-            font-weight: 500;
-            margin-left: 0;
-        }
-
-        .nav-link:hover {
-            color: #15416e;
-            background-color: #fff;
-        }
-
-        .nav-link {
-            background-color: #15416e;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
     <header>
-
-        <nav class="navbar navbar-expand-md p-4" id="navbar">
-            <div class="container-fluid">
-                <a class="navbar-brand mx-auto">
-                    <img src="images/miqyasLogo.png" alt="logo" style="height: auto; width: 200px; margin-left:35%;">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="nav">
-                    <ul class="nav navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" style="background-color: white; color: #15416e;"
-                                href="/homeCI.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="background-color: white; color: #15416e;"
-                                href="/login.html">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <%-include(". /partials/nav.ejs")%>
     </header>
     <hr>
     <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
         <div class="col-md-8">
+
+            <!-- course here should be changed according to ci choice of course -->
             <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">SE322: Software Design & Architecture - Section
                 871</h2>
             <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Indirect Assessment</h2>
@@ -105,50 +39,96 @@
     <input type="file" id="myFileInput" style="display: none;">
     <button class="btn custom-button" onclick="showFileInput()">Upload .csv</button>
 
+    <!-- new code here: -->
+
+    <!-- allow upload indirect Assessment allow only .csv file  -->
+    <input type="file" id="indirectAsses" accept=".csv">
+
+    <!-- display data of  the uploaded csv in the website  -->
     <div class="container" id="result" style="display: none;">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>CLO Number</th>
+                    <th>CLO</th>
                     <th>Not Satisfied</th>
                     <th>Barely Satisfied</th>
-                    <th>Satisfied</th>
+                    <th>Somewhat Satisfied</th>
                     <th>Adequetly Satisfied</th>
                     <th>Fully Satisfied</th>
-                    <th>Achievement Results</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>CLO 1</td>
-                    <td>0</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>4</td>
-                    <td>8</td>
-                    <td>70%</td>
-                </tr>
-                <tr>
-                    <td>CLO 2</td>
-                    <td>0</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>4</td>
-                    <td>8</td>
-                    <td>70%</td>
-                </tr>
+            <tbody id="courseExitSurvey">
+                <!-- data rows will be fulled automatically acoording to the uploaded csv -->
             </tbody>
         </table>
-    </div>
-    <script>
-        function showFileInput() {
-            var fileInput = document.getElementById('myFileInput');
-            fileInput.click();
+        </div>
+            <script>
+                //fetching data
+                async function fetchData() {
+                    const response = await fetch('/data');
+                    const data = await response.json();
+                    const tbody = document.getElementById('courseExitSurvey').getElementsByTagName('tbody')[0];
+                    //create rows
+                    data.forEach(row => {
+                        const newRow = document.createElement('tr');
+                        Object.values(row).forEach(cellValue => {
+                            const newCell = document.createElement('td');
+                            newCell.textContent = cellValue;
+                            newRow.appendChild(newCell);
+                        });
+                        tableBody.appendChild(newRow);
 
-            var resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-        }
-    </script>
+                    });
+
+                }
+            </script>
+
+<!--  Here is the old prototype code: 
+
+            <div class="container" id="result" style="display: none;">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>CLO Number</th>
+                            <th>Not Satisfied</th>
+                            <th>Barely Satisfied</th>
+                            <th>Satisfied</th>
+                            <th>Adequetly Satisfied</th>
+                            <th>Fully Satisfied</th>
+                            <th>Achievement Results</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CLO 1</td>
+                            <td>0</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>8</td>
+                            <td>70%</td>
+                        </tr>
+                        <tr>
+                            <td>CLO 2</td>
+                            <td>0</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>8</td>
+                            <td>70%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                function showFileInput() {
+                    var fileInput = document.getElementById('myFileInput');
+                    fileInput.click();
+
+                    var resultDiv = document.getElementById('result');
+                    resultDiv.style.display = 'block';
+                }
+            </script> -->
 </body>
 
 </html>
