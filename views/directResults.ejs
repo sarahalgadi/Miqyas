@@ -24,7 +24,7 @@
 
     <!--direct assessment results.. same as first table in section report-->
     <div class="container">
-        <h3 style="font-family:Arial, Helvetica, sans-serif">CLO Achievement Results per CLO</h3>
+        <h3 style="font-family:Arial, Helvetica, sans-serif">Overall CLO Achievement Results per CLO</h3>
         <table class="table table-bordered">
           <thead>
             <tr>
@@ -54,36 +54,53 @@
               
           </tbody>
         </table>
-      
+        </div>
+      <br>
        
 
     <!--student table-->
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Student ID</th>
-                <th>Full Name</th>
-                <% CLOnumbers.forEach(clonumber => { %>
-                    <th>CLO <%= clonumber %></th>
-                <% }); %>
-            </tr>
-        </thead>
-        <tbody>
-            <% studentInfo.forEach(student => { %>
+    <div class="container">
+        <h3 style="font-family:Arial, Helvetica, sans-serif">Student Achievements Per CLO:</h3>
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td><%= student.studentID %></td>
-                    <td><%= student.firstName %> <%= student.lastName %></td>
+                    <th>Student ID</th>
+                    <th>Full Name</th>
                     <% CLOnumbers.forEach(clonumber => { %>
-                        <td>
-                            <% const cloResult = studentTotal.find(result => result.studentID === student.studentID && result.CLONumber === clonumber); %>
-                            <%= cloResult ? cloResult.averageCloAchievement.toFixed(2) : '0.00' %>
-                        </td>
+                        <th>CLO <%= clonumber %></th>
                     <% }); %>
                 </tr>
+            </thead>
+            <tbody>
+                <% studentInfo.filter(student => studentTotal.some(result => result.studentID === student.studentID)).forEach(student => { %>
+                    <tr>
+                        <td><%= student.studentID %></td>
+                        <td><%= student.firstName %> <%= student.lastName %></td>
+                        <% CLOnumbers.forEach(clonumber => { %>
+                            <td>
+                                <% const cloResult = studentTotal.find(result => result.studentID === student.studentID && result.CLONumber === clonumber); %>
+                                <%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) + '%' : '0.00 %' %>
+                            </td>
+                        <% }); %>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        
+
+    <div class="dropdown">
+        <button type="button" class="btn custom-button dropdown-toggle" style="margin-left: 0;" data-bs-toggle="dropdown">
+          Filter
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>/All">All</a></li>
+            <% departments.forEach(department => { %>
+              <li><a class="dropdown-item" href="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>/<%= department %>"><%= department %></a></li>
             <% }); %>
-        </tbody>
-    </table>
+          </ul>
+        </div>
+    </div>
+          
     
 
 </body>
