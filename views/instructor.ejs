@@ -11,4 +11,23 @@
             </tr>
         <% }); %>
     </table>
+
+
+    <h1>Student Information</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Full Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% studentInfo.forEach(student => { %>
+                <tr>
+                    <td><%= student.studentID %></td>
+                    <td><%= student.firstName %> <%= student.lastName %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
 </html>

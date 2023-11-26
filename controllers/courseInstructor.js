@@ -2,7 +2,7 @@ const courseInstructorModel = require('../models/courseInstructor');
 
 
 async function getGradesPage(req, res) {
-    const {courseCode, term} = req.params;
+    const {courseCode, term, section} = req.params;
 
     const directAssessment = await courseInstructorModel.getDirectAssessmentTypes(courseCode, term);
     const assignedWeights = {};
@@ -12,7 +12,9 @@ async function getGradesPage(req, res) {
         assignedWeights[type] = weight;
     });
 
-    res.render('instructor',  {assignedWeights});
+    const studentInfo = await courseInstructorModel.getStudentInfo(courseCode, term, section);
+
+    res.render('instructor',  {assignedWeights, studentInfo});
 }
 
 module.exports = {
