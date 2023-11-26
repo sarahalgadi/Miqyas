@@ -8,6 +8,8 @@
   <title>Faculty List</title>
 </head>
 <body>
+
+  <!--{facultyNames,  department, semester-->
     <div class="container">
         <h1><%= department %> Department Faculty Memebers</h1>
         <table class="table">
@@ -20,14 +22,20 @@
             </tr>
           </thead>
           <tbody>
-            <% for (facultyName in facultyNames) { %>
-              <tr>
-                <td><%= facultyName %></td>
-               
-                <td>checkboxes</td>
-                <td><button class="btn btn-primary">Button</button></td>
-              </tr>
-            <% } %>
+            <table>
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% facultyNames.forEach(function(faculty) { %>
+                    <tr>
+                      <td><%= faculty %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
           </tbody>
         </table>
       </div>
