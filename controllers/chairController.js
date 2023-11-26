@@ -2,8 +2,8 @@ const chairModel = require('../models/chairpersonModel.js');
 
 
 async function getFacultyFromDepartment (req,res) {
-  const department = "Software Engineering";
-  const semester = 223; //we're gonna get them as req.params later.
+  const department = req.params.department;
+  const semester = req.params.term; 
   try{
     const facultyNames = await chairModel.getFullNameDepartment(department);
     const userNames = await chairModel.getUsernamesDepartment(department);
