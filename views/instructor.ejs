@@ -1,0 +1,14 @@
+<html>
+    <table border="1">
+        <tr>
+            <th>Project Type</th>
+            <th>Weight</th>
+        </tr>
+        <% Object.keys(assignedWeights).forEach(type => { %>
+            <tr>
+                <td><%= type %></td>
+                <td><%= assignedWeights[type] %></td>
+            </tr>
+        <% }); %>
+    </table>
+</html>

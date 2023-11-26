@@ -19,6 +19,7 @@ const courseReportRoutes = require('./routes/courseReportRoutes');
 const cc = require('./routes/cc');
 const ccModel = require('./models/cc');
 const sectionReportRoutes = require('./routes/sectionReport');
+const courseInstructorRoutes = require('./routes/courseInstructor');
 
 
 //specifying the port
@@ -37,7 +38,7 @@ app.get('/',  async (req, res)=>{
 });
 
 //todo: for controllers: error handling + agree on where res should go after any info is saved!
-
+app.use('/', courseInstructorRoutes);
 app.use('/', courseReportRoutes);//editing courseReport routes.. for coordinator.
 app.use('/', cc); //this is just for cc.ejs aka the page where there are tabs for a chosen coordinated course
 app.use('/', sectionReportRoutes);
