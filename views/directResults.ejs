@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head.ejs") %>
+    <link rel="stylesheet" href="/stylesheets/directResults.css">
+</head>
+
+<body>
+    <%- include('./partials/nav.ejs')%>
+    <hr>
+    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+        <div class="col-md-8">
+            <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;"><%= courseCode %>: <%= courseName %> - Section
+                <%= section %></h2>
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Direct Assessment: Results</h2>
+        </div>
+        <div class="col-md-4">
+            <h2 style="font-weight: 600; margin-top: 1rem; margin-left: 20%; padding: 1rem; font-size: x-large;">Term
+                <%= term %></h2>
+        </div>
+    </div>
+
+
+    <!--direct assessment results.. same as first table in section report-->
+    <div class="container">
+        <h3 style="font-family:Arial, Helvetica, sans-serif">CLO Achievement Results per CLO</h3>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>CLO Number</th>
+              <th>CLO Description</th>
+              <th>BE</th>
+              <th>DE</th>
+              <th>ME</th>
+              <th>AE</th>
+              <th>Results</th>
+            </tr>
+          </thead>
+          <tbody>
+                <% for (let i = 0; i < CLOnumbers.length; i++) { %>
+                  <tr>
+                    <td>CLO <%= CLOnumbers[i] %></td>
+                    <td><%= CLOstatements[i] %></td>
+                    <!-- PER CATEGORY INFO -->
+                    <% for (let category of [0, 1, 2, 3]) { %>
+                      <% const categoryData = categoryCounts.find(data => parseInt(data.CLONumber) === parseInt(CLOnumbers[i]) && parseInt(data.category) === parseInt(category)); %>
+                      <td><%= categoryData ? categoryData.studentCount : 0 %></td>
+                    <% } %>
+                    <!-- Display results for each CLO -->
+                    <td><%= resultsPerCLO[CLOnumbers[i]] ? resultsPerCLO[CLOnumbers[i]].results.toFixed(2) : 0 %>%</td>
+                  </tr>
+                <% } %>
+              
+          </tbody>
+        </table>
+      
+       
+
+    <!--student table-->
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Full Name</th>
+                <% CLOnumbers.forEach(clonumber => { %>
+                    <th>CLO <%= clonumber %></th>
+                <% }); %>
+            </tr>
+        </thead>
+        <tbody>
+            <% studentInfo.forEach(student => { %>
+                <tr>
+                    <td><%= student.studentID %></td>
+                    <td><%= student.firstName %> <%= student.lastName %></td>
+                    <% CLOnumbers.forEach(clonumber => { %>
+                        <td>
+                            <% const cloResult = studentTotal.find(result => result.studentID === student.studentID && result.CLONumber === clonumber); %>
+                            <%= cloResult ? cloResult.averageCloAchievement.toFixed(2) : '0.00' %>
+                        </td>
+                    <% }); %>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    
+
+</body>
