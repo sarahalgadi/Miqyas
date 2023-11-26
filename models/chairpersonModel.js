@@ -2,7 +2,7 @@ const pool = require('../database');
 
 //getting faulty name in the department
 async function getFullNameDepartment ( department){
-    const sql= 'SELECT fullName FROM faculty WHERE department = ?';
+    const sql= 'SELECT fullName, username FROM faculty WHERE department = ?';
     try{
         const [rows] = await pool.execute(sql, [department]);
     return rows;

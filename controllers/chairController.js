@@ -6,8 +6,9 @@ async function getFacultyFromDepartment (req,res) {
   const semester = req.params.term; 
   try{
     const facultyNames = await chairModel.getFullNameDepartment(department);
-    const userNames = await chairModel.getUsernamesDepartment(department);
-    res.render('roleAssign',{facultyNames, userNames, department, semester})
+    //const userNames = await chairModel.getUsernamesDepartment(department);
+    console.log(facultyNames);
+    res.render('roleAssign',{facultyNames, department, semester})
   } catch(error){
     console.error(error);
     res.render('error', {message: "course not found!"});
