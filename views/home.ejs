@@ -1,9 +1,20 @@
-<p> it worked.. <%= user.username %></p>
-
 
 <head>
-    <%- include("./partials/head.ejs") %>;
-    <link rel="stylesheet" href="/stylesheets/cc.css">
+    <%- include("./partials/head.ejs") %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/courseCards.css">
+    <style>
+        #welcome {
+            margin: 4rem;
+            margin-left: 4rem;
+            font-size: 18px;
+        }
+
+        h2 {
+            font-size: 30px;
+            font-weight: 600;
+        }
+    </style>
  </head>
  
  <body>
@@ -11,12 +22,82 @@
      <hr>
  
      <div>
-         <div class="row container-fluid">
-             <div class="col-md-8">
-                 <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">Academic terms</h1>
-             </div>
-             <div class="col-md-4">
-                 <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Current term: <%= term %></h2>
-             </div>
-         </div>
-     </div>
+        <table id="welcome" class="table table-borderless">
+            <tr>
+                <td>
+                    <h2>Welcome, <%= user.fullName %> </h2>
+                </td>
+                <td><strong>Term:</strong> <%= term %></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><strong>Department:</strong> <%= user.department %></td>
+            </tr>
+
+        </table>
+    </div>
+
+
+    <!--if instructor.. course cards for current term show here.-->
+    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Courses: </h2>
+    </div>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="course-cards">
+                <% if (courses && courses.length>0) { %>
+                    <% courses.forEach(function (course) { %>
+                        <div class="card">
+                            <h2 class="card-title">
+                                <%= course.courseCode %>: <%= course.courseName %>
+                            </h2>
+                            <div class="card-body">
+                                <strong> Section: <%= course.sectionNumber %> </strong>
+                                <button class="btn custom-button" href="#" style="width: 100%;">View Section Details</button>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <h2>"You're currently not teaching courses this term."</h2>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+
+    <!--if coordinator-->
+
+    <% if (userRoles.includes('coordinator') && coordinatedCourses && coordinatedCourses.length > 0) { %>
+        <div class="row container-fluid" style="font-family: Arial, Helvetica, sans-serif">
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Coordinated Courses: </h2>
+        </div>
+    
+        <div class="container mt-4">
+            <% coordinatedCourses.forEach(function(coordinatedCourse) { %>
+                <div class="card course-card col-5">
+                    <div class="card-header course-card-header">
+                        Coordinated Course
+                    </div>
+                    <div class="card-body">
+                        <strong><%= coordinatedCourse.courseCode %>: <%= coordinatedCourse.sectionNumber %></strong>
+                        <br>
+                        <span><%= coordinatedCourse.courseName %></span>
+                        <br>
+                        <hr>
+                        <a class="custom-button" href="cc.html">View Course</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+    
+
+    <!--if chairperson-->
+    
+
+    <!--if dcc-->
+
+    <!--if quality assurance-->
+    
+
+
