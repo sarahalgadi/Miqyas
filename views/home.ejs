@@ -1,0 +1,22 @@
+<p> it worked.. <%= user.username %></p>
+
+
+<head>
+    <%- include("./partials/head.ejs") %>;
+    <link rel="stylesheet" href="/stylesheets/cc.css">
+ </head>
+ 
+ <body>
+     <%- include('./partials/nav.ejs')%>
+     <hr>
+ 
+     <div>
+         <div class="row container-fluid">
+             <div class="col-md-8">
+                 <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;">Academic terms</h1>
+             </div>
+             <div class="col-md-4">
+                 <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Current term: <%= term %></h2>
+             </div>
+         </div>
+     </div>
