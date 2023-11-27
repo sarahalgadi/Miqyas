@@ -17,6 +17,7 @@
     <div class="container">
         <h1 style="background-color: #15416e; height: 5rem;color: white; padding: 20px; font-family: Arial, Helvetica, sans-serif; font-size: 25px;">
           <%= department %> Department Faculty Members</h1>
+        <form action="/save-roles/<%= semester %>" method="post">
         <table class="table  table-bordered  table-striped table-hover" >
           <thead>
             <tr>
@@ -31,59 +32,22 @@
                 <td class="col"><%= faculty.fullName %></td>
                 <td class="col"><%= faculty.username %></td>
                 <td class="col">
-                   <label>
-                  <input type="checkbox" name="dccCheckbox"> DCC
+                  <label>
+                    <input type="checkbox" name="department curriculum committee" value="<%= faculty.username %>"> Curriculum Committee
                   </label>
                   <br>
                   <label>
-                  <input type="checkbox" name="qaCheckbox"> QA
-                  </label></td>
+                    <input type="checkbox" name="quality assurance" value="<%= faculty.username %>"> Qaulity Assurance
+                  </label>
+                </td>
               </tr>
             <% }); %>
           </tbody>
         </table>
-        <form action="/save-roles/<%= department %>/<%= semester %>/username" method="post">
           <button type="submit" class="btn btn-primary " style="background-color: #15416e;">Save Roles</button>
        </form>
       </div>
-  <!--
-  <script>
-    var modalTitleElement = document.getElementById("modalTitle");
-    var facultyNameInput = document.getElementById("facultyNameInput");
-  
-    $('#roleModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var facultyName = button.data('name');
-       
-        modalTitleElement.innerHTML = "Assign role to " + facultyName;
-       
-        // Set the faculty name in the form input
-        facultyNameInput.value = facultyName;
-    });
-  
-    function assignRoles() {
-        // Assuming you have checkboxes for role selection
-        var selectedRoles = document.querySelectorAll('input[name="roles[]"]:checked');
-       
-        // Create an array to store the selected roles
-        var rolesArray = [];
-        selectedRoles.forEach(function (role) {
-            rolesArray.push(role.value);
-        });
-  
-        // Create a hidden input field in the form and set its value
-        var rolesInput = document.createElement("input");
-        rolesInput.setAttribute("type", "hidden");
-        rolesInput.setAttribute("name", "selectedRoles");
-        rolesInput.setAttribute("value", rolesArray.join(',')); // Join roles with a comma or any delimiter
-        document.getElementById("roleForm").appendChild(rolesInput);
-  
-        // Submit the form
-        document.getElementById("roleForm").submit();
-    }
-  </script>
-</body>-->
- 
+  </body>
 </html> 
   
 
