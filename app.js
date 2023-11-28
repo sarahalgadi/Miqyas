@@ -1,7 +1,8 @@
 // i only kept things i'm using; it was cluttering my brain :)
 var path = require('path');
 var express = require('express');
-const database = require('./config/database')
+const bodyParser = require('body-parser');
+const pool = require('./database')
 
 //importing routers
 const dccRouter = require('./routes/dccRouter');
@@ -19,14 +20,12 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-// Passing database to the router file
-app.locals.database = database;
-
-//handling and rendering dcc route
+//handling and rendering dcc and ci routes
 app.use('/DCC', dccRouter);
 app.use('/assessments', ciRouter);
-
 
 const port = process.env.PORT;
 app.listen(port, () => {

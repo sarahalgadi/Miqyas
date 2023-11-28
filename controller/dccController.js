@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.get('/', (request, response) => {
   // accessing database
-  const database = request.app.locals.database;
+//
 
 
   //need a query here to display the courses into cards
