@@ -40,7 +40,7 @@
 
     <!--if instructor.. course cards for current term show here.-->
     <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
-        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Courses: </h2>
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Current Courses: </h2>
     </div>
     <div class="container mt-4">
         <div class="card">
@@ -93,11 +93,49 @@
     
 
     <!--if chairperson-->
-    
+
+    <% if (userRoles.includes('chairperson')) { %>
+
+    <div class="row container-fluid" style="font-family: Arial, Helvetica, sans-serif">
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Chairperson Activities: </h2>
+    </div>
+
+    <div class="container">
+        <button class="btn custom-button" href="#" style="width: 100%;">View Department Reports</button>
+        <button class="btn custom-button" href="#" style="width: 100%;">Assign Quality Assurance and Department Curriculum Committee Roles</button>
+        <button class="btn custom-button" href="#" style="width: 100%;">Assign Coordinator Roles</button>
+    </div>
+
+    <% } %>
+
+
+
 
     <!--if dcc-->
+    <% if (userRoles.includes('DCC')) { %>
+
+    <div class="row container-fluid" style="font-family: Arial, Helvetica, sans-serif">
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Department Curriculum Committee Activities: </h2>
+    </div>
+
+    <div class="container">
+        <button class="btn custom-button col-3" href="#" style="width: 100%;">View Department Reports</button>
+        <button class="btn custom-button col-3" href="#" style="width: 100%;">Create or Update Course Learning Outcomes</button>
+    </div>
+
+    <% } %>
 
     <!--if quality assurance-->
-    
 
+    <% if (userRoles.includes('QA')) { %>
+    
+    <div class="row container-fluid" style="font-family: Arial, Helvetica, sans-serif">
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Quality Assurance Activities: </h2>
+    </div>
+
+    <div class="container">
+        <button class="btn custom-button col-3" href="#" style="width: 100%;">View Department Reports</button>
+    </div>
+
+    <% } %>
 
