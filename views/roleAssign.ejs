@@ -10,16 +10,47 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="../stylesheets/style.css">
   <title>Faculty List</title>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      background-color: #15416e;
+      color: white;
+      padding: 20px;
+      font-size: 25px;
+    }
+    table {
+      background-color: white;
+    }
+    th {
+      background-color: #15416e;
+      color: white;
+    }
+    td {
+      vertical-align: middle;
+    }
+    .btn-primary {
+      background-color: #15416e;
+      border-color: #15416e;
+    }
+
+  </style>
 </head>
 <body>
-
-  <!--{facultyNames,  department, semester-->
+  <%-include("./partials/nav.ejs")%>
+  
     <div class="container">
-        <h1 style="background-color: #15416e; height: 5rem;color: white; padding: 20px; font-family: Arial, Helvetica, sans-serif; font-size: 25px;">
-          <%= department %> Department Faculty Members</h1>
+        <h1 > <%= department %> Department Faculty Members</h1>
         <form action="/save-roles/<%= semester %>" method="post">
         <table class="table  table-bordered  table-striped table-hover" >
-          <thead>
+          <thead >
             <tr>
               <th scope="col">Faculty Name</th>
               <th scope="col">Username</th>
@@ -44,7 +75,7 @@
             <% }); %>
           </tbody>
         </table>
-          <button type="submit" class="btn btn-primary " style="background-color: #15416e;">Save Roles</button>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" >Save Roles</button>
        </form>
       </div>
   </body>

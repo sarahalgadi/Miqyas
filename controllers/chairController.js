@@ -40,6 +40,8 @@ async function saveRoles(req, res){
   }
 };
 
+
+
 //------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -50,11 +52,14 @@ async function saveRoles(req, res){
 async function getFacultyFromCollege(req,res) {
   let college = req.params.college;
   const semester = req.params.term;
-  console.log(college);
+  const department = req.params.department;
   try{
+
   const names = await chairModel.getFullNameCollege(college);
   const courses= await chairModel.getCourseCode(college);
-  res.render('assignCoordinator', {names, college, courses, semester});
+  const coordinator = await chairModel.getCurrentCoordinator(department);//for the first table
+
+  res.render('assignCoordinator', {names, college, courses, semester, department, coordinator});
   } catch(error){
     console.error(error);
     res.render('error', {message: "course not found!"});
@@ -64,7 +69,7 @@ async function getFacultyFromCollege(req,res) {
 async function saveCoordinators(req, res){
   const semester = req.params.semester;
   const formData = req.body;
-  console.log(formData);
+ 
   
   const usernames = formData.username;
   const courses = formData.course;
@@ -84,6 +89,7 @@ async function saveCoordinators(req, res){
 }};
 
 
+
 module.exports = {
-    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators
+    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,
 }

@@ -9,14 +9,60 @@
   crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="../stylesheets/style.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      background-color: #15416e;
+      color: white;
+      padding: 20px;
+      font-size: 25px;
+    }
+    table {
+      background-color: white;
+    }
+    th {
+      background-color: #15416e;
+      color: white;
+    }
+    td {
+      vertical-align: middle;
+    }
+    .btn-primary {
+      background-color: #15416e;
+      border-color: #15416e;
+    }
+
+  </style>
   <title>Faculty List</title>
 </head>
 <body>
-
- 
+  <%-include("./partials/nav.ejs")%>
     <div class="container">
-        <h1 style="background-color: #15416e; height: 5rem;color: white; padding: 20px; font-family: Arial, Helvetica, sans-serif; font-size: 25px;">
-          <%= college %>  Faculty Members</h1>
+        <h1><%= college %>  Faculty Members</h1>
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Coordinator</th>
+              <th scope="col">Course</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% coordinator.forEach(function(c) { %>
+            <tr>
+              <td class="col"><%= c.fullName %></td>
+              <td class="col"><%= c.courseCode %></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
           <form method="post" action="/save-roles/<%= semester %>">
             <table class="table table-bordered table-striped table-hover">
               <thead>
@@ -53,12 +99,14 @@
             <div id="errorText">
 
             </div>
-            <button id="submitButton" type="submit" class="btn btn-primary" style="background-color: #15416e;">Save Roles</button>
+            <button id="submitButton" type="submit" class="btn btn-primary" >Save Roles</button>
           </form>
       </div>
       </body>
 </html>
 <script>
+
+  //----------------------------------------------------------------------------------------------------------
   // Get all the checkbox and dropdown list elements
   const coordinatorCheckboxes = document.querySelectorAll('[name="username"]');
   const courseDropdowns = document.querySelectorAll('[name="course"]');
@@ -82,6 +130,7 @@
     });
   });
 //---------------------------------------------------------------------------------------------------------
+//to ensure a course is only selected once
   function handleCourseChange(event) {
     const select = event.target;
     const selectedCourse = select.value;

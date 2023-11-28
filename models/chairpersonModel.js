@@ -23,11 +23,11 @@ async function addRoles ( username, role, semester){
     const [rows, fields] = await pool.execute
     ('INSERT INTO faculty_role (username, role, semester) VALUES (?,?,?) ON DUPLICATE KEY UPDATE role = VALUES(role)',[username, role,semester]);
     return rows;
-    //I dont know what to return if i am inserting into the databse
+    
 }
 
 //getting faulty name and useranme in the college FOR COORDINATOR
-// i think its  wrong needs to be revised
+
 async function getFullNameCollege ( college ){
     const [rows, fields] = await pool.execute
     ('SELECT f.fullName,  f.username  FROM faculty f JOIN department d ON f.department = d.departmentName WHERE d.college = ?',[college]);
@@ -44,7 +44,13 @@ async function addCoordinatorRole ( courseCode, username,semester){
     const [rows, fields] = await pool.execute
     ('INSERT INTO coordinator (courseCode, username, semester) VALUES (?,?,?) ON DUPLICATE KEY UPDATE courseCode = VALUES(courseCode)',[courseCode,username,semester]);
     return rows;
-    //I dont know what to return if i am inserting into the databse
+    
 }
 
-module.exports ={getFullNameDepartment,getDepartment,addRoles,getFullNameCollege,addCoordinatorRole, getCourseCode };
+async function getCurrentCoordinator (department){
+    const [rows, fields] = await pool.execute
+    ('SELECT f.fullName, co.courseCode FROM coordinator co JOIN faculty f ON co.username = f.username JOIN course c ON co.courseCode = c.courseCode WHERE c.department = ? ',[department]);
+    return rows;
+}
+
+module.exports ={getFullNameDepartment,getDepartment,addRoles,getFullNameCollege,addCoordinatorRole, getCourseCode,getCurrentCoordinator };
