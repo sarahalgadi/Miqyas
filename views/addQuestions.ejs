@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("./partials/head.ejs")%>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="/stylesheets/addQuestions.css">
+</head>
+
+<body>
+    <%-include("./partials/nav.ejs")%>
+        <div class="row container-fluid">
+            <div class="col-md-8">
+                <!--Data needs to be retrieved here dynamically; figure out later-->
+                <h2><%= courseCode %>: <%= courseName %> - Section</h2>
+                <h2>Direct Assessment</h2>
+            </div>
+            <div class="col-md-4">
+                <!--Current term needs to be retrieved here dynamically-->
+                <h3>Term: <%= term %></h3>
+                <!--Add links here later-->
+                <a class="custom-button back">Back</a>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs" id="activityTabs" role="tablist">
+            <li class="nav-item">
+                <!--Tabs will be dynamically generated here based on the activities set by the course coordinator-->
+        </ul>
+
+        <div class="tab-content" id="activityTabContent">
+            <!--Tab panes will be dynamically generated here based on the activities set by the course coordinator-->
+        </div>
+
+        <!--Script will be taken out to its separate file-->
+        <script>
+
+            // Function to generate the table content for an activity
+            function generateTableContent(activityName) {
+                return `
+            <form action="/saveAssessment/<%= courseCode %>/<%= term %>" method="POST">
+            <table class="table table-bordered" id="activityTable">
+                            <thead>
+                                <tr>
+                                    <th style="border: none;">Number</th>
+                                    <th>Description</th>
+                                    <th>Weight</th>
+                                    <th>CLO Mapping</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="insertionPoint">
+                                <tr>
+                                    <td><input type="number" class="form-control" value="1" name="QNumber" readonly
+                                            style="border: none;"></td>
+                                    <td>
+                                        <textarea rows="1" name="description" class="form-control"></textarea>
+                                    </td>
+                                    <td><input type="number" name="weight" class="form-control"></td>
+                                    <td>
+                                        <select class="form-select" id="typeSelect" name="cloMapped" onchange="selectType()">
+                                            <!--Need to retrieve list of CLOs for course here; I'm using sample data-->
+                                            <option value="" selected>CLOs</option>
+                                            <option value="Knowledge">CLO 1</option>
+                                            <option value="Values">CLO 2</option>
+                                            <option value="Skills">CLO 3</option>
+                                        </select>
+                                    </td>
+                                    <td><button class="btn" style="background-color: #15416e;"
+                                            onclick="deleteRow(this)"><i class="fas fa-times"
+                                                style="color: white"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                            <!--Edit button links here later!!-->
+                            <div class="button-container">
+                                  <button id="addRowButton" class="btn custom-button addButton">Add Question/Deliverable</button>
+                                  <button type="button" id="saveButton" class="btn custom-button">Save</button>
+                                  <button id="inputGradesButton" class="btn custom-button" disabled>Input Grades</button>
+                            </div>
+                        </div>
+                </form>
+            `;
+            }
+            //---------functions for manipulating the table-------------
+            // Keep track of row counts for each tab
+            const tabRowCounts = {};
+            function addRow(button, tabIndex) {
+                // Prevent form submission
+                event.preventDefault();
+                // Initialize the count for this tab if it doesn't exist
+                if (!(tabIndex in tabRowCounts) || tabRowCounts[tabIndex] === 0) {
+                    tabRowCounts[tabIndex] = 2;
+                }
+
+                const activePane = button.closest('.tab-pane');
+                const table = activePane.querySelector('table');
+
+                // Insert a new row for the new CLO and add the HTML for the added cells
+                const ro w = table.insertRow(-1);
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                const cell5 = row.insertCell(4);
+
+                cell1.innerHTML = `<input type="number" name="QNumber" class="form-control" value="${tabRowCounts[tabIndex]}" readonly style="border: none;">`;
+                cell2.innerHTML = `<textarea rows="1" name="description" class="form-control"></textarea>`;
+                cell3.innerHTML = `<input type="number" name="weight" class="form-control">`;
+                cell4.innerHTML = `
+                    <select class="form-select" name="cloMapped" onchange="selectType()">
+                    <option value="" selected>CLOs</option>
+                    <option value="Knowledge">CLO 1</option>
+                    <option value="Values">CLO 2</option>
+                    <option value="Skills">CLO 3</option>
+                    </select>
+                    `;
+                cell5.innerHTML = `<button class="btn" style="background-color: #15416e;" onclick="deleteRow(this)"><i class="fas fa-times" style="color: white"></i></button>`;
+
+                // Increment the row count for this tab
+                tabRowCounts[tabIndex]++;
+                updateNumbers(table);
+            }
+
+
+            //handles deletion of row
+            function deleteRow(button) {
+                const activePane = button.closest('.tab-pane');
+                const table = activePane.querySelector('table');
+
+                const rowIndex = button.closest('tr').rowIndex;
+                table.deleteRow(rowIndex);
+
+                // Find the corresponding tab index for the row's table
+                const tabContent = document.getElementById('activityTabContent');
+                const index = Array.from(tabContent.children).indexOf(activePane);
+
+                // Decrement the row count for this tab
+                if (index in tabRowCounts) {
+                    tabRowCounts[index]--;
+                    updateNumbers(table);
+                }
+            }
+
+
+            function updateNumbers() {
+                const table = document.getElementById('activityTable');
+                const rows = table.getElementsByTagName('tr');
+                //updates the numbering of rows to accomodate changes
+                for (let i = 1; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName('td');
+                    cells[0].innerHTML = `<input type="number" class="form-control" value="${i}" readonly style="border: none;">`;
+                }
+            }
+            
+            //-----------------function for to generate panes for each tab--------------
+            function generateTabsAndPanes(activities) {
+                const tabList = document.getElementById("activityTabs");
+                const tabContent = document.getElementById("activityTabContent");
+
+                if (activities.length === 0) {
+                    // If no activities found, display a message
+                    tabContent.innerHTML = "<p>No activities have been set for this course. <br>Please inform the course coordinator.</p>";
+                } else {
+                    activities.forEach((activity, index) => {
+                        const tabId = `tab${index}`;
+                        const paneId = `pane${index}`;
+
+                        // Create tab link
+                        const tabLink = document.createElement("li");
+                        tabLink.setAttribute("class", "nav-item");
+                        tabLink.innerHTML = `
+                    <a class="nav-link ${index === 0 ? 'active' : ''}" id="${tabId}-tab" data-bs-toggle="tab" href="#${paneId}" role="tab" aria-controls="${paneId}" aria-selected="${index === 0 ? 'true' : 'false'}">
+                        ${activity}
+                    </a>
+                `;
+
+                        // Create tab pane
+                        const tabPane = document.createElement("div");
+                        tabPane.setAttribute("class", `tab-pane fade ${index === 0 ? 'show active' : ''}`);
+                        tabPane.setAttribute("id", paneId);
+                        tabPane.setAttribute("role", "tabpanel");
+                        tabPane.setAttribute("aria-labelledby", `${tabId}-tab`);
+                        tabPane.innerHTML = generateTableContent(activity.activityName); // Generate table content
+                        
+                        // Append tab link and pane to respective containers
+                        tabList.appendChild(tabLink);
+                        tabContent.appendChild(tabPane);
+                    });
+                }
+
+                // After creating all tabs and panes, attach event listeners to the 'Add' buttons
+                const addButtons = document.querySelectorAll(".addButton");
+                addButtons.forEach((button, index) => {
+                    button.addEventListener("click", function () {
+                        addRow(this, index); // Pass the button element and index when adding a row
+                    });
+                });
+            }
+
+            // Call the function to generate tabs and panes
+            generateTabsAndPanes(<%- JSON.stringify(activities) %>);
+
+            // Function to save the added questions
+            document.getElementById('saveButton').addEventListener('click', function () {
+                
+                // Enable the Input Grades button
+                document.getElementById('inputGradesButton').removeAttribute('disabled');
+            });
+        </script>
+</body>
+
+</html>
