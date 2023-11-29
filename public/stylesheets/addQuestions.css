@@ -1,0 +1,46 @@
+h2{
+    font-weight: 600;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+h3{
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-left: 20%;
+    padding: 1rem;
+    font-size: x-large;
+}
+
+.back{
+    margin-left: 25%;
+}
+
+.tab-content{
+    padding: 4rem;
+}
+#activityTabs .nav-link{
+    background-color: #15416e;
+    color: white;
+}
+#activityTabs .nav-link.active, #activityTabs .nav-link:hover {
+    background-color: white;
+    color: #15416e;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-button {
+    width: 200px;
+    padding: 1em;
+}
+.custom-button:disabled {
+    background-color: lightgrey;
+}
+#activityTabs{
+    margin: 2rem;
+}

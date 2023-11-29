@@ -19,6 +19,7 @@ async function addTypeAndWeight(courseCode, type, weight, term) {
     }
 }
 
+//getting type and weight for saved activities in the same term and course
 async function getDirect(courseCode, term) {
     const sql = 'SELECT type, weight FROM direct_assessment WHERE courseCode = ? AND semester = ?';
     try {
@@ -30,6 +31,7 @@ async function getDirect(courseCode, term) {
     }
 }
 
+//getting sections under the course you're coordinating 
 async function getCoordinatedSections(courseCode, term) {
     const sql = 'SELECT sectionNumber FROM course_section WHERE courseCode = ? AND semester = ?';
     try {

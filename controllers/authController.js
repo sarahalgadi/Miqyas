@@ -21,7 +21,7 @@ async function login(req, res) {
       return res.send('<script>alert("Incorrect password."); window.location.href = "/";</script>');
     }
   
-    const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+    const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '100m' });
     const refreshToken = jwt.sign({ username: user.username }, process.env.REFRESH_TOKEN_SECRET);
   
     // Store refresh token in the database

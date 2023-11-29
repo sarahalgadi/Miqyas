@@ -1,0 +1,38 @@
+<!--assessment section..-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("./partials/head.ejs")%>
+    <link rel="stylesheet" href="/stylesheets/assessmentTypes.css">
+</head>
+
+<body>
+    <%-include("./partials/nav.ejs")%>
+        <div class="container-fluid row">
+            <div class="col-md-8">
+                <!--Data needs to be retrieved here dynamically; figure out later-->
+                <h2><%= courseCode %>: <%= courseName %> - Section <%= section %></h2>
+            </div>
+            <div class="col-md-2">
+                <!--Current term needs to be retrieved here dynamically-->
+                <h3>Term: <%= term %></h3>
+            </div>
+        </div>
+        <div class="button-container">
+            <!--Button links will be changed to other pages when done-->
+
+            <!--instructor model and routes and controller..-->
+            <form method="post" action="/assign-grades/<%= courseCode %>/<%= term %>/<%= section %>">
+                <input type="hidden" name="courseName" value="<%= courseName %>">
+                <button class="custom-button">Direct CLO Assessment</button>
+            </form>
+      
+            <button class="custom-button">Indirect CLO Assessment</button>
+            <button class="custom-button">Prepare Report</button>
+        </div>
+
+</body>
+
+</html>

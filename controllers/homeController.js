@@ -21,8 +21,17 @@ async function getUser(req,res ){
     res.render('home', {user, title, fullName, term, courses, userRoles, coordinatedCourses});
 }
 
+async function getAssessmentPerSection (req, res){
+  //this is to get the page that shows direct, indirect, generate.
+  const {courseCode, term, section} = req.params;
+  const courseName = req.body.courseName;
+  console.log("cname", courseName)
+
+  res.render('assessmentSection', {title: 'Direct Assessment',courseCode, term, section, courseName});
+}
 
 
 
-  module.exports = {getUser};
+
+  module.exports = {getUser, getAssessmentPerSection};
   

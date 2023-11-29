@@ -157,6 +157,63 @@ async function getDepartments() {
     const departmentNames = rows.map(row => row.departmentName);
     return departmentNames;
   }
+
+async function saveStudentCategories(courseCode, semester, sectionNumber, studentID, CLONumber, studentCLOPercentage, category){
+    const sql = `
+    INSERT INTO student_coursesection 
+    (courseCode, semester, sectionNumber, studentID, CLONumber, studentCLOPercentage, category)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+    studentCLOPercentage = VALUES(studentCLOPercentage),
+    category = VALUES(category)
+`;
+    try{
+        const [rows] = await pool.execute(sql, [courseCode, semester, sectionNumber, studentID, CLONumber, studentCLOPercentage, category]);
+        console.log("saved!")
+    } catch(error){
+        console.log("error saving tuple", error)
+    }
+
+}
+
+async function getCLOInfo(courseCode, semester) {
+    const sql = 'SELECT  clo.statement, clo.CLONumber FROM course_learning_outcomes clo WHERE clo.courseCode = ? AND clo.semester = ?';
+    const [rows, fields] = await pool.execute(sql, [courseCode, semester]);
+    const CLOstatements = rows.map(row => row.statement);
+    const CLOnumbers = rows.map(row => row.CLONumber);
+    return {CLOstatements, CLOnumbers };
+  }
+
+  async function saveAssessmentDetails(courseCode, assessmentNumber, statment, grade, CLONumber, semester, type, sectionNumber) {
+    const sql = `
+        INSERT INTO assessment_details (coursecode, assessmentNumber, statment, grade, CLONumber, semester, type, sectionNumber)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        statment = VALUES(statment),
+        grade = VALUES(grade)
+    `;
+
+    try {
+        const [result] = await pool.execute(sql, [courseCode, assessmentNumber, statment, grade, CLONumber, semester, type, sectionNumber]);
+        return result;
+    } catch (error) {
+        console.error('Error saving assessment details:', error);
+        throw error;
+    }
+}
+
+
+async function getAssessmentDetails(courseCode, semester, section){
+    const sql=`SELECT assessmentNumber, CLONumber, statment, grade, type FROM assessment_details WHERE courseCode = ? AND semester = ? AND sectionNumber = ?`;
+
+    try{
+        const[result] = await pool.execute(sql, [courseCode, semester, section]);
+        return result;
+    } catch(error){
+        console.error('error fetching details', error);
+        throw error;
+    }
+}
 module.exports = {
     getDirectAssessmentTypes,
     getStudentInfo,
@@ -165,5 +222,9 @@ module.exports = {
     getCourseName,
     getCategoryCounts,
     getDepartments,
-    getDirectPerCLOPerStudentDepartment
+    getDirectPerCLOPerStudentDepartment,
+    saveStudentCategories,
+    getCLOInfo,
+    saveAssessmentDetails,
+    getAssessmentDetails
 }

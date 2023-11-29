@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("./partials/head.ejs")%>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="/stylesheets/addQuestions.css">
+</head>
+
+<body>
+    <%-include("./partials/nav.ejs")%>
+        <div class="row container-fluid">
+            <div class="col-md-8">
+                <!--Data needs to be retrieved here dynamically; figure out later-->
+                <h2><%= courseCode %>: <%= courseName %> - Section <%= section %></h2>
+                <h2>Direct Assessment</h2>
+            </div>
+            <div class="col-md-4">
+                <!--Current term needs to be retrieved here dynamically-->
+                <h3>Term: <%= term %></h3>
+               
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs" id="activityTabs" role="tablist">
+            <li class="nav-item">
+                <!--Tabs will be dynamically generated here based on the activities set by the course coordinator-->
+        </ul>
+
+        <div class="tab-content" id="activityTabContent">
+            <!--Tab panes will be dynamically generated here based on the activities set by the course coordinator-->
+        </div>
+
+        <!--Script will be taken out to its separate file-->
+        <script>
+
+            // Function to generate the table content for an activity
+            const assessmentDetails = <% JSON.stringify(assessmentDetails) %>
+            function generateTableContent(activityName) {
+                    let tableContent = `
+                        <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
+                            <table class="table table-bordered" id="activityTable">
+                                <thead>
+                                    <tr>
+                                        <th style="border: none;">ID</th>
+                                        <th>Student Name</th>
+                                        <th>Question Grade</th>
+                                        <th>CLO Achievement Per Question</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="insertionPoint">
+                    `;
+            
+                    // Iterate over filtered assessment details for each question
+                    filteredAssessmentDetails.forEach((question, index) => {
+                        const cloNumber = question.CLONumber;
+                        const questionNumber = question.assessmentNumber;
+            
+                        // Display question header only once
+                        if (index === 0) {
+                            tableContent += `
+                                <tr>
+                                    <th colspan="5" style="border: none;">Question ${questionNumber}: CLO ${cloNumber}</th>
+                                </tr>
+                            `;
+                        }
+            
+                        // Iterate over students to display student details for each question
+                        students.forEach((student) => {
+                            tableContent += `
+                                <tr>
+                                    <td>${student.studentID}</td>
+                                    <td>${student.firstName} ${student.lastName}</td>
+                                    <td><input type="number" name="grade_${questionNumber}_${cloNumber}_${student.studentID}" class="form-control" required></td>
+                                    <td>calculation here</td>
+                                </tr>
+                            `;
+                        });
+                    });
+            
+                    // Close the table and form
+                    tableContent += `
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="activityName" value="${activityName}">
+                            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                                <div class="button-container">
+                                    <button type="submit" id="saveButton" class="btn custom-button">Save</button>
+                                    <button id="inputGradesButton" class="btn custom-button" disabled>Calculate Overall CLO Achievement</button>
+                                </div>
+                            </div>
+                        </form>
+                    `;
+            
+                    return tableContent;
+                }
+            //-----------------function for to generate panes for each tab--------------
+            function generateTabsAndPanes(activities) {
+                const tabList = document.getElementById("activityTabs");
+                const tabContent = document.getElementById("activityTabContent");
+
+                if (activities.length === 0) {
+                    // If no activities found, display a message
+                    tabContent.innerHTML = "<p>No activities have been set for this course. <br>Please inform the course coordinator.</p>";
+                } else {
+                    activities.forEach((activity, index) => {
+                        const tabId = `tab${index}`;
+                        const paneId = `pane${index}`;
+
+                        // Create tab link
+                        const tabLink = document.createElement("li");
+                        tabLink.setAttribute("class", "nav-item");
+                        tabLink.innerHTML = `
+                    <a class="nav-link ${index === 0 ? 'active' : ''}" id="${tabId}-tab" data-bs-toggle="tab" href="#${paneId}" role="tab" aria-controls="${paneId}" aria-selected="${index === 0 ? 'true' : 'false'}">
+                        ${activity}
+                    </a>
+                `;
+
+                        // Create tab pane
+                        const tabPane = document.createElement("div");
+                        tabPane.setAttribute("class", `tab-pane fade ${index === 0 ? 'show active' : ''}`);
+                        tabPane.setAttribute("id", paneId);
+                        tabPane.setAttribute("role", "tabpanel");
+                        tabPane.setAttribute("aria-labelledby", `${tabId}-tab`);
+                        tabPane.innerHTML = generateTableContent(activity); // Generate table content
+                        
+                        // Append tab link and pane to respective containers
+                        tabList.appendChild(tabLink);
+                        tabContent.appendChild(tabPane);
+                    });
+                }
+            }
+
+             
+
+            // Call the function to generate tabs and panes
+            generateTabsAndPanes(<%- JSON.stringify(activities) %>);
+
+            // Function to save the added questions
+            document.getElementById('saveButton').addEventListener('click', function () {
+                
+                // Enable the Input Grades button
+                document.getElementById('inputGradesButton').removeAttribute('disabled');
+            });
+        </script>
+</body>
+
+</html>

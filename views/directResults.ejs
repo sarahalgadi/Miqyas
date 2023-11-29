@@ -22,46 +22,14 @@
     </div>
 
 
-    <!--direct assessment results.. same as first table in section report-->
-    <div class="container">
-        <h3 style="font-family:Arial, Helvetica, sans-serif">Overall CLO Achievement Results per CLO</h3>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>CLO Number</th>
-              <th>CLO Description</th>
-              <th>BE</th>
-              <th>DE</th>
-              <th>ME</th>
-              <th>AE</th>
-              <th>Results</th>
-            </tr>
-          </thead>
-          <tbody>
-                <% for (let i = 0; i < CLOnumbers.length; i++) { %>
-                  <tr>
-                    <td>CLO <%= CLOnumbers[i] %></td>
-                    <td><%= CLOstatements[i] %></td>
-                    <!-- PER CATEGORY INFO -->
-                    <% for (let category of [0, 1, 2, 3]) { %>
-                      <% const categoryData = categoryCounts.find(data => parseInt(data.CLONumber) === parseInt(CLOnumbers[i]) && parseInt(data.category) === parseInt(category)); %>
-                      <td><%= categoryData ? categoryData.studentCount : 0 %></td>
-                    <% } %>
-                    <!-- Display results for each CLO -->
-                    <td><%= resultsPerCLO[CLOnumbers[i]] ? resultsPerCLO[CLOnumbers[i]].results.toFixed(2) : 0 %>%</td>
-                  </tr>
-                <% } %>
-              
-          </tbody>
-        </table>
-        </div>
-      <br>
        
-
+    <!--todo: save studnet ids per percentage frm each row input type hidden-->
     <!--student table-->
     <div class="container">
         <h3 style="font-family:Arial, Helvetica, sans-serif">Student Achievements Per CLO:</h3>
-        <table class="table table-bordered">
+        <!-- currently in course instructor controller, route for course instructor, ci model too.-->
+        <form action="/submit-students/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
+          <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Student ID</th>
@@ -80,15 +48,21 @@
                             <td>
                                 <% const cloResult = studentTotal.find(result => result.studentID === student.studentID && result.CLONumber === clonumber); %>
                                 <%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) + '%' : '0.00 %' %>
+                                
+                                <!-- Hidden input fields for student ID, CLO number, and CLO percentage -->
+                                <input type="hidden" name="studentID" value="<%= student.studentID %>">
+                                <input type="hidden" name="cloNumbers" value="<%= clonumber %>">
+                                <input type="hidden" name="cloPercentages" value="<%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) : '0.00' %>">
                             </td>
                         <% }); %>
                     </tr>
                 <% }); %>
             </tbody>
         </table>
-        
-
-    <div class="dropdown">
+   
+       
+    <div class="row">
+      <div class="dropdown col-7">
         <button type="button" class="btn custom-button dropdown-toggle" style="margin-left: 0;" data-bs-toggle="dropdown">
           Filter
         </button>
@@ -99,6 +73,11 @@
             <% }); %>
           </ul>
         </div>
+        <button class="btn custom-button col-2" type="submit">Submit Student Results</button>
+      </form>
+
+    </div>
+    
     </div>
           
     

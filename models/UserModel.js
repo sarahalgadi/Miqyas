@@ -1,6 +1,7 @@
 
 const pool = require('../database');
-
+//todo: this is gonna be the model for the home stuff, also getting coordinated course 
+//todo: ci and cc remove. make it in such a way that directAssessment and indirectAssessment
 
 async function getUserByUsername(username) {
     const sql = `
@@ -58,7 +59,7 @@ async function getUserRoles(username, semester) {
         throw error;
     }
 }
-
+///fixme: very bad remove it
 async function getCoordinatedCourses(username, semester) {
     const sql = `
         SELECT c.courseCode, cr.courseName

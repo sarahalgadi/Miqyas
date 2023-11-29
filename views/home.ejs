@@ -38,6 +38,8 @@
     </div>
 
 
+
+
     <!--if instructor.. course cards for current term show here.-->
     <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
         <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Current Courses: </h2>
@@ -53,7 +55,11 @@
                             </h2>
                             <div class="card-body">
                                 <strong> Section: <%= course.sectionNumber %> </strong>
-                                <button class="btn custom-button" href="#" style="width: 100%;">View Section Details</button>
+                                <!--in home routes. assessment section file will be rendered then!-->
+                                <form action="/view-section-details/<%= course.courseCode %>/<%= term %>/<%= course.sectionNumber %>" method="POST">
+                                    <input type="hidden" name="courseName" value="<%= course.courseName %>">
+                                    <button class="btn custom-button"  type="submit" style="width: 100%;">View Section Details</button>
+                                </form>
                             </div>
                         </div>
                     <% }) %>
@@ -61,6 +67,8 @@
                     <h2>"You're currently not teaching courses this term."</h2>
                 <% } %>
             </div>
+            <hr>
+            <button class="btn custom-button" href="#" style="width: 100%;">View Your Past Reports</button>
         </div>
     </div>
 

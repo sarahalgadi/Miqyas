@@ -1,0 +1,24 @@
+h2 {
+    font-weight: 600;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    /* Allow items to wrap to the next line */
+}
+
+.custom-button {
+   /*width: 30%;  im commenting this ut.. it looks weird..*/
+    height: 150px;
+    margin: 10px;
+    font-size: 18px;
+}
+h3{
+    margin: 1rem;
+    padding: 1rem;
+}

@@ -1,11 +1,5 @@
 <h1>Select a course</h1>
-<% courses.forEach(course => { %>
-  <form action="/display-course/<%= course.code %>/223" method="get">
-    <input type="radio" name="courseCode" value="<%= course.code %>">
-    <label for="<%= course.code %>"><%= course.code %></label>
-    <button type="submit">Next</button>
-  </form>
-<% }); %>
+
 
 <form action="/edit-section-report/<%= name %>/223/1" method="get">
   <button type="submit">edit section report</button>

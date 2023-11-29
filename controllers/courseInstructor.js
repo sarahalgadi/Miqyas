@@ -117,11 +117,107 @@ function calculateResultsPerCLO(categoryCounts) {
     return resultsPerCLO;
   }
 
+  async function saveStudentActivities(req,res) {
+    const{courseCode, term, section} = req.params;
+    const formData = req.body;
+    const students = formData.studentID;
+    const cloNumbers = formData.cloNumbers;
+    const cloPercentages = formData.cloPercentages
+    try{
+      for(let i = 0; i< students.length; i++){
+        let student = students[i];
+        let cloNumber = cloNumbers[i];
+        let cloPercentage = cloPercentages[i];
+        let category = 0;
+  
+        if(cloPercentage < 60){
+          category = 0;
+        } else if(cloPercentage < 70){
+          category = 1;
+        } else if(cloPercentage< 95){
+          category = 2;
+        } else {
+          category = 3;
+        }
+  
+        await courseInstructorModel.saveStudentCategories(courseCode, term, section, student, cloNumber, cloPercentage, category);
+      }
+      res.send('<script>alert("Successfully saved!"); window.location.href = "/directAssessmentResults/' + courseCode + '/' + term + '/' + section + '";</script>');
+
+    }catch(error){
+      res.render('error', {message: "could not save the students' data.."});
+    }
+    
+      
+       
+       
+      }
+
+  //this is for rendering the page for assinging grades for activities
+  async function assignGrades(req, res){
+    const{courseCode, term, section} = req.params;
+    const courseName = req.body.courseName;
+    const directAssessment = await courseInstructorModel.getDirectAssessmentTypes(courseCode, term);
+    const activities = directAssessment.map(item => item.type); // Extract just the activity names
+    // Extract the courseName 
+    const assignedWeights = {};
+    const CLOinfo = await courseInstructorModel.getCLOInfo(courseCode, term);
+    const CLOnumbers = CLOinfo.CLOnumbers;
+    directAssessment.forEach(tuple => {
+        const type = tuple.type;
+
+    });
+
+    res.render('grades', {title:'Direct Assessment: Assign Grades', courseCode, term, section, courseName, activities, CLOnumbers});
+  }
+
+  async function saveGrades(req, res){
+      const { courseCode, term, section} = req.params; 
+      const formData= req.body;
+
+      try{
+        const questions = formData.QNumber;
+        const description = formData.description;
+        const weight = formData.weight;
+        const cloMapped = formData.cloMapped;
+        const activityName = formData.activityName;
+
+        for(let i = 0; i< questions.length; i++){
+          
+          if (questions[i] !== '' && weight[i] !== '' && cloMapped[i] !== '') {
+            await courseInstructorModel.saveAssessmentDetails(courseCode, parseInt(questions[i]), description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);
+        }        
+      }
+
+      res.send('<script>alert("Successfully saved!"); window.location.href = "/input-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
+  } catch (error) {
+      res.render('error', {message:'Failed to save assessment details! please try again'});
+      console.error(error)
+  }
+}
+  
+  
+async function inputGrades(req, res){
+  const{courseCode, term, section} = req.params;
+    const courseName = req.body.courseName;
+    const directAssessment = await courseInstructorModel.getDirectAssessmentTypes(courseCode, term);
+    const activities = directAssessment.map(item => item.type); // Extract just the activity names
+
+    const students = await courseInstructorModel.getStudentInfo(courseCode, term, section);
+    const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
+
+    res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails});
+}
+
 
 
 
 module.exports = {
     getGradesPage,
     getDirectAssessmentResults,
-    getDirectAssessmentResultsDepartment
+    getDirectAssessmentResultsDepartment,
+    saveStudentActivities,
+    assignGrades,
+    saveGrades,
+    inputGrades
 }
