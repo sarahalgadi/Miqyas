@@ -205,6 +205,8 @@ async function inputGrades(req, res){
 
     const students = await courseInstructorModel.getStudentInfo(courseCode, term, section);
     const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
+    console.log("students", students);
+    console.log("assessmentDetails", assessmentDetails);
 
     res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails});
 }
