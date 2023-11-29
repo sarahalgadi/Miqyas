@@ -94,9 +94,17 @@
 
 <script>
     function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
-        const inputValue = parseFloat(inputElement.value);
+        /*const inputValue = parseFloat(inputElement.value);
         const achievementElement = document.getElementById(`achievement_${tabIndex}_${studentID}`);
-        const saveButton = document.getElementById(`saveButton_${tabIndex}`);
+        const saveButton = document.getElementById(`saveButton_${tabIndex}`);*/
+
+        const tableRow = inputElement.closest('tr'); 
+        const inputValue = parseFloat(inputElement.value);
+        const achievementElement = tableRow.querySelector('.achievement'); 
+        const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button'); 
+
+}
+
 
         if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
             document.getElementById(`errorText_${tabIndex}`).innerText = "Grade should be a positive number and less than or equal to the question grade!";
