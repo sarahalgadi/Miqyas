@@ -40,7 +40,7 @@
     <div class="container" id="result" style="display: none;">
         <h3>Indirect Assessment Results:</h3>
         <span id="errorMessage"></span>
-        <!--Edit action when saving to the database-->
+        <!--I have a problem here the actual data isnt being saved; maybe problem with connecting the frontend with the expected backend data-->
         <form id="formData" action="/assessments/saveIndirect/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
             <table id="indirectTable" class="table table-bordered">
                 <thead>
@@ -134,12 +134,12 @@
                         let cloValue = counter++;
 
                         newRow.innerHTML = `
-                            <td><input type="hidden" name="CLONumber" value="${cloValue}"> ${cloValue}</td>
-                            <td><input type="hidden" name="NumNotSatisfied" value="${row[2]}">${row[2]}</td>
-                            <td><input type="hidden" name="NumBarelySatisfied" value="${row[3]}">${row[3]}</td>
-                            <td><input type="hidden" name="NumSatisfied" value="${row[4]}">${row[4]}</td>
-                            <td><input type="hidden" name="NumAdequatelySatisfied" value="${row[5]}">${row[5]}</td>
-                            <td><input type="hidden" name="NumFullySatisfied" value="${row[6]}">${row[6]}</td>
+                            <td><input type="hidden" name="CLONumber[]" value="${cloValue}"> ${cloValue}</td>
+                            <td><input type="hidden" name="NumNotSatisfied[]" value="${row[2]}">${row[2]}</td>
+                            <td><input type="hidden" name="NumBarelySatisfied[]" value="${row[3]}">${row[3]}</td>
+                            <td><input type="hidden" name="NumSatisfied[]" value="${row[4]}">${row[4]}</td>
+                            <td><input type="hidden" name="NumAdequatelySatisfied[]" value="${row[5]}">${row[5]}</td>
+                            <td><input type="hidden" name="NumFullySatisfied[]" value="${row[6]}">${row[6]}</td>
                         `;
                         tableBody.appendChild(newRow);
                     }

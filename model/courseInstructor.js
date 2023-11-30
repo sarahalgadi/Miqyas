@@ -18,30 +18,9 @@ async function getCourseDetails(courseCode) {
     }
 };
 
-//----------DOES NOT WORK, TRY AGAIN bs tmw its 3 am rn and im so done -------
+//----------Saving function is successful, but the actual data isn't being stored.. --
 //function to save indirect assessment into db
-async function saveIndirectAssessmentData(indirectAssessmentData) {
-    let connection;
-    try {
-        // Get a connection from the pool
-        connection = await pool.getConnection();
-
-        // Begin the transaction
-        await connection.beginTransaction();
-
-        const {
-            courseCode,
-            semester,
-            sectionNumber,
-            totalResponses,
-            CLONumber,
-            NumNotSatisfied,
-            NumBarelySatisfied,
-            NumSatisfied,
-            NumAdequatelySatisfied,
-            NumFullySatisfied
-        } = indirectAssessmentData;
-
+async function saveIndirectAssessmentData(CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied, totalResponses) {
         const first_query = `
             INSERT INTO indirect_assessment (
                 CLONumber, courseCode, semester, sectionNumber, 
@@ -54,43 +33,15 @@ async function saveIndirectAssessmentData(indirectAssessmentData) {
         INSERT INTO indirect_assessment_responses (
             courseCode, semester, sectionNumber, 
             totalResponses) VALUES (?, ?, ?, ?)`;
-
-        // Execute the first query
-        await connection.query(query1, [
-            courseCode,
-            semester,
-            sectionNumber,
-            CLONumber,
-            NumNotSatisfied,
-            NumBarelySatisfied,
-            NumSatisfied,
-            NumAdequatelySatisfied,
-            NumFullySatisfied
-        ]);
-
-        // Execute the second query
-        await connection.query(query2, [
-            courseCode,
-            semester,
-            sectionNumber,
-            totalResponses
-        ]);
-
-        // Commit the transaction
-        await connection.commit();
         
-        // Release the connection back to the pool
-        connection.release();
-
-        console.log('Data saved successfully');
-    } catch (error) {
-        // Rollback the transaction if any query fails
-        if (connection) {
-            await connection.rollback();
-            connection.release();
-        }
-        throw new Error('Error saving data to the database');
+    try{
+        const [rows] = await pool.execute(first_query, second_query , [CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied, totalResponses]);
+        console.log("saved!")
+    } catch(error){
+        console.log("error saving tuple", error)
     }
+        
+        
 };
 module.exports = {
     getCourseDetails,

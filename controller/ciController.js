@@ -19,23 +19,34 @@ async function renderCourseDetails(req, res) {
     }
 }
 
-//----------DOES NOT WORK, TRY AGAIN bs tmw its 3 am rn and im so done -------
+//----------Saving function is successful, but the actual data isn't being stored.. --
 async function saveIndirectAssessment(req, res) {
+    const {
+        CLONumber,
+        courseCode,
+        semester,
+        sectionNumber,
+        NumFullySatisfied,
+        NumAdequatelySatisfied,
+        NumSatisfied,
+        NumBarelySatisfied,
+        NumNotSatisfied,
+        totalResponses
+    } = req.body;
+
     try {
-        const { courseCode, semester, sectionNumber, totalResponses } = req.body;
-        const multipleRowsData = req.body.multipleRowsData; // Assuming this is an array of row objects
-
-        for (const rowData of multipleRowsData) {
-            const indirectAssessmentData = {
-                courseCode,
-                semester,
-                sectionNumber,
-                totalResponses,
-                ...rowData,
-            };
-
-            await courseInstructorModel.saveIndirectAssessmentData(indirectAssessmentData);
-        }
+        await courseInstructorModel.saveIndirectAssessmentData(
+            CLONumber,
+            courseCode,
+            semester,
+            sectionNumber,
+            NumFullySatisfied,
+            NumAdequatelySatisfied,
+            NumSatisfied,
+            NumBarelySatisfied,
+            NumNotSatisfied,
+            totalResponses
+        );
 
         res.status(200).send('Data saved successfully');
     } catch (error) {
