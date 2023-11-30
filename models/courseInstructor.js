@@ -242,6 +242,60 @@ async function saveStudentAveragePerQuestion(type, courseCode, assessmentNumber,
         console.log("error saving grades", error)
     }
 }
+
+async function getStudentGrades(courseCode, semester, sectionNumber){//functino to see if student have grades saved first..
+    const sql = `SELECT * FROM student_direct_assessment WHERE courseCode = ? AND semester = ? AND sectionNumber = ?`;
+    try{
+        const[result] = await pool.execute(sql, [courseCode,semester, sectionNumber]);
+        return result;
+
+    } catch(error){
+        console.log("error saving grades", error)
+    }
+}
+
+async function getCourseDetails(courseCode) {
+    try {
+        const sql = 'SELECT sectionNumber, semester, courseName from course_section INNER JOIN course ON course_section.courseCode = course.courseCode WHERE course_section.courseCode = ?';
+        const [row] = await pool.query(sql, [courseCode]);
+        if (row.length > 0) {
+            return {
+                section: row[0].sectionNumber,
+                term: row[0].semester,
+                courseName: row[0].courseName
+            };
+        } else {
+            return null;
+        }
+    } catch (error) {
+        throw new Error('Error fetching course section: ' + error.message);
+    }
+};
+
+//function to save indirect assessment into db
+async function saveIndirectAssessmentData(CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied) {
+        const first_query = `
+        INSERT INTO indirect_assessment (
+            CLONumber, courseCode, semester, sectionNumber, 
+            NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied,
+            NumBarelySatisfied, NumNotSatisfied
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) 
+        ON DUPLICATE KEY UPDATE 
+            NumFullySatisfied = VALUES(NumFullySatisfied),
+            NumAdequatelySatisfied = VALUES(NumAdequatelySatisfied),
+            NumSatisfied = VALUES(NumSatisfied),
+            NumBarelySatisfied = VALUES(NumBarelySatisfied),
+            NumNotSatisfied = VALUES(NumNotSatisfied)
+        `;
+        
+    try{
+        const [rows] = await pool.execute(first_query, [CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied]);
+        console.log("saved!")
+    } catch(error){
+        console.log("error saving tuple", error)
+    }
+}
+
 module.exports = {
     getDirectAssessmentTypes,
     getStudentInfo,
@@ -256,5 +310,8 @@ module.exports = {
     saveAssessmentDetails,
     getAssessmentDetails,
     getTotalWeightOfAQuestion,
-    saveStudentAveragePerQuestion //saving grades for each student and clo achievement percentage
+    saveStudentAveragePerQuestion, //saving grades for each student and clo achievement percentage
+    getStudentGrades, //this is used in inputting grades page so in case there were readily made ones we view them
+    getCourseDetails,
+    saveIndirectAssessmentData
 }

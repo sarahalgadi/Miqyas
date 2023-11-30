@@ -211,7 +211,9 @@ async function inputGrades(req, res){
     console.log("students", students);
     console.log("assessmentDetails", assessmentDetails);
 
-    res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails});
+    const studentGrades = await courseInstructorModel.getStudentGrades(courseCode, term, section);
+
+    res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails, studentGrades});
 }
 
 async function saveGrades(req,res){
@@ -226,7 +228,7 @@ async function saveGrades(req,res){
 try{
   for(let i = 0; i<grade.length; i++){
     if(grade[i]!==''){// because it returns empty string if no grade was given.
-      const studentGrade = parseInt(grade[i]);
+      const studentGrade = parseFloat(grade[i]);
       const studentID = formData.studentID[i];
       const assessmentNumber = parseInt(formData.assessmentNumber[i]);
       const type = formData.activity[i];
@@ -244,6 +246,7 @@ try{
   }
 
 }
+res.send('<script>alert("Successfully saved!"); window.location.href = "/input-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
   console.log("saved!")
   } catch(error){
     res.render('error', {message: "could not save student's achievement per question!"})
@@ -251,6 +254,58 @@ try{
 
   
 }
+
+async function renderCourseDetails(req, res) {
+  const {courseCode, term, section} = req.params;
+  const courseName = req.body.courseName;
+  res.render('indirectAssessment', { title: 'Indirect Assessment', courseCode, section, term, courseName, message: '' });
+
+}
+
+async function saveIndirectAssessment(req, res) {
+      const formData =req.body;
+      const CLONumber = formData['CLONumber'];
+      const courseCode = formData['courseCode'];
+      const semester = formData['semester'];
+      const sectionNumber = formData['sectionNumber'];
+      const NumFullySatisfied = formData['NumFullySatisfied'];
+      const NumAdequatelySatisfied = formData['NumAdequatelySatisfied'];
+      const NumSatisfied = formData['NumSatisfied'];
+      const NumBarelySatisfied = formData['NumBarelySatisfied'];
+      const NumNotSatisfied =formData['NumNotSatisfied'];
+
+  try {
+      console.log("formdata", req.body);
+      for(let i=0; i< CLONumber.length; i++){
+          const CLO = parseInt(CLONumber[i]);
+          const full = parseInt(NumFullySatisfied[i]);
+          const adequate = parseInt(NumAdequatelySatisfied[i]);
+          const satisfied = parseInt(NumSatisfied[i]);
+          const barely = parseInt(NumBarelySatisfied[i]);
+          const not = parseInt(NumNotSatisfied[i]);
+
+          await courseInstructorModel.saveIndirectAssessmentData(CLO, courseCode, semester, sectionNumber, full, adequate, satisfied, barely, not);
+      }
+
+      await courseInstructorModel.saveIndirectAssessmentData(
+          CLONumber,
+          courseCode,
+          semester,
+          sectionNumber,
+          NumFullySatisfied,
+          NumAdequatelySatisfied,
+          NumSatisfied,
+          NumBarelySatisfied,
+          NumNotSatisfied
+      );
+      //then redirecting to success page to indicate this process is complete
+      console.log('Indirect Assessment Results Saved Successfully!');
+      res.render('success', {title: 'Success!', message:'Indirect Assessment Results Saved Successfully!'});
+  } catch (error) {
+      console.error('Error saving data:', error);
+  }
+}
+
 
 
 
@@ -263,4 +318,6 @@ module.exports = {
     saveAssessment,
     inputGrades,
     saveGrades,
+    saveIndirectAssessment,
+    renderCourseDetails
 }

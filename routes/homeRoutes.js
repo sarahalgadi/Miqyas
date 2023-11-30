@@ -15,5 +15,5 @@ router.post('/view-section-details/:courseCode/:term/:section', [authMiddleware]
 //temp
 router.get('/directAssessmentResults/:courseCode/:term/:section', [authMiddleware],courseInstructorController.getDirectAssessmentResults);
 
-
+router.get('/view-reports', homeController.viewReports)
 module.exports = router;

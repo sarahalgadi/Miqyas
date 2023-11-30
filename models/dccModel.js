@@ -39,18 +39,23 @@ async function getDepartmentCourses (department, semester){
     
 }
 async function getCLOs (courseCode, semester){
-    const [rows, fields] = await pool.execute
-    ('SELECT CLONumber, statement, domain FROM course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statment = VALUES(statment) , domain = VALUES(domain)');
+    const [rows] = await pool.execute
+    ('SELECT CLONumber, statement, domain FROM course_learning_outcomes WHERE courseCode = ? AND semester = ?', [courseCode, semester]);
     return rows;
     //I dont know what to return if i am inserting into the databse
 }
 async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
-    const [rows, fields] = await pool.execute
-    ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statment = VALUES(statment) , domain = VALUES(domain)');
-    return rows;
-    //I dont know what to return if i am inserting into the databse
-}
+
+    try{
+        const [rows, fields] = await pool.execute
+        ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statement = VALUES(statement) , domain = VALUES(domain)', [CLONumber, statement, domain ,courseCode, semester]);
+    } catch(error){
+        console.error('error saving clos', error);
+        throw error;
+    }
+   
+   }
 
 
 
-module.exports ={getSemesters, getDepartmentCourses ,addCLOs,getFullName, getDepartment};
+module.exports ={getSemesters, getDepartmentCourses ,addCLOs,getFullName, getDepartment, getCLOs};

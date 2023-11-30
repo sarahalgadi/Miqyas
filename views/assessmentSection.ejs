@@ -41,11 +41,17 @@
             </div>
         
             <div class="row">
-                <button class="custom-button">Indirect CLO Assessment</button>
+                <form method="post" action="/indirect/<%= courseCode %>/<%= term %>/<%= section %>">
+                    <input type="hidden" name="courseName" value="<%= courseName %>">
+                    <button class="custom-button">Indirect CLO Assessment</button>
+                </form>
             </div>
             
             <div class="row">
-                <button class="custom-button">Prepare Report</button>
+                <form method="get" action="/edit-section-report/<%=courseCode %>/<%= term %>/<%= section %>">
+                    <button class="custom-button">Prepare Report</button>
+                </form>
+              
             </div>
         </div>
         <script>

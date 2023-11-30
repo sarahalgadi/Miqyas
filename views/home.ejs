@@ -68,7 +68,10 @@
                 <% } %>
             </div>
             <hr>
-            <button class="btn custom-button" href="#" style="width: 100%;">View Your Past Reports</button>
+            <form action="/view-reports" method="get">
+                <button class="btn custom-button" href="#" style="width: 100%;">View Your Past Reports</button>
+            </form>
+      
         </div>
     </div>
 
@@ -92,7 +95,10 @@
                         <span><%= coordinatedCourse.courseName %></span>
                         <br>
                         <hr>
-                        <a class="custom-button" href="cc.html">View Course</a>
+                        <form action="/display-course/<%= coordinatedCourse.courseCode %>/<%= term %>" method="get">
+                            <button class="custom-button btn" type="submit">View Course</a>
+                        </form>
+                     
                     </div>
                 </div>
             <% }) %>

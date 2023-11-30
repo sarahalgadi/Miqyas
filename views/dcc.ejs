@@ -124,12 +124,72 @@
 </body>
 <script>
     function setModalCourse(courseCode) {
+        // Store the selected course code in a variable or an attribute
+        selectedCourseCode = courseCode;
+    
         // Get the form element
         var form = document.getElementById('addCLOForm');
-        
+    
         // Replace the placeholder in the action with the actual courseCode
-        form.action = '/save-clos/' + courseCode + '/<%= term %>';
+        form.action = `/save-clos/${courseCode}/<%= term %>`;
+        
+        // Fetch existing CLOs for the selected course code
+        fetch(`/get-clos/${courseCode}/<%= term %>`)
+            .then(response => response.json())
+            .then(clos => {
+                // Clear existing rows in the modal's table
+                const cloTable = document.getElementById('cloTable');
+                cloTable.innerHTML = '';
+    
+                // Populate the modal's table with existing CLOs if they exist
+                if (clos && clos.length > 0) {
+                    clos.forEach(clo => {
+                        cloCount = clos.length;
+                        const row = cloTable.insertRow(-1);
+    
+                        // Add input elements with existing CLO information
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        const cell4 = row.insertCell(3);
+    
+                        cell1.innerHTML = `<input type="number" name="cloNumber" class="form-control" value="${clo.CLONumber}" readonly style="border: none;">`;
+                        cell2.innerHTML = `<select name="domain" class="form-select" id="typeSelect">
+                                            <option value="Knowledge" ${clo.domain === 'Knowledge' ? 'selected' : ''}>Knowledge</option>
+                                            <option value="Values" ${clo.domain === 'Values' ? 'selected' : ''}>Values</option>
+                                            <option value="Skills" ${clo.domain === 'Skills' ? 'selected' : ''}>Skills</option>
+                                        </select>`;
+                        cell3.innerHTML = `<textarea name="description" rows="1" class="form-control" required>${clo.statement}</textarea>`;
+                        cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
+                    });
+                } else {
+                    // Add a default row if no existing CLOs
+                    addDefaultCLORow();
+                }
+            })
+            .catch(error => console.error('Error fetching CLOs:', error));
     }
+    
+    function addDefaultCLORow() {
+        const cloTable = document.getElementById('cloTable');
+        const row = cloTable.insertRow(-1);
+    
+        // Add input elements for a default CLO row
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+    
+        cell1.innerHTML = '<input type="number" name="cloNumber" class="form-control" value="1" readonly style="border: none;">';
+        cell2.innerHTML = `<select name="domain" class="form-select" id="typeSelect">
+                                <option value="Knowledge">Knowledge</option>
+                                <option value="Values">Values</option>
+                                <option value="Skills">Skills</option>
+                            </select>`;
+        cell3.innerHTML = '<textarea name="description" rows="1" class="form-control" required></textarea>';
+        cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
+    }
+    
 </script>
 
 </html>

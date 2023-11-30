@@ -30,8 +30,12 @@ async function getAssessmentPerSection (req, res){
   res.render('assessmentSection', {title: 'Direct Assessment',courseCode, term, section, courseName});
 }
 
+async function viewReports(req,res){
+  res.render('view-reports')
+}
 
 
 
-  module.exports = {getUser, getAssessmentPerSection};
+
+  module.exports = {getUser, getAssessmentPerSection, viewReports};
   

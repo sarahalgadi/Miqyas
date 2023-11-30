@@ -13,5 +13,6 @@ router.post('/saveAssessment/:courseCode/:term/:section', [authMiddleware], cour
 router.post('/saveStudentGrades/:courseCode/:term/:section', [authMiddleware], courseInstructorController.saveGrades);
 router.get('/assign-grades/:courseCode/:term/:section', [authMiddleware],courseInstructorController.assignGrades);
 router.get('/input-grades/:courseCode/:term/:section', [authMiddleware],courseInstructorController.inputGrades);
-
+router.post('/indirect/:courseCode/:term/:section', courseInstructorController.renderCourseDetails);
+router.post('/saveIndirect/:courseCode/:term/:section', courseInstructorController.saveIndirectAssessment);
 module.exports = router;

@@ -1,13 +1,14 @@
 //defining count to track number of clos added
-let cloCount = 1;
+let table = document.getElementById('cloTable')
+let cloCount = table.rows.length;
 
 //dynamically adds a clo to the table of clos when the "add clo" button is clicked
 function addCLO(event) {
     event.preventDefault();
     //allows adding a clo if clocount is less than 8
     if (cloCount < 8) {
-        cloCount++;
         const table = document.getElementById('cloTable');
+        cloCount = table.rows.length + 1;
         //inserting a new row for the new clo then adding the html for the added cell
         const row = table.insertRow(-1);
         const cell1 = row.insertCell(0);
@@ -16,13 +17,14 @@ function addCLO(event) {
         const cell4 = row.insertCell(3);
         cell1.innerHTML = `<input type="number" name="cloNumber" class="form-control" value="${cloCount}" readonly style="border: none;">`;
         cell2.innerHTML = `<select name="domain" class="form-select" id="typeSelect">
-                                    <option value="" selected disabled>Type</option>
                                     <option value="Knowledge">Knowledge</option>
                                     <option value="Values">Values</option>
                                     <option value="Skills">Skills</option>
                                 </select> `;
         cell3.innerHTML = '<textarea rows="1" name="description" class="form-control" required></textarea>';
         cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
+   
+
         //once 8 clos are reached, the "add clo" button is disabled to prevent adding more
         if (cloCount === 8) {
             document.getElementById('addCLOButton').style.backgroundColor = 'lightgrey';
@@ -46,20 +48,24 @@ function deleteCLO(row) {
     const table = document.getElementById('cloTable');
     const rowIndex = row.parentNode.parentNode.rowIndex;
     table.deleteRow(rowIndex);
-    cloCount--;
-    //calls update function to update the numbering and enable add button
+    cloCount = table.rows.length - 1;    //calls update function to update the numbering and enable add button
     updateCLONumbers();
 }
 
 function updateCLONumbers() {
     const table = document.getElementById('cloTable');
     const rows = table.getElementsByTagName('tr');
-    //updates the numbering of rows to accomodate changes
+    
+    // Iterate through rows starting from the second row
     for (let i = 1; i < rows.length; i++) {
         const cells = rows[i].getElementsByTagName('td');
-        cells[0].innerHTML = `<input type="number" class="form-control" name= "cloNumber" value="${i}" readonly style="border: none;">`;
+        
+        // Update the cloNumber value based on the current row's input value
+        const cloNumberInput = cells[0].getElementsByTagName('input')[0];
+        cloNumberInput.value = i+1;
     }
-    //removes disabled button
+
+    // Remove disabled button
     if (cloCount < 8) {
         document.getElementById('addCLOButton').style.backgroundColor = '';
         document.getElementById('addCLOButton').disabled = false;
@@ -69,9 +75,12 @@ function updateCLONumbers() {
 }
 
 
+
 function saveCLOs(event) {
     event.preventDefault();
     //prevents saving unless we have a minimmum of 4 clos
+    let table = document.getElementById('cloTable');
+    cloCount = table.rows.length;
     if (cloCount < 4) {
         const validationMessage = document.getElementById('validationMessage');
         validationMessage.textContent = 'Please add at least four CLOs.';
