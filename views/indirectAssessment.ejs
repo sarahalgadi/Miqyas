@@ -62,8 +62,6 @@
             <input type="hidden" name="courseCode" value="<%= courseCode %>">
             <input type="hidden" name="semester" value="<%= term %>">
             <input type="hidden" name="sectionNumber" value="<%= section %>">
-            <!--value for total responses is handled in function below in script-->
-            <input type="hidden" name="totalResponses" value="">
 
             <button type="submit" class="btn custom-button save">Save Indirect Assessment Results</button>
         </form>
@@ -134,12 +132,12 @@
                         let cloValue = counter++;
 
                         newRow.innerHTML = `
-                            <td><input type="hidden" name="CLONumber[]" value="${cloValue}"> ${cloValue}</td>
-                            <td><input type="hidden" name="NumNotSatisfied[]" value="${row[2]}">${row[2]}</td>
-                            <td><input type="hidden" name="NumBarelySatisfied[]" value="${row[3]}">${row[3]}</td>
-                            <td><input type="hidden" name="NumSatisfied[]" value="${row[4]}">${row[4]}</td>
-                            <td><input type="hidden" name="NumAdequatelySatisfied[]" value="${row[5]}">${row[5]}</td>
-                            <td><input type="hidden" name="NumFullySatisfied[]" value="${row[6]}">${row[6]}</td>
+                            <td><input type="hidden" name="CLONumber" value="${cloValue}"> ${cloValue}</td>
+                            <td><input type="hidden" name="NumNotSatisfied" value="${row[2]}">${row[2]}</td>
+                            <td><input type="hidden" name="NumBarelySatisfied" value="${row[3]}">${row[3]}</td>
+                            <td><input type="hidden" name="NumSatisfied" value="${row[4]}">${row[4]}</td>
+                            <td><input type="hidden" name="NumAdequatelySatisfied" value="${row[5]}">${row[5]}</td>
+                            <td><input type="hidden" name="NumFullySatisfied" value="${row[6]}">${row[6]}</td>
                         `;
                         tableBody.appendChild(newRow);
                     }

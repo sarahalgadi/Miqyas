@@ -19,22 +19,31 @@ async function renderCourseDetails(req, res) {
     }
 }
 
-//----------Saving function is successful, but the actual data isn't being stored.. --
 async function saveIndirectAssessment(req, res) {
-    const {
-        CLONumber,
-        courseCode,
-        semester,
-        sectionNumber,
-        NumFullySatisfied,
-        NumAdequatelySatisfied,
-        NumSatisfied,
-        NumBarelySatisfied,
-        NumNotSatisfied,
-        totalResponses
-    } = req.body;
+        const formData =req.body;
+        const CLONumber = formData['CLONumber'];
+        const courseCode = formData['courseCode'];
+        const semester = formData['semester'];
+        const sectionNumber = formData['sectionNumber'];
+        const NumFullySatisfied = formData['NumFullySatisfied'];
+        const NumAdequatelySatisfied = formData['NumAdequatelySatisfied'];
+        const NumSatisfied = formData['NumSatisfied'];
+        const NumBarelySatisfied = formData['NumBarelySatisfied'];
+        const NumNotSatisfied =formData['NumNotSatisfied'];
 
     try {
+        console.log("formdata", req.body);
+        for(let i=0; i< CLONumber.length; i++){
+            const CLO = parseInt(CLONumber[i]);
+            const full = parseInt(NumFullySatisfied[i]);
+            const adequate = parseInt(NumAdequatelySatisfied[i]);
+            const satisfied = parseInt(NumSatisfied[i]);
+            const barely = parseInt(NumBarelySatisfied[i]);
+            const not = parseInt(NumNotSatisfied[i]);
+
+            await courseInstructorModel.saveIndirectAssessmentData(CLO, courseCode, semester, sectionNumber, full, adequate, satisfied, barely, not);
+        }
+
         await courseInstructorModel.saveIndirectAssessmentData(
             CLONumber,
             courseCode,
@@ -44,8 +53,7 @@ async function saveIndirectAssessment(req, res) {
             NumAdequatelySatisfied,
             NumSatisfied,
             NumBarelySatisfied,
-            NumNotSatisfied,
-            totalResponses
+            NumNotSatisfied
         );
 
         res.status(200).send('Data saved successfully');

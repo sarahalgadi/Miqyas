@@ -18,9 +18,8 @@ async function getCourseDetails(courseCode) {
     }
 };
 
-//----------Saving function is successful, but the actual data isn't being stored.. --
 //function to save indirect assessment into db
-async function saveIndirectAssessmentData(CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied, totalResponses) {
+async function saveIndirectAssessmentData(CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied) {
         const first_query = `
             INSERT INTO indirect_assessment (
                 CLONumber, courseCode, semester, sectionNumber, 
@@ -29,13 +28,8 @@ async function saveIndirectAssessmentData(CLONumber, courseCode, semester, secti
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
         
-        const second_query = `
-        INSERT INTO indirect_assessment_responses (
-            courseCode, semester, sectionNumber, 
-            totalResponses) VALUES (?, ?, ?, ?)`;
-        
     try{
-        const [rows] = await pool.execute(first_query, second_query , [CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied, totalResponses]);
+        const [rows] = await pool.execute(first_query, [CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied]);
         console.log("saved!")
     } catch(error){
         console.log("error saving tuple", error)
