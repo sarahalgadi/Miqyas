@@ -108,32 +108,23 @@
 </body>
 
 <script>
-   
-    
-        function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
-           
-    
-            const tableRow = inputElement.closest('tr'); 
-            const inputValue = parseFloat(inputElement.value);
-            const achievementElement = tableRow.querySelector('.achievement'); 
-            const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button'); 
-    
-            const error = tableRow.closest('.tab-pane').querySelector('.error');
-    
-                //make sure student's grade is not greater than the question grade and positive and a number.
-            if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
-                error.innerText = "Grade should be a positive number and less than or equal to the question grade.";
-                saveButton.disabled = true;
-                achievementElement.innerText = ""; // Clear the achievement if the input is invalid
-            } else {
-                // Clear the error message, enable the save button, and update the achievement
-                error.innerText = "";
-                saveButton.disabled = false;
-                const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
-                achievementElement.innerText = calculatedAchievement + "%";
-            }
+    function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
+        const inputValue = parseFloat(inputElement.value);
+        const achievementElement = document.getElementById(`achievement_${tabIndex}_${studentID}`);
+        const saveButton = document.getElementById(`saveButton_${tabIndex}`);
+
+        if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
+            document.getElementById(`errorText_${tabIndex}`).innerText = "Grade should be a positive number and less than or equal to the question grade!";
+            saveButton.disabled = true;
+            achievementElement.innerText = ""; // Clear the achievement if the input is invalid
+        } else {
+            // Clear the error message, enable the save button, and update the achievement
+            document.getElementById(`errorText_${tabIndex}`).innerText = "";
+            saveButton.disabled = false;
+            const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
+            achievementElement.innerText = calculatedAchievement + "%";
         }
-    
+    }
 </script>
 
 
