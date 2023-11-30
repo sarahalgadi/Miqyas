@@ -213,6 +213,34 @@ async function getAssessmentDetails(courseCode, semester, section){
         console.error('error fetching details', error);
         throw error;
     }
+
+}
+//returns {grade: }
+async function getTotalWeightOfAQuestion(courseCode, semester, section, type, assessmentNumber){// im getting total here.. for the assessment umber..
+    const sql = 'SELECT grade FROM assessment_details WHERE courseCode = ? AND semester = ? AND sectionNumber = ? AND type = ? AND assessmentNumber = ?';
+    try{
+        const[result] = await pool.execute(sql, [courseCode, semester, section, type, assessmentNumber]);
+        return result[0];
+    } catch(error){
+        console.error('error fetching details', error);
+        throw error;
+    }
+
+}
+
+async function saveStudentAveragePerQuestion(type, courseCode, assessmentNumber, studentID, studentGrade, CLOAchievmentPerQuestion, semester, sectionNumber){
+    const sql = `INSERT INTO student_direct_assessment (type, courseCode, assessmentNumber, studentID, studentGrade, CLOAchievmentPerQuestion, semester, sectionNumber) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+    studentGrade = VALUES(studentGrade),
+    CLOAchievmentPerQuestion = VALUES(CLOAchievmentPerQuestion)`;
+
+    try{
+        const[result] = await pool.execute(sql, [type, courseCode, assessmentNumber, studentID, studentGrade, CLOAchievmentPerQuestion, semester, sectionNumber]);
+
+    } catch(error){
+        console.log("error saving grades", error)
+    }
 }
 module.exports = {
     getDirectAssessmentTypes,
@@ -226,5 +254,7 @@ module.exports = {
     saveStudentCategories,
     getCLOInfo,
     saveAssessmentDetails,
-    getAssessmentDetails
+    getAssessmentDetails,
+    getTotalWeightOfAQuestion,
+    saveStudentAveragePerQuestion //saving grades for each student and clo achievement percentage
 }

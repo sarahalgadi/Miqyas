@@ -161,6 +161,8 @@ function calculateResultsPerCLO(categoryCounts) {
     const activities = directAssessment.map(item => item.type); // Extract just the activity names
     // Extract the courseName 
     const assignedWeights = {};
+    const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
+    console.log(assessmentDetails);
     const CLOinfo = await courseInstructorModel.getCLOInfo(courseCode, term);
     const CLOnumbers = CLOinfo.CLOnumbers;
     directAssessment.forEach(tuple => {
@@ -168,14 +170,16 @@ function calculateResultsPerCLO(categoryCounts) {
 
     });
 
-    res.render('grades', {title:'Direct Assessment: Assign Grades', courseCode, term, section, courseName, activities, CLOnumbers});
+    res.render('grades', {title:'Direct Assessment: Assign Grades', courseCode, term, section, courseName, activities, CLOnumbers, assessmentDetails});
   }
 
-  async function saveGrades(req, res){
+  async function saveAssessment(req, res){
       const { courseCode, term, section} = req.params; 
       const formData= req.body;
+      console.log(formData)
 
       try{
+        //fix: we need to make sur etheyre arrays!!!!!! use the same function as sara!!!!
         const questions = formData.QNumber;
         const description = formData.description;
         const weight = formData.weight;
@@ -183,13 +187,11 @@ function calculateResultsPerCLO(categoryCounts) {
         const activityName = formData.activityName;
 
         for(let i = 0; i< questions.length; i++){
-          
-          if (questions[i] !== '' && weight[i] !== '' && cloMapped[i] !== '') {
             await courseInstructorModel.saveAssessmentDetails(courseCode, parseInt(questions[i]), description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);
-        }        
+              
       }
 
-      res.send('<script>alert("Successfully saved!"); window.location.href = "/input-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
+      res.send('<script>alert("Successfully saved!"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
   } catch (error) {
       res.render('error', {message:'Failed to save assessment details! please try again'});
       console.error(error)
@@ -203,7 +205,8 @@ async function inputGrades(req, res){
     const directAssessment = await courseInstructorModel.getDirectAssessmentTypes(courseCode, term);
     const activities = directAssessment.map(item => item.type); // Extract just the activity names
 
-    const students = await courseInstructorModel.getStudentInfo(courseCode, term, section);
+    let students = await courseInstructorModel.getStudentInfo(courseCode, term, section);
+    students = Array.isArray(students) ? students : [students];
     const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
     console.log("students", students);
     console.log("assessmentDetails", assessmentDetails);
@@ -211,6 +214,43 @@ async function inputGrades(req, res){
     res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails});
 }
 
+async function saveGrades(req,res){
+  //saving student grades after clicking save in studentgrades.ejs.. 
+  //form data retrieves everything except clo percentage.. even when i put input hidden.. so i decided to retrieve total then do calculation
+
+  const {courseCode, term, section} = req.params;
+  const formData = req.body;
+  console.log("students...", formData)
+  let grade = formData.grade;
+  grade = Array.isArray(grade) ? grade : [grade];
+try{
+  for(let i = 0; i<grade.length; i++){
+    if(grade[i]!==''){// because it returns empty string if no grade was given.
+      const studentGrade = parseInt(grade[i]);
+      const studentID = formData.studentID[i];
+      const assessmentNumber = parseInt(formData.assessmentNumber[i]);
+      const type = formData.activity[i];
+      //i'll get the total weight to do division since percentage isn't extracted as it's dynamically scripted
+
+      let total = await courseInstructorModel.getTotalWeightOfAQuestion(courseCode, term, section, type, assessmentNumber);
+      //it returns it as an object w grade attribute
+      const CLOPercentage = (studentGrade/ total.grade * 100).toFixed(2);
+      console.log(CLOPercentage);
+
+      //now we're gonna save into student_direct_assessment
+
+      await courseInstructorModel.saveStudentAveragePerQuestion(type, courseCode, assessmentNumber, studentID, studentGrade, CLOPercentage, term, section);
+
+  }
+
+}
+  console.log("saved!")
+  } catch(error){
+    res.render('error', {message: "could not save student's achievement per question!"})
+  }
+
+  
+}
 
 
 
@@ -220,6 +260,7 @@ module.exports = {
     getDirectAssessmentResultsDepartment,
     saveStudentActivities,
     assignGrades,
+    saveAssessment,
+    inputGrades,
     saveGrades,
-    inputGrades
 }

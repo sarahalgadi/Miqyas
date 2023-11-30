@@ -21,6 +21,7 @@ const courseReportRoutes = require('./routes/courseReportRoutes');
 const cc = require('./routes/cc');
 const sectionReportRoutes = require('./routes/sectionReport');
 const courseInstructorRoutes = require('./routes/courseInstructor');
+const dccRoutes = require('./routes/dccRoutes');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 
@@ -31,11 +32,7 @@ const homeRoutes = require('./routes/homeRoutes');
 //specifying the port
 app.listen(port);
 
-const courses = [
-  { code: 'COURSE001', name: 'Course 1', term: "223"},
-  { code: 'COURSE002', name: 'Course 2', term:"224"},
-  { code: 'SE322', name: 'Course 3', term: "223" },
-];
+
 //error. we may need to go over the diff types of errors..
 //this is just temp...temp is the page displaying coordinator courses. reemas part.
 //app.get('/',  async (req, res)=>{
@@ -66,6 +63,7 @@ app.use('/', courseInstructorRoutes);
 app.use('/', courseReportRoutes);//editing courseReport routes.. for coordinator.
 app.use('/', cc); //this is just for cc.ejs aka the page where there are tabs for a chosen coordinated course
 app.use('/', sectionReportRoutes);
+app.use('/', dccRoutes);
 
 
 

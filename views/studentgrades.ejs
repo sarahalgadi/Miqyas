@@ -42,7 +42,7 @@
             <% if (activities && activities.length > 0) { %>
                 <% activities.forEach((activity, index) => { %>
                     <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane<%= index %>" role="tabpanel" aria-labelledby="tab<%= index %>-tab">
-                        <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
+                        <form action="/saveStudentGrades/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
                             <table class="table table-bordered" id="activityTable">
                                 <thead>
                                     <tr>
@@ -63,11 +63,17 @@
                                                 <tr>
                                                     <td><%= student.studentID %></td>
                                                     <td><%= student.firstName %> <%= student.lastName %></td>
-                                                    <td><input type="text" name="grade" min="0" max="<%= Number(question.grade)%>" class="form-control gradeInput"
-                                                         onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)" data-student-id="<%= student.studentID %>"></td>
-                                                    <td id="achievement_<%= index %>_<%= student.studentID %>"></td>
-                                                                                                 
+                                                    <td><input type="text" name="grade"class="form-control gradeInput"
+                                                        onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)" data-student-id="<%= student.studentID %>"></td>
+                                                        <td id="achievement_<%= index %>_<%= student.studentID %>" class="achievement">
+                                                        
+                                                    </td>
+                                                        <input type="hidden" name="studentID" id="sid_<%= index %>_<%= student.studentID %>" value="<%= student.studentID %>">
+                                                        <input type="hidden" name="assessmentNumber" id="an_<%= index %>_<%= student.studentID %>" value="<%= question.assessmentNumber %>">
+                                                        <input type="hidden" name="activity" id="act_<%= index %>_<%= student.studentID %>" value="<%= activity %>">
+                                                    <div id="errorText_<%= index %>" class="error"></div>
                                                 </tr>
+                                              
                                             <% }) %>
                                        <%  } %>
                                        <% }) %>
@@ -75,10 +81,7 @@
                             </table>
                             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
                                 <div class="button-container">
-                                    <div id="errorText_<%= index %>"></div>
-                                    <button type="submit" id="saveButton_<%= index %>" class="btn custom-button">Save</button>
-                                  
-                                    <button id="inputGradesButton" class="btn custom-button" disabled>Calculate Overall CLO Achievement</button>
+                                    <button type="submit" id="saveButton_<%= index %>" class="btn custom-button save-button">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -93,23 +96,32 @@
 </body>
 
 <script>
-    function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
-        const inputValue = parseFloat(inputElement.value);
-        const achievementElement = document.getElementById(`achievement_${tabIndex}_${studentID}`);
-        const saveButton = document.getElementById(`saveButton_${tabIndex}`);
-
-        if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
-            document.getElementById(`errorText_${tabIndex}`).innerText = "Grade should be a positive number and less than or equal to the question grade!";
-            saveButton.disabled = true;
-            achievementElement.innerText = ""; // Clear the achievement if the input is invalid
-        } else {
-            // Clear the error message, enable the save button, and update the achievement
-            document.getElementById(`errorText_${tabIndex}`).innerText = "";
-            saveButton.disabled = false;
-            const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
-            achievementElement.innerText = calculatedAchievement + "%";
+   
+    
+        function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
+           
+    
+            const tableRow = inputElement.closest('tr'); 
+            const inputValue = parseFloat(inputElement.value);
+            const achievementElement = tableRow.querySelector('.achievement'); 
+            const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button'); 
+    
+            const error = tableRow.closest('.tab-pane').querySelector('.error');
+    
+                //make sure student's grade is not greater than the question grade and positive and a number.
+            if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
+                error.innerText = "Grade should be a positive number and less than or equal to the question grade.";
+                saveButton.disabled = true;
+                achievementElement.innerText = ""; // Clear the achievement if the input is invalid
+            } else {
+                // Clear the error message, enable the save button, and update the achievement
+                error.innerText = "";
+                saveButton.disabled = false;
+                const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
+                achievementElement.innerText = calculatedAchievement + "%";
+            }
         }
-    }
+    
 </script>
 
 

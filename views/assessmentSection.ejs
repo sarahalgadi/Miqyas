@@ -6,6 +6,7 @@
 <head>
     <%-include("./partials/head.ejs")%>
     <link rel="stylesheet" href="/stylesheets/assessmentTypes.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -16,22 +17,43 @@
                 <h2><%= courseCode %>: <%= courseName %> - Section <%= section %></h2>
             </div>
             <div class="col-md-2">
-                <!--Current term needs to be retrieved here dynamically-->
+                <!--Current term needs to be retrieved here dynamically-->                           
+
                 <h3>Term: <%= term %></h3>
             </div>
         </div>
         <div class="button-container">
-            <!--Button links will be changed to other pages when done-->
-
-            <!--instructor model and routes and controller..-->
-            <form method="post" action="/assign-grades/<%= courseCode %>/<%= term %>/<%= section %>">
-                <input type="hidden" name="courseName" value="<%= courseName %>">
-                <button class="custom-button">Direct CLO Assessment</button>
-            </form>
-      
-            <button class="custom-button">Indirect CLO Assessment</button>
-            <button class="custom-button">Prepare Report</button>
+            <!-- Button links will be changed to other pages when done -->
+        
+            <!-- Instructor model and routes and controller.. -->
+            <div class="row">
+                <button class="custom-button" onclick="showButtons()">Direct CLO Assessment</button>
+                <div id="buttonContainer" class="d-none">
+                    <form method="post" action="/assign-grades/<%= courseCode %>/<%= term %>/<%= section %>">
+                        <input type="hidden" name="courseName" value="<%= courseName %>">
+                        <button class="custom-button">Input Grades</button>
+                    </form>
+                    <form method="get" action="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>">
+                        <input type="hidden" name="courseName" value="<%= courseName %>">
+                        <button class="custom-button">View Student Achievements Per CLO</button>
+                    </form>
+                </div>
+            </div>
+        
+            <div class="row">
+                <button class="custom-button">Indirect CLO Assessment</button>
+            </div>
+            
+            <div class="row">
+                <button class="custom-button">Prepare Report</button>
+            </div>
         </div>
+        <script>
+            function showButtons() {
+                var buttonContainer = document.getElementById('buttonContainer');
+                        buttonContainer.classList.toggle('d-none');
+            }
+        </script>
 
 </body>
 

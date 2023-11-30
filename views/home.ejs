@@ -128,7 +128,9 @@
 
     <div class="container">
         <button class="btn custom-button col-3" href="#" style="width: 100%;">View Department Reports</button>
-        <button class="btn custom-button col-3" href="#" style="width: 100%;">Create or Update Course Learning Outcomes</button>
+        <form method="post" action="/edit-clos/<%= user.department %>/<%= term %>">
+            <button class="btn custom-button col-3" type="submit" style="width: 100%;">Create or Update Course Learning Outcomes</button>
+        </form>
     </div>
 
     <% } %>

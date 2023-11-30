@@ -9,7 +9,8 @@ router.get('/directAssessmentResults/:courseCode/:term/:section', courseInstruct
 router.get('/directAssessmentResults/:courseCode/:term/:section/:department', courseInstructorController.getDirectAssessmentResultsDepartment);
 router.post('/submit-students/:courseCode/:term/:section', [authMiddleware],courseInstructorController.saveStudentActivities);
 router.post('/assign-grades/:courseCode/:term/:section', [authMiddleware],courseInstructorController.assignGrades);
-router.post('/saveAssessment/:courseCode/:term/:section', [authMiddleware], courseInstructorController.saveGrades);
+router.post('/saveAssessment/:courseCode/:term/:section', [authMiddleware], courseInstructorController.saveAssessment);
+router.post('/saveStudentGrades/:courseCode/:term/:section', [authMiddleware], courseInstructorController.saveGrades);
 router.get('/assign-grades/:courseCode/:term/:section', [authMiddleware],courseInstructorController.assignGrades);
 router.get('/input-grades/:courseCode/:term/:section', [authMiddleware],courseInstructorController.inputGrades);
 
