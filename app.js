@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const pool = require('./database')
 
 //importing routers
-const dccRouter = require('./routes/dccRouter');
 const ciRouter = require('./routes/ciRouter');
 
 //contains port information
@@ -23,8 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//handling and rendering dcc and ci routes
-app.use('/DCC', dccRouter);
+
 app.use('/assessments', ciRouter);
 
 const port = process.env.PORT;
