@@ -172,15 +172,14 @@ async function getDirectAssessmentResultsDepartment(req, res) {
       console.log(formData)
 
       try{
-        let questions = formData.QNumber;
-        questions = Array.isArray(questions) ? questions : [questions];
-        let description = formData.description;
+     
+        let description = formData["description"];
         description = Array.isArray(description) ? description : [description];
-        let weight = formData.weight;
+        let weight = formData["weight"];
         weight = Array.isArray(weight) ? weight : [weight];
-        let cloMapped = formData.cloMapped;
+        let cloMapped = formData["cloMapped"];
         cloMapped = Array.isArray(cloMapped) ? cloMapped : [cloMapped];
-        let activityName = formData.activityName;
+        let activityName = formData["activityName"];
 
         //--------weight validation ---------------
         const userWeights = weight.map(w => parseInt(w));
@@ -193,8 +192,8 @@ async function getDirectAssessmentResultsDepartment(req, res) {
         if(matchedActivity.weight < sumOfUserWeights){
           res.send('<script>alert("Weights exceed the total expected weight of assessment activity"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
         } else{
-          for(let i = 0; i< questions.length; i++){
-            await courseInstructorModel.saveAssessmentDetails(courseCode, parseInt(questions[i]), description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);      
+          for(let i = 1; i<= description.length; i++){
+            await courseInstructorModel.saveAssessmentDetails(courseCode, i, description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);      
       }      res.send('<script>alert("Successfully saved!"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
 
        }} catch (error) {
