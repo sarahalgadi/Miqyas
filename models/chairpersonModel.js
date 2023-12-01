@@ -55,8 +55,20 @@ async function getCurrentCoordinator (department){
 
 async function getCurrentRoles (department){
     const [rows, fields] = await pool.execute
-    ('SELECT f.fullName, r.role FROM faculty f JOIN faculty_role r ON f.username = r.username  WHERE f.department = ? ',[department]);
+    ('SELECT f.fullName, f.username, r.role FROM faculty f JOIN faculty_role r ON f.username = r.username  WHERE f.department = ? ',[department]);
     return rows;
 }
 
-module.exports ={getFullNameDepartment,getDepartment,addRoles,getFullNameCollege,addCoordinatorRole, getCourseCode,getCurrentCoordinator,getCurrentRoles };
+async function deleteRole(username, role, semester) { 
+  
+    const sqlDelete = `
+      DELETE FROM faculty_role
+      WHERE username = ? AND role= ? AND semester = ?;
+    `;
+    
+    await pool.execute(sqlDelete, [ username, role, semester]);
+   
+  }
+
+
+module.exports ={getFullNameDepartment,getDepartment,addRoles,getFullNameCollege,addCoordinatorRole, getCourseCode,getCurrentCoordinator,getCurrentRoles,deleteRole };

@@ -14,6 +14,21 @@ async function getFacultyFromDepartment (req,res) {
   }
 };
 
+async function deleteRole (req,res) {
+  console.log("i am here")
+  const useranme = req.body.username;
+  const role = req.body.role; 
+  const semester = req.params.semester;
+  console.log(useranme,role,semester)
+  try{
+    await chairModel.deleteRole(useranme,role,semester);
+    res.render('index')
+  } catch(error){
+    console.error(error);
+    res.render('error', {message: "didnt work lol"});
+  }
+};
+
 async function saveRoles(req, res){
   const{semester}= req.params;
   const roles = req.body;  
@@ -93,5 +108,5 @@ async function saveCoordinators(req, res){
 
 
 module.exports = {
-    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,
+    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,deleteRole
 }

@@ -10,5 +10,7 @@ router.post('/save-roles/:semester', roleAssignment.saveRoles )
 router.post('/save-roles/:semester', roleAssignment.saveCoordinators)
 router.get('/view-faculty-college/:college/:department/:term', roleAssignment.getFacultyFromCollege);
 
+router.post('/delete-roles/:semester',roleAssignment.deleteRole);
+
 
 module.exports = router;
