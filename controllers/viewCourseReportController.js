@@ -34,6 +34,7 @@ async function viewCourseReport(req, res) {
         const recommendation = await courseReportModel.getRecommendation(courseCode, term);
   
         res.render('viewCourseReport', {
+          title: 'Course Report', //ayat i passed title here to render in page--------------
           courseCode,
           term,
           courseName,
@@ -93,6 +94,7 @@ async function viewCourseReport(req, res) {
         const recommendation = await courseReportModel.getRecommendation(courseCode, term); 
   
         res.render('viewCourseReport', {
+          title: 'Course Report', //ayat i added this to render page with title
           courseCode,
           term,
           courseName,

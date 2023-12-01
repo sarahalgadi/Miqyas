@@ -1,15 +1,9 @@
+<!--Ayat i updated html and css here-->
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--  Bootstrap CSS link -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <!-- Login css -->
-  <link rel="stylesheet" href="/stylesheets/login.css">
-
-      <title>Miqyas: Login</title>
+  <%- include('./partials/head.ejs')%>
+    <link rel="stylesheet" href="/stylesheets/login.css">
 </head>
 
 <body>
@@ -17,45 +11,40 @@
     <%- include('./partials/navLogin.ejs')%>
   </header>
 
-  <main class="mt-4">
-    <div class="row">
+  <div class="mt-4">
+    <!--Brief about section-->
+    <div class="row about">
       <div class="col-md-4">
-        <!-- miqyas name  -->
-        <h1 style="color: white;  font-style: italic; font-family: Helvetica, sans-serif; padding: 4rem;">Miqyas</h1>
+        <h1>Miqyas</h1>
       </div>
       <div class="col-md-6">
-        <!-- miqyas description  -->
-        <p style="color: white; text-align: justify; padding: 4rem; font-family: Arial, Helvetica, sans-serif;">
-          A seamless blend of precision on the pathway to educational excellence.</p>
+        <p>A seamless blend of precision on the pathway to educational excellence.</p>
       </div>
-      <hr>
-      <div class="container">
-        <div id="login" class="card">
-            <h2 class="card-title">Login</h2>
-            <hr id="divider">
-            <form action="/auth/login" method="post" id="loginForm">
-              <div class="container">
-                <!-- user type  -->
-            
-                <!-- username feild  -->
-                <label for="username"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" id="username" name="username" required>
-                <span id="usernameError" class="text-danger"></span><br>
-                <!-- password feild  -->
-                <label for="password"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" id="password" name="password" required>
-                <br>
-                <button id="submit" type="submit login-btn" class="login-btn">Login</button>
-    
-             
-              </div>
-            </form>
+    </div>
+
+    <div class="container">
+      <div id="login" class="card">
+        <h2 class="card-title">Login</h2>
+        <hr>
+        <form action="/auth/login" method="post" id="loginForm">
+          <div class="container">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" type="text" placeholder="Enter Username" id="username" name="username" required>
+            <span id="usernameError" class="text-danger"></span><br>
+
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" type="password" placeholder="Enter Password" id="password" name="password"
+              required>
+
+            <button id="submit" type="submit" class="btn custom-button">Login</button>
           </div>
-        </div>
-        
+        </form>
       </div>
-     
-  </main>
+    </div>
+
+  </div>
+
+  <%- include('./partials/footer.ejs')%>
 
 </body>
 

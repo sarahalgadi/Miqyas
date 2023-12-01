@@ -1,24 +1,29 @@
 h2 {
-    font-weight: 600;
+    font-weight: 500;
     margin: 1rem;
     padding: 1rem;
 }
-
-.button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    /* Allow items to wrap to the next line */
-}
-
-.custom-button {
-   /*width: 30%;  im commenting this ut.. it looks weird..*/
-    height: 150px;
-    margin: 10px;
-    font-size: 18px;
+.divider{
+    width: 90%;
+    margin: auto;
 }
 h3{
     margin: 1rem;
     padding: 1rem;
+}
+.button-container {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 8rem;
+}
+form{
+    width: 100%;
+}
+.custom-button{
+    width: 100%;
+    padding: 2rem;
+    margin-bottom: 10px;
+    font-size: 16px;
 }
