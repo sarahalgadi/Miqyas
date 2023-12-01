@@ -8,7 +8,7 @@
   integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
   crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="../stylesheets/style.css">
+  <link rel="stylesheet" href="/stylesheets/style.css">
   <style>
     body {
       background-color: #f8f9fa;
@@ -74,7 +74,7 @@
                 </tr>
               </thead>
               <tbody>
-                <% names.forEach(function(faculty) { %>
+                <% names.forEach(function(faculty, index) { %>
                 <tr>
                   <td class="col"><%= faculty.fullName %></td>
                   <td class="col"><%= faculty.username %></td>
@@ -96,9 +96,7 @@
                 <% }); %>
               </tbody>
             </table>
-            <div id="errorText">
-
-            </div>
+            <div id="errorText"></div>
             <button id="submitButton" type="submit" class="btn btn-primary" >Save Roles</button>
           </form>
       </div>
@@ -110,25 +108,50 @@
   // Get all the checkbox and dropdown list elements
   const coordinatorCheckboxes = document.querySelectorAll('[name="username"]');
   const courseDropdowns = document.querySelectorAll('[name="course"]');
-
+  const submitButton = document.getElementById("submitButton");
+  
   // Loop through each checkbox and add event listeners
   coordinatorCheckboxes.forEach(function (checkbox, index) {
     const courseDropdown = courseDropdowns[index];
     const defaultOption = courseDropdown.value;
-
+  
     // Add an event listener to the checkbox
     checkbox.addEventListener('change', function () {
       // Check if the checkbox is checked
       if (checkbox.checked) {
         // Enable the corresponding dropdown list
         courseDropdown.disabled = false;
+        if (!courseDropdown.value) {
+          document.getElementById("errorText").innerText = "Choose a course!";
+          submitButton.disabled = true;
+        } else {
+          document.getElementById("errorText").innerText = "";
+          submitButton.disabled = false; // Enable the submit button
+        }
       } else {
         // Disable the corresponding dropdown list
         courseDropdown.disabled = true;
         courseDropdown.value = defaultOption;
+        submitButton.disabled = true;
+      }
+    });
+  
+    // Add an event listener to the dropdown
+    courseDropdown.addEventListener('change', function () {
+      // Check if the dropdown value is not empty
+      if (courseDropdown.value) {
+        submitButton.disabled = false; // Enable the submit button
+        document.getElementById("errorText").innerText = "";
+      } else {
+        submitButton.disabled = true;
+        document.getElementById("errorText").innerText = "Choose a course!";
+
       }
     });
   });
+
+
+
 //---------------------------------------------------------------------------------------------------------
 //to ensure a course is only selected once
   function handleCourseChange(event) {

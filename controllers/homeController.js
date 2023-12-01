@@ -1,42 +1,49 @@
 const userModel = require('../models/UserModel')
+const sectionReportModel = require('../models/sectionReportModel');
+const courseReportModel = require('../models/courseReportModel');
 
 async function getUser(req,res ){
     
     const user= req.session.user;
-    const term = await userModel.getCurrentTerm(user.username);
-    const userRoles = await userModel.getUserRoles(user.username, term);
-    const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
-    const userCollege = await userModel.getUserCollege(user.department);
+    try{
+      const term = await userModel.getCurrentTerm(user.username);
+      const userRoles = await userModel.getUserRoles(user.username, term);
+      const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
+      const userCollege = await userModel.getUserCollege(user.department);
+      const fullName = user.fullName;
+      const title = "Miqyas: Home";
+      const courses = await userModel.getCourses(user.username, term);
+      res.render('home', {user, title, fullName, term, courses, userRoles, coordinatedCourses, userCollege});
+    } catch(error){
+      res.render('error', {message: "Error: Could not load home page!"})
+    }
 
-    console.log("username", user.username)
-    console.log("term", term)
-    const fullName = user.fullName;
-    const title = "Miqyas: Home";
-    const courses = await userModel.getCourses(user.username, term);
-
-    console.log(courses);
-    console.log("coordinated courses", coordinatedCourses);
-    console.log("user roles", userRoles);
-    
-    console.log("lolgetuser", user)
-    res.render('home', {user, title, fullName, term, courses, userRoles, coordinatedCourses, userCollege});
 }
 
+//this redirects from the home page to the section selected via the section card (aka show direct, indirect, prepare)
 async function getAssessmentPerSection (req, res){
-  //this is to get the page that shows direct, indirect, generate.
   const {courseCode, term, section} = req.params;
   const courseName = req.body.courseName;
-  console.log("cname", courseName)
 
   res.render('assessmentSection', {title: 'Direct Assessment',courseCode, term, section, courseName});
 }
 
-async function viewReports(req,res){
-  res.render('view-reports')
+
+//clicking on the button to take u to the past reports
+async function viewReports(req,res){ 
+  const {department, term} = req.params;
+  const user = req.session.user;
+  try{
+    const instructorSectionReports = await sectionReportModel.getSectionReportCourses(user.username);
+    const userRoles = await userModel.getUserRoles(user.username, term);
+    const departmentCourseReports = await  courseReportModel.getCoursesWithReports(department);
+    const departmentSectionReports = await sectionReportModel.getDepartmentSectionReports(department);
+    res.render('view-reports', {title:'View Reports',user, userRoles, instructorSectionReports, departmentCourseReports, departmentSectionReports})
+  }catch(error){
+    res.render('error', {message: "Error: Could not retrieve past reports!"})
+  }
 }
+ 
 
-
-
-
-  module.exports = {getUser, getAssessmentPerSection, viewReports};
+module.exports = {getUser, getAssessmentPerSection, viewReports};
   

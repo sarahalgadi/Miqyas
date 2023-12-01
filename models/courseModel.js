@@ -25,12 +25,30 @@ async function getCourseName(courseCode) {
     return {CLOstatements, CLOnumbers };
   }
 
-  async function getDepartments() { /////////todo:move to course..
+  async function getDepartments() { 
     const sql = 'SELECT departmentName FROM department';
     const [rows] = await pool.execute(sql);
     const departmentNames = rows.map(row => row.departmentName);
     return departmentNames;
   }
 
+  //course codes under user dept
+async function getCourseCode (department){
+  const [rows] = await pool.execute
+  ('SELECT courseCode FROM course WHERE department = ?',[department]);
+  return rows;
+}
+
+//get direct assessment weight and types
+async function getDirect(courseCode, term) {
+  const sql = 'SELECT type, weight FROM direct_assessment WHERE courseCode = ? AND semester = ?';
+  try {
+      const [rows] = await pool.execute(sql, [courseCode, term]);
+      return rows;
+  } catch (error) {
+      console.error('Error fetching direct assessment:', error);
+      throw error;
+  }
+}
  
-module.exports={}
+module.exports={getCourseCode, getCourseName, getDirect, getCLOInfo, getDepartments}

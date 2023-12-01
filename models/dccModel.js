@@ -2,12 +2,9 @@ const pool = require('../database');
 
 
 
-//get courses
+//get courses and their names under dcc's department
 async function getDepartmentCourses (department, semester){
-    //get coursecode/name under department from course table
-    //get coursecode under semester from coordinator OR courseSection 
-    //make the query 
-    //return should be coursecode course name 
+
     const sql = 'SELECT c.courseCode, c.courseName FROM course c JOIN coordinator co ON c.courseCode = co.courseCode WHERE c.department= ? AND co.semester = ? ';
     try {
         const [result] = await pool.execute(sql, [department, semester]);
@@ -18,12 +15,16 @@ async function getDepartmentCourses (department, semester){
     }
     
 }
+
+//fetching the CLO info for retrieval for dcc only.
 async function getCLOs (courseCode, semester){
     const [rows] = await pool.execute
     ('SELECT CLONumber, statement, domain FROM course_learning_outcomes WHERE courseCode = ? AND semester = ?', [courseCode, semester]);
     return rows;
-    //I dont know what to return if i am inserting into the databse
 }
+
+
+// saving clos.
 async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
 
     try{

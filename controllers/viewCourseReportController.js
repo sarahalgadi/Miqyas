@@ -1,5 +1,5 @@
-const courseReportModel = require('../models/courseReport');
-
+const courseReportModel = require('../models/courseReportModel');
+const courseModel = require('../models/courseModel')
 //todo: error handling here...  etc.
 //viewing course report..editing..
 //NOTEEEE: this is different from courseReport controller in many details that matter in ejs. that's why
@@ -8,12 +8,12 @@ async function viewCourseReport(req, res) {
     const { courseCode, term } = req.params;
   
     try {
-      const courseName = await courseReportModel.getCourseName(courseCode);
+      const courseName = await courseModel.getCourseName(courseCode);
   
       if (courseName) {
-        const learningOutcomes = await courseReportModel.getCLOInfo(courseCode, term);
-        const categoryCounts = await courseReportModel.getCategoryCounts(courseCode, term);
-        const departments = await courseReportModel.getDepartments();
+        const learningOutcomes = await courseModel.getCLOInfo(courseCode, term);
+        const categoryCounts = await courseReportModel.getCourseCategoryCounts(courseCode, term);
+        const departments = await courseModel.getDepartments();
         const indirectSums = await courseReportModel.calculateIndirectPerCLO(courseCode, term);
         const actionPlans = await courseReportModel.getSelectedActionPlan(courseCode, term);
         
@@ -31,7 +31,7 @@ async function viewCourseReport(req, res) {
         );
   
         // Get recommendation if it exists, as well as action plan
-        const recommendation = await courseReportModel.getRec(courseCode, term);
+        const recommendation = await courseReportModel.getRecommendation(courseCode, term);
   
         res.render('viewCourseReport', {
           courseCode,
@@ -67,12 +67,12 @@ async function viewCourseReport(req, res) {
     }
   
     try {
-      const courseName = await courseReportModel.getCourseName(courseCode);
+      const courseName = await courseModel.getCourseName(courseCode);
   
       if (courseName) {
-        const learningOutcomes = await courseReportModel.getCLOInfo(courseCode, term);
-        const categoryCounts = await courseReportModel.getCategoryCounts(courseCode, term, department);
-        const departments = await courseReportModel.getDepartments();
+        const learningOutcomes = await courseModel.getCLOInfo(courseCode, term);
+        const categoryCounts = await courseReportModel.getCourseCategoryCounts(courseCode, term, department);
+        const departments = await courseModel.getDepartments();
         const indirectSums = await courseReportModel.calculateIndirectPerCLO(courseCode, term);
         const actionPlans = await courseReportModel.getSelectedActionPlan(courseCode, term);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
@@ -81,7 +81,7 @@ async function viewCourseReport(req, res) {
         const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
   
         // Calculate results for all (just for the histogram's direct assessment)
-        const allcategory = await courseReportModel.getCategoryCounts(courseCode, term);
+        const allcategory = await courseReportModel.getCourseCategoryCounts(courseCode, term);
         const histo = calculateResultsPerCLO(allcategory);
         const [clohisto, indirecthisto, directhisto] = prepareHistogramData(
           learningOutcomes.CLOnumbers,
@@ -90,7 +90,7 @@ async function viewCourseReport(req, res) {
         );
   
         // Get recommendation if it exists, as well as action plan
-        const recommendation = await courseReportModel.getRec(courseCode, term); 
+        const recommendation = await courseReportModel.getRecommendation(courseCode, term); 
   
         res.render('viewCourseReport', {
           courseCode,

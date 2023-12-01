@@ -162,7 +162,7 @@
                                         <% }); %>
                                     </select>
                                 </td>
-                                <td><textarea name="statement"><%= actionPlan.statement || '' %></textarea></td>
+                                <td><textarea name="statement" required><%= actionPlan.statement || '' %></textarea></td>
                                 <td><input type="text" name="responsible" value="<%= actionPlan.responsibility || '' %>"></td>
                                 <td><input type="date" name="startDate" value="<%= actionPlan.startDate || '' %>"></td>
                                 <td><input type="date" name="endDate" value="<%= actionPlan.endDate || '' %>"></td>
@@ -276,6 +276,7 @@
                         var textarea = document.createElement('textarea');
                         textarea.className = 'form-control';
                         textarea.setAttribute('name', 'statement');
+                        textarea.setAttribute('required', 'true');
                         cell.appendChild(textarea);
                     }
                     else if (i === 5) {

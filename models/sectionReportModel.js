@@ -1,31 +1,11 @@
 const pool = require('../database');
 
 
-////////----to removeeeeeeeeeeeeeeeee-------------------
-async function getCourseName(courseCode) {
-    const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
-    const [rows] = await pool.execute(sql, [courseCode]);
-    return rows.length > 0 ? rows[0].courseName : null;
-  }
-
-
-  async function getCLOInfo(courseCode, semester) { //moved to course
-    const sql = 'SELECT  clo.statement, clo.CLONumber FROM course_learning_outcomes clo WHERE clo.courseCode = ? AND clo.semester = ?';
-    const [rows, fields] = await pool.execute(sql, [courseCode, semester]);
-    const CLOstatements = rows.map(row => row.statement);
-    const CLOnumbers = rows.map(row => row.CLONumber);
-    return {CLOstatements, CLOnumbers };
-  }
-  async function getDepartments() {
-    const sql = 'SELECT departmentName FROM department';
-    const [rows] = await pool.execute(sql);
-    const departmentNames = rows.map(row => row.departmentName);
-    return departmentNames;
-  }
 
   ////////-------------------------------------------------------------------------------
 
-  async function getCategoryCounts(courseCode, semester, section, department = null) { //todo: change the name for sara
+  //this is for counting categories per section
+  async function getCategoryCounts(courseCode, semester, section, department = null) { 
     let sql = `
       SELECT
         sc.CLONumber,
@@ -59,7 +39,7 @@ async function getCourseName(courseCode) {
   }
 
   
-
+//getting indirect assessment results per section
   async function getIndirectPerCLOPerSection(courseCode, semester, section) {
     const sql = `
       SELECT
@@ -82,8 +62,9 @@ async function getCourseName(courseCode) {
     const [rows] = await pool.execute(sql, [courseCode, semester, section]);
     return rows;
   }
-///////todo: rename this to indicate it's per section
-  async function getActionPlans(courseCode, semester, sectionNumber) { 
+
+
+  async function getSectionActionPlans(courseCode, semester, sectionNumber) { 
     const sql = `
         SELECT statement, resources, startDate, endDate, responsibility, CLONumber
         FROM action_plan
@@ -113,6 +94,7 @@ async function getCourseName(courseCode) {
     }
 }
 
+//saving action plan into database from section
 async function saveActionPlan(
     statement,
     resources,
@@ -161,7 +143,7 @@ async function saveActionPlan(
     }
 }
 
-
+//saving clo achievements from adirect assessments per section
 async function saveDirectCLOPerSection(CLONumber, courseCode, sectionNumber, percentageOfCLOAchievement, semester){
     const sql = `
     INSERT INTO directclo_per_section 
@@ -215,7 +197,8 @@ async function getSectionReportCourses(username){
       
 }
 
-async function getDepartmentSectionReports(department){ //get the course code, section and semester of sections who submitted their reports
+//get the course code, section and semester of sections who submitted their reports
+async function getDepartmentSectionReports(department){ 
   const sql = `SELECT DISTINCT d.courseCode, d.sectionNumber, d.semester
                 FROM directclo_per_section d
                 JOIN course c ON d.courseCode = c.courseCode
@@ -230,15 +213,11 @@ async function getDepartmentSectionReports(department){ //get the course code, s
 }
 
 
-  //todo: for action plan: delete and update and save!!!
 
   module.exports = {
-    getCourseName,
-    getCLOInfo,
     getCategoryCounts,
-    getDepartments,
     getIndirectPerCLOPerSection,
-    getActionPlans,
+    getSectionActionPlans,
     saveActionPlan,
     saveDirectCLOPerSection,
     getSectionReportCourses,

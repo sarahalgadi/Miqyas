@@ -48,7 +48,7 @@
   
     <div class="container">
         <h1 > <%= department %> Department Faculty Members</h1>
-        <form action="/save-roles/<%= semester %>" method="post">
+        <form action="/save-roles/<%= semester %>/<%= department %>" method="post">
         <table class="table  table-bordered  table-striped table-hover" >
           <thead >
             <tr>
@@ -68,7 +68,7 @@
                   </label>
                   <br>
                   <label>
-                    <input type="checkbox" name="quality assurance" value="<%= faculty.username %>"> Qaulity Assurance
+                    <input type="checkbox" name="quality assurance" value="<%= faculty.username %>"> Quality Assurance
                   </label>
                 </td>
               </tr>
