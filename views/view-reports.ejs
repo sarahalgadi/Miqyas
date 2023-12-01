@@ -110,6 +110,12 @@
                                     <form action="/view-section-report/<%= report.courseCode %>/<%= report.semester %>/<%= report.sectionNumber %>" method="GET">
                                         <button class="btn custom-button"  type="submit" style="width: 100%;">View Section Report</button>
                                     </form>
+                                    <% if (userRoles.includes('QA')){ %>
+                                        <form action="/directAssessmentResults/<%= report.courseCode %>/<%= report.semester %>/<%= report.sectionNumber %>" method="GET">
+                                            <button class="btn custom-button"  type="submit" style="width: 100%;">View Student Achievements</button>
+                                        </form>
+                                 <%   } %>
+                                    
                                 </div>
                             </div>
                         <% }); %>

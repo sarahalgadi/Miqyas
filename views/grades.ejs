@@ -58,7 +58,7 @@
                                     <% assessmentDetails.forEach((question, index) => { %>
                                         <% if (question.type === activity) { %>
                                             <tr>
-                                                <td><input type="number" class="form-control" value="<%= question.assessmentNumber %>" name="QNumber" readonly style="border: none;"></td>
+                                                <td><input type="number"  min="1" class="form-control" value="<%= question.assessmentNumber %>" name="QNumber" readonly style="border: none;"></td>
                                                 <td>
                                                     <textarea rows="1" name="description" class="form-control" value="<%= question.statment %>" required><%= question.statment %></textarea>
                                                 </td>
@@ -78,7 +78,7 @@
                             <% } else { %>
                                 <tbody id="insertionPoint">
                                     <tr>
-                                        <td><input type="number" class="form-control" value="1" name="QNumber" readonly style="border: none;"></td>
+                                        <td><input type="number" class="form-control" min="1" value="1" name="QNumber" readonly style="border: none;"></td>
                                         <td>
                                             <textarea rows="1" name="description" class="form-control" required></textarea>
                                         </td>
@@ -138,7 +138,7 @@
             const cell4 = row.insertCell(3);
             const cell5 = row.insertCell(4);
 
-            cell1.innerHTML = `<input type="number" name="QNumber" class="form-control" value="${tabRowCounts[tabIndex]}" readonly style="border: none;">`;
+            cell1.innerHTML = `<input type="number" name="QNumber" min="1" class="form-control" value="${tabRowCounts[tabIndex]}" readonly style="border: none;">`;
             cell2.innerHTML = `<textarea rows="1" name="description" class="form-control" required></textarea>`;
             cell3.innerHTML = `<input type="number" name="weight" class="form-control" required>`;
             const cloOptions = <%= JSON.stringify(CLOnumbers) %>.map(clo => `<option value="${clo}">CLO ${clo}</option>`).join('');                cell4.innerHTML = `

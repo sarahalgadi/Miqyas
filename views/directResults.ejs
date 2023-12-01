@@ -22,12 +22,13 @@
     </div>
 
 
-       
-    <!--todo: save studnet ids per percentage frm each row input type hidden-->
+  
     <!--student table-->
     <div class="container">
         <h3 style="font-family:Arial, Helvetica, sans-serif">Student Achievements Per CLO:</h3>
         <!-- currently in course instructor controller, route for course instructor, ci model too.-->
+
+        <% if (canAccess || userRoles.includes('QA')) { %>
         <form action="/submit-students/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
           <table class="table table-bordered">
             <thead>
@@ -73,12 +74,17 @@
             <% }); %>
           </ul>
         </div>
+        <% if (condition && canAccess) {%>
         <button class="btn custom-button col-2" type="submit">Submit Student Results</button>
+        <% } %>
+
       </form>
 
     </div>
     
     </div>
+
+    <% } %>
           
     
 

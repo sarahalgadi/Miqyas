@@ -115,9 +115,13 @@
     </div>
 
     <div class="container">
-        <button class="btn custom-button" href="#" style="width: 100%;">View Department Reports</button>
-        <button class="btn custom-button" href="#" style="width: 100%;">Assign Quality Assurance and Department Curriculum Committee Roles</button>
-        <button class="btn custom-button" href="#" style="width: 100%;">Assign Coordinator Roles</button>
+        <form action="/view-faculty-department/<%= user.department %>/<%= term %>" method="get">
+            <button class="btn custom-button" type="submit" style="width: 100%;">Assign Quality Assurance and Department Curriculum Committee Roles</button>
+        </form>
+
+        <form action="/view-faculty-college/<%= userCollege %>/<%= user.department %>/<%= term %>" method = "get">
+            <button class="btn custom-button" type="submit" style="width: 100%;">Assign Coordinator Roles</button>
+        </form>
     </div>
 
     <% } %>

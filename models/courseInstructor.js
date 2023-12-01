@@ -262,6 +262,17 @@ async function getStudentGrades(courseCode, semester, sectionNumber){//functino 
     }
 }
 
+async function getStudentAchievementPerCLO(courseCode, section, semester){
+    const sql = `SELECT studentID, CLONumber, studentCLOPercentage FROM student_coursesection WHERE courseCode = ? AND sectionNumber = ? AND semester = ?`;
+    try{
+        const[result] = await pool.execute(sql, [courseCode, section, semester]);
+        return result;
+
+    } catch(error){
+        console.log("error fetching results", error)
+    }
+}
+
 
 module.exports = {
     getDirectAssessmentTypes,
@@ -278,5 +289,6 @@ module.exports = {
     getTotalWeightOfAQuestion,
     saveStudentAveragePerQuestion, //saving grades for each student and clo achievement percentage
     getStudentGrades, //this is used in inputting grades page so in case there were readily made ones we view them
-    saveIndirectAssessmentData
+    saveIndirectAssessmentData,
+    getStudentAchievementPerCLO
 }

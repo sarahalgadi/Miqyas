@@ -77,10 +77,33 @@ async function getCoordinatedCourses(username, semester) {
     }
 }
 
+async function getInstructedCourses(username, semester){
+    const sql = `SELECT courseCode, sectionNumber FROM course_section WHERE username = ? AND semester = ?`;
+    try {
+        const [rows] = await pool.execute(sql, [username, semester]);
+        return rows; 
+    } catch (error) {
+        console.error('Error fetching course: ', error);
+        throw error;
+    }
+}
+
+async function getUserCollege (department){
+    const sql = 'SELECT college FROM department WHERE departmentName = ?';
+    try{
+        const[result] = await pool.execute(sql, [department]);
+        const college = result.map(row => row.college);
+        return college;
+
+    } catch(error){
+        console.log("error getting college name", error)
+    }
+}
 
 
 
 
 
-module.exports ={ getUserByUsername, getCurrentTerm, getCourses, getUserRoles, getCoordinatedCourses};
+
+module.exports ={ getUserByUsername, getCurrentTerm, getCourses, getUserRoles, getCoordinatedCourses, getInstructedCourses, getUserCollege};
 

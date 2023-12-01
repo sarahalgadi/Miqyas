@@ -6,7 +6,8 @@ async function getUser(req,res ){
     const term = await userModel.getCurrentTerm(user.username);
     const userRoles = await userModel.getUserRoles(user.username, term);
     const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
-    
+    const userCollege = await userModel.getUserCollege(user.department);
+
     console.log("username", user.username)
     console.log("term", term)
     const fullName = user.fullName;
@@ -18,7 +19,7 @@ async function getUser(req,res ){
     console.log("user roles", userRoles);
     
     console.log("lolgetuser", user)
-    res.render('home', {user, title, fullName, term, courses, userRoles, coordinatedCourses});
+    res.render('home', {user, title, fullName, term, courses, userRoles, coordinatedCourses, userCollege});
 }
 
 async function getAssessmentPerSection (req, res){

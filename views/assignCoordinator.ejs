@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="../stylesheets/style.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      background-color: #15416e;
+      color: white;
+      padding: 20px;
+      font-size: 25px;
+    }
+    table {
+      background-color: white;
+    }
+    th {
+      background-color: #15416e;
+      color: white;
+    }
+    td {
+      vertical-align: middle;
+    }
+    .btn-primary {
+      background-color: #15416e;
+      border-color: #15416e;
+    }
+
+  </style>
+  <title>Faculty List</title>
+</head>
+<body>
+  <%-include("./partials/nav.ejs")%>
+    <div class="container">
+        <h1><%= college %>  Faculty Members</h1>
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Coordinator</th>
+              <th scope="col">Course</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% coordinator.forEach(function(c) { %>
+            <tr>
+              <td class="col"><%= c.fullName %></td>
+              <td class="col"><%= c.courseCode %></td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+          <form method="post" action="/save-coordinator-roles/<%= semester %>/<%= college %>/<%= department %>">
+            <table class="table table-bordered table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Faculty Name</th>
+                  <th scope="col">Username</th>
+                  <th scope="col">Roles</th>
+                  <th scope="col">Course</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% names.forEach(function(faculty) { %>
+                <tr>
+                  <td class="col"><%= faculty.fullName %></td>
+                  <td class="col"><%= faculty.username %></td>
+                  <td class="col">
+                    <label>
+                      <input type="checkbox" name="username" value="<%= faculty.username %>"> Coordinator
+                    </label>
+                  </td>
+                  <td class="col">
+                    <select name="course" class="form-select" disabled>
+                      <option value="" selected disabled>Assign Course</option>
+                      <% courses.forEach(course => { %>
+                      <option value="<%= course.courseCode %>"><%= course.courseCode %></option>
+                      <% }); %>
+                    </select>
+             
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+            <div id="errorText">
+
+            </div>
+            <button id="submitButton" type="submit" class="btn btn-primary" >Save Roles</button>
+          </form>
+      </div>
+      </body>
+</html>
+<script>
+
+  //----------------------------------------------------------------------------------------------------------
+  // Get all the checkbox and dropdown list elements
+  const coordinatorCheckboxes = document.querySelectorAll('[name="username"]');
+  const courseDropdowns = document.querySelectorAll('[name="course"]');
+
+  // Loop through each checkbox and add event listeners
+  coordinatorCheckboxes.forEach(function (checkbox, index) {
+    const courseDropdown = courseDropdowns[index];
+    const defaultOption = courseDropdown.value;
+
+    // Add an event listener to the checkbox
+    checkbox.addEventListener('change', function () {
+      // Check if the checkbox is checked
+      if (checkbox.checked) {
+        // Enable the corresponding dropdown list
+        courseDropdown.disabled = false;
+      } else {
+        // Disable the corresponding dropdown list
+        courseDropdown.disabled = true;
+        courseDropdown.value = defaultOption;
+      }
+    });
+  });
+//---------------------------------------------------------------------------------------------------------
+//to ensure a course is only selected once
+  function handleCourseChange(event) {
+    const select = event.target;
+    const selectedCourse = select.value;
+    const otherSelects = document.querySelectorAll('select[name="course"]:not([value=""])');
+
+    for (let i = 0; i < otherSelects.length; i++) {
+      const otherSelect = otherSelects[i];
+
+      if (otherSelect !== select && otherSelect.value === selectedCourse) {
+        otherSelect.value = ""; // Reset the other select if the same course is selected
+      }
+    }
+  }
+
+  const courseSelects = document.querySelectorAll('select[name="course"]');
+  for (let i = 0; i < courseSelects.length; i++) {
+    const select = courseSelects[i];
+    select.addEventListener('change', handleCourseChange);
+  }
+</script>

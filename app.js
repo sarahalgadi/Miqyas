@@ -22,6 +22,7 @@ const cc = require('./routes/cc');
 const sectionReportRoutes = require('./routes/sectionReport');
 const courseInstructorRoutes = require('./routes/courseInstructor');
 const dccRoutes = require('./routes/dccRoutes');
+const chairRoutes = require('./routes/chairRouter');
 const jwt = require('jsonwebtoken');
 const session = require('express-session');
 
@@ -64,7 +65,7 @@ app.use('/', courseReportRoutes);//editing courseReport routes.. for coordinator
 app.use('/', cc); //this is just for cc.ejs aka the page where there are tabs for a chosen coordinated course
 app.use('/', sectionReportRoutes);
 app.use('/', dccRoutes);
-
+app.use('/', chairRoutes);
 
 
 

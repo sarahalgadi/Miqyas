@@ -1,4 +1,5 @@
 const courseInstructorModel = require('../models/courseInstructor');
+const userModel = require('../models/UserModel');
 
 
 async function getGradesPage(req, res) {
@@ -17,17 +18,28 @@ async function getGradesPage(req, res) {
     res.render('instructor',  {assignedWeights, studentInfo});
 }
 
+//this is the table where instructors calculate overall clo achievement per student for each clo.. has to be saved into db.. for reports.
 async function getDirectAssessmentResults(req,res) {
+    const user = req.session.user;
     const {courseCode, term, section} = req.params;
+    const userRoles = await userModel.getUserRoles(user.username, term);
+    const userCourses = await userModel.getInstructedCourses(user.username, term);
     const studentInfo = await courseInstructorModel.getStudentInfo(courseCode, term, section);
     const learningOutcomes = await courseInstructorModel.getCLOInfo(courseCode, term);
     const CLOnumbers = learningOutcomes.CLOnumbers;
-    const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
     const studentTotal = await courseInstructorModel.getDirectPerCLOPerStudent(courseCode, term, section);
     const courseName = await courseInstructorModel.getCourseName(courseCode);
     const title = "Direct Assessment: Grades";
     const CLOstatements = learningOutcomes.CLOstatements;
     const departments = await courseInstructorModel.getDepartments();
+    const condition = true;
+    let canAccess = false;
+
+    userCourses.forEach(function(course){
+      if(course.courseCode == courseCode && course.sectionNumber == section)
+        canAccess = true;
+    });
+
 
     //category ae, me, be etc..
   
@@ -39,16 +51,21 @@ async function getDirectAssessmentResults(req,res) {
     courseName,
     studentInfo,
     CLOnumbers,
-    resultsPerCLO,
     studentTotal,
     CLOstatements,
-    departments
-  });
+    departments,
+    condition,
+    canAccess,
+    userRoles  });
    
 }
-//for filtering results per section.. different route lol
+//for filtering results per section.. different route 
 async function getDirectAssessmentResultsDepartment(req, res) {
-    const {courseCode, term, section, department} = req.params;
+  const user = req.session.user;
+  const {courseCode, term, section, department} = req.params;
+  const userCourses = await userModel.getInstructedCourses(user.username, term);
+  const userRoles = await userModel.getUserRoles(user.username, term);
+
 
     if (department === 'All') {
         return res.redirect(`/directAssessmentResults/${courseCode}/${term}/${section}`);
@@ -58,14 +75,17 @@ async function getDirectAssessmentResultsDepartment(req, res) {
       const studentInfo = await courseInstructorModel.getStudentInfo(courseCode, term, section);
       const learningOutcomes = await courseInstructorModel.getCLOInfo(courseCode, term);
       const CLOnumbers = learningOutcomes.CLOnumbers;
-      const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
       const studentTotal = await courseInstructorModel.getDirectPerCLOPerStudentDepartment(courseCode, term, section, department);
       const courseName = await courseInstructorModel.getCourseName(courseCode);
       const title = "Direct Assessment: Grades";
       const CLOstatements = learningOutcomes.CLOstatements;
       const departments = await courseInstructorModel.getDepartments();
-
-
+      const condition = false; //i dont want to save the achievement levels per student from per department table.. will mess up the readings..
+      let canAccess = false;
+      userCourses.forEach(function(course){
+        if(course.courseCode == courseCode && course.sectionNumber == section)
+          canAccess = true;
+      });
   
     res.render('directResults', {
       title,
@@ -75,10 +95,12 @@ async function getDirectAssessmentResultsDepartment(req, res) {
       courseName,
       studentInfo,
       CLOnumbers,
-      resultsPerCLO,
       studentTotal,
       CLOstatements,
-      departments      
+      departments,
+      condition,
+      canAccess, 
+      userRoles
     });
 }
 
@@ -155,7 +177,6 @@ function calculateResultsPerCLO(categoryCounts) {
     const courseName = req.body.courseName;
     const directAssessment = await courseInstructorModel.getDirectAssessmentTypes(courseCode, term);
     const activities = directAssessment.map(item => item.type); // Extract just the activity names
-    // Extract the courseName 
     const assignedWeights = {};
     const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
     console.log(assessmentDetails);
@@ -176,19 +197,33 @@ function calculateResultsPerCLO(categoryCounts) {
 
       try{
         //fix: we need to make sur etheyre arrays!!!!!! use the same function as sara!!!!
-        const questions = formData.QNumber;
-        const description = formData.description;
-        const weight = formData.weight;
-        const cloMapped = formData.cloMapped;
-        const activityName = formData.activityName;
+        let questions = formData.QNumber;
+        questions = Array.isArray(questions) ? questions : [questions];
+        let description = formData.description;
+        description = Array.isArray(description) ? description : [description];
+        let weight = formData.weight;
+        weight = Array.isArray(weight) ? weight : [weight];
+        let cloMapped = formData.cloMapped;
+        cloMapped = Array.isArray(cloMapped) ? cloMapped : [cloMapped];
+        let activityName = formData.activityName;
 
-        for(let i = 0; i< questions.length; i++){
-            await courseInstructorModel.saveAssessmentDetails(courseCode, parseInt(questions[i]), description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);
-              
-      }
+        //--------weight validation ---------------
+        const userWeights = weight.map(w => parseInt(w));
+          // Calculate the sum of user-inputted weights
+        const sumOfUserWeights = userWeights.reduce((total, w) => total + w, 0);
+         // Fetch saved activity weights from the database
+        const directAssessment = await courseInstructorModel.getDirectAssessmentTypes(courseCode, term);
+        const matchedActivity = directAssessment.find(item => item.type === activityName);
+        console.log('matched activity', matchedActivity);
 
-      res.send('<script>alert("Successfully saved!"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
-  } catch (error) {
+        if(matchedActivity.weight < sumOfUserWeights){
+          res.send('<script>alert("Weights exceed the total expected weight of assessment activity"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
+        } else{
+          for(let i = 0; i< questions.length; i++){
+            await courseInstructorModel.saveAssessmentDetails(courseCode, parseInt(questions[i]), description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);      
+      }      res.send('<script>alert("Successfully saved!"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
+
+       }} catch (error) {
       res.render('error', {message:'Failed to save assessment details! please try again'});
       console.error(error)
   }
