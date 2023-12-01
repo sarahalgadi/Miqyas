@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("./partials/head.ejs")%>
+        <link rel="stylesheet" href="/stylesheets/indirectAssessment.css">
+       
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="/stylesheets/success.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <%-include("./partials/nav.ejs")%>
+    </header>
+    <div class="card">
+        <div class="card-body">
+                <div id="success">
+                    <p><i class="fas fa-check"></i></p>
+                    <h2><%= message %></h2>
+                    <!--Fix link to home page later-->
+                    <p>View more of <a href="/">Miqyas</a></p>
+                </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

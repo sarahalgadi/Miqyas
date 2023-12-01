@@ -9,7 +9,7 @@ async function renderCourseDetails(req, res) {
         if (courseInfo) {
             const { section, term, courseName } = courseInfo;
 
-            res.render('indirectAssessment', { title: 'Indirect Assessment', courseCode, section, term, courseName });
+            res.render('indirectAssessment', { title: 'Indirect Assessment', courseCode, section, term, courseName, message: '' });
 
         } else {
             res.status(404).send('Course not found');
@@ -55,11 +55,11 @@ async function saveIndirectAssessment(req, res) {
             NumBarelySatisfied,
             NumNotSatisfied
         );
-
-        res.status(200).send('Data saved successfully');
+        //then redirecting to success page to indicate this process is complete
+        console.log('Indirect Assessment Results Saved Successfully!');
+        res.render('success', {title: 'Success!', message:'Indirect Assessment Results Saved Successfully!'});
     } catch (error) {
         console.error('Error saving data:', error);
-        res.status(500).send('Error saving data');
     }
 }
 module.exports = {

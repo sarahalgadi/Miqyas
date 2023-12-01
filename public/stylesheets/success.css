@@ -1,0 +1,21 @@
+.card {
+    display: flex;
+    width: 60%;
+    border-radius: 10x;
+    box-shadow: 0px 5px 10px #15416e;
+    margin: auto;
+    margin-bottom: 20px;
+    margin-top: 7rem;
+}
+
+h2, p{
+    text-align: center;
+}
+a{
+    color:#15416e
+}
+
+.fa-check{
+    font-size: 64px;
+    color: #15416e;
+}

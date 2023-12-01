@@ -21,11 +21,17 @@ async function getCourseDetails(courseCode) {
 //function to save indirect assessment into db
 async function saveIndirectAssessmentData(CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied) {
         const first_query = `
-            INSERT INTO indirect_assessment (
-                CLONumber, courseCode, semester, sectionNumber, 
-                NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied,
-                NumBarelySatisfied, NumNotSatisfied
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO indirect_assessment (
+            CLONumber, courseCode, semester, sectionNumber, 
+            NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied,
+            NumBarelySatisfied, NumNotSatisfied
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) 
+        ON DUPLICATE KEY UPDATE 
+            NumFullySatisfied = VALUES(NumFullySatisfied),
+            NumAdequatelySatisfied = VALUES(NumAdequatelySatisfied),
+            NumSatisfied = VALUES(NumSatisfied),
+            NumBarelySatisfied = VALUES(NumBarelySatisfied),
+            NumNotSatisfied = VALUES(NumNotSatisfied)
         `;
         
     try{
