@@ -2,6 +2,10 @@
 const pool = require('../database');
 
 
+
+//to removeeeeeeeeeeeeeeeee
+//-------------------------------------------
+
 async function getCourseName(courseCode) {
   const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
   const [rows] = await pool.execute(sql, [courseCode]);
@@ -18,7 +22,17 @@ async function getCLOInfo(courseCode, semester) {
   return {CLOstatements, CLOnumbers };
 }
 
-async function getCategoryCounts(courseCode, semester, department = null) {
+
+async function getDepartments() {
+  const sql = 'SELECT departmentName FROM department';
+  const [rows] = await pool.execute(sql);
+  const departmentNames = rows.map(row => row.departmentName);
+  return departmentNames;
+}
+
+//-------------------------------------------------------------------------
+
+async function getCategoryCounts(courseCode, semester, department = null) {////todo: change the name to indicate it's per course
   let sql = `
     SELECT
       sc.CLONumber,
@@ -51,12 +65,6 @@ async function getCategoryCounts(courseCode, semester, department = null) {
 
 
 
-async function getDepartments() {
-  const sql = 'SELECT departmentName FROM department';
-  const [rows] = await pool.execute(sql);
-  const departmentNames = rows.map(row => row.departmentName);
-  return departmentNames;
-}
 
 async function calculateIndirectPerCLO(courseCode, semester) {
   const sql = `
@@ -82,7 +90,7 @@ async function calculateIndirectPerCLO(courseCode, semester) {
 
 //todo: date here is retrieved as yyyy-mm-dd:hh-mm-ss... change it to look more userfriendly.
 
-async function getActionPlan(courseCode, semester) {
+async function getActionPlan(courseCode, semester) { //fixme: per section change the name
   const sql = `
     SELECT *
     FROM action_plan
@@ -92,6 +100,8 @@ async function getActionPlan(courseCode, semester) {
   const [rows] = await pool.execute(sql, [courseCode, semester]);
   return rows;
 }
+
+
 async function saveRecommendation(courseCode, term, username, recommendation) {
   const sql = `
     INSERT INTO recommendation (courseCode, semester, username, statment)
@@ -102,6 +112,8 @@ async function saveRecommendation(courseCode, term, username, recommendation) {
 
   await pool.execute(sql, [courseCode, term, username, recommendation]);
 }
+
+
 async function updateSelectedActionPlans(courseCode, term, formData) { // here im updating action plan value.. in case it was selected/ deselected
   const sqlGetActionPlans = `
     SELECT sectionNumber, CLONumber
@@ -126,7 +138,7 @@ async function updateSelectedActionPlans(courseCode, term, formData) { // here i
     await pool.execute(sqlUpdate, [isSelected, courseCode, term, sectionNumber, CLONumber]);
   }
 }
-
+////////todo: why r they two different things? ////////////TODO: two models for views..
 async function getRecommendation(courseCode, term, username) {
   const sql = `
       SELECT statment
@@ -162,7 +174,21 @@ async function getSelectedActionPlan(courseCode, semester) {
 }
 
 
+async function getCoursesWithReports(department){ //getting sem and coursecode of course reports that are finished.
+  const sql = `SELECT r.courseCode, r.semester
+      FROM recommendation r
+      JOIN course c ON r.courseCode = c.courseCode
+      WHERE c.department = ?`;
+  try {
+        const [result] = await pool.execute(sql, [department]);
+        return result;
+           } catch (error) {
+                     console.error('Error in fetching course info:', error);
+                     throw error;
+                 }
 
+
+}
 
 
 
@@ -176,6 +202,7 @@ async function getSelectedActionPlan(courseCode, semester) {
     saveRecommendation,
     updateSelectedActionPlans,
     getRecommendation,
-    getRec, //for viewing course report controller
-    getSelectedActionPlan //for viewing course report controller
+    getRec, //for viewing course report controller //////FIXME: WHYYYYYYYYYYYYYYYY?!!!!
+    getSelectedActionPlan, //for viewing course report controller
+    getCoursesWithReports
   };

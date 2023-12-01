@@ -2,12 +2,19 @@
 
 const pool = require('../database');
 
-//Here, i will get the course name for the selected coursecode.
+//todo: change the name of the model.
+
+
+///REMOVE------------------------------------------------
 async function getCourseName(courseCode) {
     const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
     const [rows] = await pool.execute(sql, [courseCode]);
     return rows.length > 0 ? rows[0].courseName : null;
   }
+//-----------------------------------
+
+//Here, i will get the course name for the selected coursecode.
+
 
 async function addTypeAndWeight(courseCode, type, weight, term) {
     const sql = 'INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE weight = VALUES(weight), type = VALUES(type)';
@@ -20,6 +27,7 @@ async function addTypeAndWeight(courseCode, type, weight, term) {
 }
 
 //getting type and weight for saved activities in the same term and course
+//fixme: move to course 
 async function getDirect(courseCode, term) {
     const sql = 'SELECT type, weight FROM direct_assessment WHERE courseCode = ? AND semester = ?';
     try {
@@ -45,7 +53,8 @@ async function getCoordinatedSections(courseCode, term) {
 }
 
 async function getPastCourseReportSemesters(courseCode){
-    const sql = 'SELECT semester FROM recommendation WHERE courseCode = ?';// we use recommendation for fetching course report since it's the only thing that can be traced back to coordinator reports.
+    // we use recommendation for fetching course report since it's the only thing that can be traced back to coordinator reports.
+    const sql = 'SELECT semester FROM recommendation WHERE courseCode = ?';
     try{
         const[rows] = await pool.execute(sql, [courseCode]);
         const semesters = rows.map(row => row.semester);

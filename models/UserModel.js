@@ -59,7 +59,7 @@ async function getUserRoles(username, semester) {
         throw error;
     }
 }
-///fixme: very bad remove it
+///fixme: very bad remove it //todo: remember why...
 async function getCoordinatedCourses(username, semester) {
     const sql = `
         SELECT c.courseCode, cr.courseName
@@ -76,6 +76,8 @@ async function getCoordinatedCourses(username, semester) {
         throw error;
     }
 }
+
+
 
 
 

@@ -68,7 +68,7 @@
                 <% } %>
             </div>
             <hr>
-            <form action="/view-reports" method="get">
+            <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
                 <button class="btn custom-button" href="#" style="width: 100%;">View Your Past Reports</button>
             </form>
       

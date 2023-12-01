@@ -1,26 +1,6 @@
 const pool = require('../database');
 
 
-//all the semesters
-async function getSemesters (){
-    const [rows, fields] = await pool.execute
-    ('SELECT DISTINCT semester FROM course_section ');
-    return rows;
-}
-
-//DCC member name 
-async function getFullName (username){
-    const [rows, fields] = await pool.execute
-    ('SELECT fullname FROM faculty WHERE username = ? ');
-    return rows;
-}
-
-//department
-async function getDepartment (username){
-    const [rows, fields] = await pool.execute
-    ('SELECT department FROM faculty WHERE username = ? ');
-    return rows;
-}
 
 //get courses
 async function getDepartmentCourses (department, semester){
@@ -58,4 +38,4 @@ async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
 
 
 
-module.exports ={getSemesters, getDepartmentCourses ,addCLOs,getFullName, getDepartment, getCLOs};
+module.exports ={ getDepartmentCourses ,addCLOs, getCLOs};

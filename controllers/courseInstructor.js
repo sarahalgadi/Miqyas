@@ -22,7 +22,6 @@ async function getDirectAssessmentResults(req,res) {
     const studentInfo = await courseInstructorModel.getStudentInfo(courseCode, term, section);
     const learningOutcomes = await courseInstructorModel.getCLOInfo(courseCode, term);
     const CLOnumbers = learningOutcomes.CLOnumbers;
-    const categoryCounts = await courseInstructorModel.getCategoryCounts(courseCode, term, section);
     const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
     const studentTotal = await courseInstructorModel.getDirectPerCLOPerStudent(courseCode, term, section);
     const courseName = await courseInstructorModel.getCourseName(courseCode);
@@ -40,7 +39,6 @@ async function getDirectAssessmentResults(req,res) {
     courseName,
     studentInfo,
     CLOnumbers,
-    categoryCounts,
     resultsPerCLO,
     studentTotal,
     CLOstatements,
@@ -60,7 +58,6 @@ async function getDirectAssessmentResultsDepartment(req, res) {
       const studentInfo = await courseInstructorModel.getStudentInfo(courseCode, term, section);
       const learningOutcomes = await courseInstructorModel.getCLOInfo(courseCode, term);
       const CLOnumbers = learningOutcomes.CLOnumbers;
-      const categoryCounts = await courseInstructorModel.getCategoryCounts(courseCode, term, section);
       const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
       const studentTotal = await courseInstructorModel.getDirectPerCLOPerStudentDepartment(courseCode, term, section, department);
       const courseName = await courseInstructorModel.getCourseName(courseCode);
@@ -78,7 +75,6 @@ async function getDirectAssessmentResultsDepartment(req, res) {
       courseName,
       studentInfo,
       CLOnumbers,
-      categoryCounts,
       resultsPerCLO,
       studentTotal,
       CLOstatements,

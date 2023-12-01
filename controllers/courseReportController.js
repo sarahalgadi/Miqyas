@@ -208,7 +208,8 @@ async function editCourseReport(req, res) {
   async function saveCourseReport(req, res) {
     try {
       const { courseCode, term } = req.params;
-      const username = "rjan"; //coordinator name is taken through session mgmnt.. I'm just using a placeholder
+      const user = req.session.user;
+      const username = user.username; 
       const recommendation = req.body.recommendation.trim();
   
       // Update the recommendation table

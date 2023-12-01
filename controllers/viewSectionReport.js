@@ -202,7 +202,7 @@ function calculateResultsPerCLO(categoryCounts) {
     return [clonumbers, indirectResults, directResults];
   }
 
-     
+  
 
 
 

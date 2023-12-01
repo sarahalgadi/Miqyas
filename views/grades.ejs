@@ -62,7 +62,7 @@
                                                 <td>
                                                     <textarea rows="1" name="description" class="form-control" value="<%= question.statment %>" required><%= question.statment %></textarea>
                                                 </td>
-                                                <td><input type="number" name="weight" class="form-control" value="<%= question.grade %>" required></td>
+                                                <td><input type="number" name="weight" min="1" class="form-control" value="<%= question.grade %>" required></td>
                                                 <td>
                                                     <select class="form-select" name="cloMapped">
                                                         <% CLOnumbers.forEach(clo => { %>
@@ -82,7 +82,7 @@
                                         <td>
                                             <textarea rows="1" name="description" class="form-control" required></textarea>
                                         </td>
-                                        <td><input type="number" name="weight" class="form-control" required></td>
+                                        <td><input type="number" name="weight" min="1" class="form-control" required></td>
                                         <td>
                                             <select class="form-select" name="cloMapped">
                                                 <% CLOnumbers.forEach(clo => { %>

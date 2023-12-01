@@ -1,15 +1,152 @@
-<html>
-    <body>
-        <select>
-            <option>Term</option>
-            <option></option>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <%- include("./partials/head.ejs") %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/courseCards.css">
+</head>
+<body>
+    <%-include("./partials/nav.ejs")%>
+
+
+    <!------------------------------------------>
+ 
+    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+        <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Section reports made by you: </h2>
+    </div>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="course-cards">
+                <% if (instructorSectionReports) { %>
+                    <% instructorSectionReports.forEach(function (report) { %>
+                        <div class="card">
+                            <h2 class="card-title">
+                                <%= report.courseCode %>: Section  <%= report.sectionNumber %>
+                            </h2>
+                            <div class="card-body">
+                                <strong> Term: <%= report.semester %> </strong>
+                             
+                                <form action="/view-section-report/<%= report.courseCode %>/<%= report.semester %>/<%= report.sectionNumber %>" method="GET">
+                                    <button class="btn custom-button"  type="submit" style="width: 100%;">View Section Report</button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <h2>You did not do any section reports!</h2>
+                <% } %>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    <hr>
+
+    <!------------department stuff-->
+    <% if (userRoles.includes('chairperson') || userRoles.includes('DCC') || userRoles.includes('QA')) { %>
+    <div class="container">
+        <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">View Submitted Reports: </h2>
+        </div>
+        <select id="reportType" class="form-select">
+            <option selected disabled>Choose report: </option>
+            <option value="course">Course Reports</option>
+            <option value="section">Section Reports</option>
         </select>
-        <select>
-            <option>Type of report:</option>
-            <!--if u r not dcc, qa, chairperson, course report doesn't show.-->
-        </select>
-        <select>
-            <option>If section-- course?</option>
-        </select>
-    </body>
+    </div>
+  
+
+    <!----------department course reports------------------------------>
+    <div id="departmentCourseReports" style="display: none">
+        <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Department Course Reports: </h2>
+        </div>
+        <div class="container mt-4">
+            <div class="card">
+                <div class="course-cards">
+                    <% if (departmentCourseReports) { %>
+                        <% departmentCourseReports.forEach(function (report) { %>
+                            <div class="card">
+                                <h2 class="card-title">
+                                    <%= report.courseCode %>
+                                </h2>
+                                <div class="card-body">
+                                    <strong> Term: <%= report.semester %> </strong>
+                                 
+                                    <form action="/view-course-report/<%= report.courseCode %>/<%= report.semester %>" method="GET">
+                                        <button class="btn custom-button"  type="submit" style="width: 100%;">View Course Report</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <h2>No course reports in this department!</h2>
+                    <% } %>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+    <!-----------------department section reports----------------------------------->
+    <div id="departmentSectionReports" style="display: none">
+        <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Department Section Reports: </h2>
+        </div>
+        <div class="container mt-4">
+            <div class="card">
+                <div class="course-cards">
+                    <% if (departmentSectionReports) { %>
+                        <% departmentSectionReports.forEach(function (report) { %>
+                            <div class="card">
+                                <h2 class="card-title">
+                                    <%= report.courseCode %>: Section <%= report.sectionNumber %>
+                                </h2>
+                                <div class="card-body">
+                                    <strong> Term: <%= report.semester %> </strong>
+                                 
+                                    <form action="/view-section-report/<%= report.courseCode %>/<%= report.semester %>/<%= report.sectionNumber %>" method="GET">
+                                        <button class="btn custom-button"  type="submit" style="width: 100%;">View Section Report</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <h2>No section reports in this department!</h2>
+                    <% } %>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Add an event listener to the dropdown menu
+        document.getElementById('reportType').addEventListener('change', function () {
+            // Get the selected value
+            var selectedReportType = this.value;
+    
+            // Hide both sections initially
+            document.getElementById('departmentCourseReports').style.display = 'none';
+            document.getElementById('departmentSectionReports').style.display = 'none';
+    
+            // Show the selected section
+            if (selectedReportType === 'course') {
+                document.getElementById('departmentCourseReports').style.display = 'block';
+            } else if (selectedReportType === 'section') {
+                document.getElementById('departmentSectionReports').style.display = 'block';
+            }
+        });
+    </script>
+
+    <% } %>
+
+
+
+
+
+</body>
 </html>
