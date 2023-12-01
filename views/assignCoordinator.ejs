@@ -56,98 +56,127 @@
           </thead>
           <tbody>
             <% coordinator.forEach(function(c) { %>
+              <form action="/delete-coordinator/<%= semester %>" method="post">
             <tr>
               <td class="col"><%= c.fullName %></td>
               <td class="col"><%= c.courseCode %></td>
+              <input type="hidden" value="<%= c.role %>" name="role">
+            <input type="hidden" value="<%= c.username %>" name="username">
+            <input type="hidden" value="<%= c.courseCode %>" name="courseCode">
+              <td><button type="submit">delete</button></td>
             </tr>
+          </form>
             <% }); %>
           </tbody>
         </table>
-          <form method="post" action="/save-roles/<%= semester %>">
-            <table class="table table-bordered table-striped table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">Faculty Name</th>
-                  <th scope="col">Username</th>
-                  <th scope="col">Roles</th>
-                  <th scope="col">Course</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% names.forEach(function(faculty) { %>
-                <tr>
-                  <td class="col"><%= faculty.fullName %></td>
-                  <td class="col"><%= faculty.username %></td>
-                  <td class="col">
-                    <label>
-                      <input type="checkbox" name="username" value="<%= faculty.username %>"> Coordinator
-                    </label>
-                  </td>
-                  <td class="col">
-                    <select name="course" class="form-select" disabled>
-                      <option value="" selected disabled>Assign Course</option>
-                      <% courses.forEach(course => { %>
-                      <option value="<%= course.courseCode %>"><%= course.courseCode %></option>
-                      <% }); %>
-                    </select>
-             
-                  </td>
-                </tr>
-                <% }); %>
-              </tbody>
-            </table>
-            <div id="errorText">
-
-            </div>
-            <button id="submitButton" type="submit" class="btn btn-primary" >Save Roles</button>
-          </form>
-      </div>
-      </body>
+        <form method="post" action="/save-coordinator-roles/<%= semester %>/<%= college %>/<%= department %>">
+          <table class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Faculty Name</th>
+                <th scope="col">Username</th>
+                <th scope="col">Roles</th>
+                <th scope="col">Course</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% names.forEach(function(faculty, index) { %>
+              <tr>
+                <td class="col"><%= faculty.fullName %></td>
+                <td class="col"><%= faculty.username %></td>
+                <td class="col">
+                  <label>
+                    <input type="checkbox" name="username" value="<%= faculty.username %>"> Coordinator
+                  </label>
+                </td>
+                <td class="col">
+                  <select name="course" class="form-select" disabled>
+                    <option value="" selected disabled>Assign Course</option>
+                    <% courses.forEach(course => { %>
+                    <option value="<%= course.courseCode %>"><%= course.courseCode %></option>
+                    <% }); %>
+                  </select>
+           
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+          <div id="errorText"></div>
+          <button id="submitButton" type="submit" class="btn btn-primary" >Save Roles</button>
+        </form>
+    </div>
+    </body>
 </html>
 <script>
 
-  //----------------------------------------------------------------------------------------------------------
-  // Get all the checkbox and dropdown list elements
-  const coordinatorCheckboxes = document.querySelectorAll('[name="username"]');
-  const courseDropdowns = document.querySelectorAll('[name="course"]');
+//----------------------------------------------------------------------------------------------------------
+// Get all the checkbox and dropdown list elements
+const coordinatorCheckboxes = document.querySelectorAll('[name="username"]');
+const courseDropdowns = document.querySelectorAll('[name="course"]');
+const submitButton = document.getElementById("submitButton");
 
-  // Loop through each checkbox and add event listeners
-  coordinatorCheckboxes.forEach(function (checkbox, index) {
-    const courseDropdown = courseDropdowns[index];
-    const defaultOption = courseDropdown.value;
+// Loop through each checkbox and add event listeners
+coordinatorCheckboxes.forEach(function (checkbox, index) {
+  const courseDropdown = courseDropdowns[index];
+  const defaultOption = courseDropdown.value;
 
-    // Add an event listener to the checkbox
-    checkbox.addEventListener('change', function () {
-      // Check if the checkbox is checked
-      if (checkbox.checked) {
-        // Enable the corresponding dropdown list
-        courseDropdown.disabled = false;
+  // Add an event listener to the checkbox
+  checkbox.addEventListener('change', function () {
+    // Check if the checkbox is checked
+    if (checkbox.checked) {
+      // Enable the corresponding dropdown list
+      courseDropdown.disabled = false;
+      if (!courseDropdown.value) {
+        document.getElementById("errorText").innerText = "Choose a course!";
+        submitButton.disabled = true;
       } else {
-        // Disable the corresponding dropdown list
-        courseDropdown.disabled = true;
-        courseDropdown.value = defaultOption;
+        document.getElementById("errorText").innerText = "";
+        submitButton.disabled = false; // Enable the submit button
       }
-    });
+    } else {
+      // Disable the corresponding dropdown list
+      courseDropdown.disabled = true;
+      courseDropdown.value = defaultOption;
+      submitButton.disabled = true;
+    }
   });
+
+  // Add an event listener to the dropdown
+  courseDropdown.addEventListener('change', function () {
+    // Check if the dropdown value is not empty
+    if (courseDropdown.value) {
+      submitButton.disabled = false; // Enable the submit button
+      document.getElementById("errorText").innerText = "";
+    } else {
+      submitButton.disabled = true;
+      document.getElementById("errorText").innerText = "Choose a course!";
+
+    }
+  });
+});
+
+
+
 //---------------------------------------------------------------------------------------------------------
 //to ensure a course is only selected once
-  function handleCourseChange(event) {
-    const select = event.target;
-    const selectedCourse = select.value;
-    const otherSelects = document.querySelectorAll('select[name="course"]:not([value=""])');
+function handleCourseChange(event) {
+  const select = event.target;
+  const selectedCourse = select.value;
+  const otherSelects = document.querySelectorAll('select[name="course"]:not([value=""])');
 
-    for (let i = 0; i < otherSelects.length; i++) {
-      const otherSelect = otherSelects[i];
+  for (let i = 0; i < otherSelects.length; i++) {
+    const otherSelect = otherSelects[i];
 
-      if (otherSelect !== select && otherSelect.value === selectedCourse) {
-        otherSelect.value = ""; // Reset the other select if the same course is selected
-      }
+    if (otherSelect !== select && otherSelect.value === selectedCourse) {
+      otherSelect.value = ""; // Reset the other select if the same course is selected
     }
   }
+}
 
-  const courseSelects = document.querySelectorAll('select[name="course"]');
-  for (let i = 0; i < courseSelects.length; i++) {
-    const select = courseSelects[i];
-    select.addEventListener('change', handleCourseChange);
-  }
+const courseSelects = document.querySelectorAll('select[name="course"]');
+for (let i = 0; i < courseSelects.length; i++) {
+  const select = courseSelects[i];
+  select.addEventListener('change', handleCourseChange);
+}
 </script>

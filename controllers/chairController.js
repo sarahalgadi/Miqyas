@@ -18,10 +18,9 @@ async function deleteRole (req,res) {
   console.log("i am here")
   const useranme = req.body.username;
   const role = req.body.role; 
-  const semester = req.params.semester;
-  console.log(useranme,role,semester)
+  console.log(useranme,role)
   try{
-    await chairModel.deleteRole(useranme,role,semester);
+    await chairModel.deleteFacultyRole(useranme,role);
     res.render('index')
   } catch(error){
     console.error(error);
@@ -104,9 +103,25 @@ async function saveCoordinators(req, res){
 
 }};
 
+async function deleteCoordinatorRole (req,res) {
+  console.log("i am here pt2")
+  const courseCode = req.body.courseCode;
+  const username = req.body.username;
+  const role = req.body.role; 
+  const semester = req.params.semester;
+  console.log(courseCode,username,role,semester)
+  try{
+    await chairModel.deleteCoordinator(courseCode,semester);
+    await chairModel.deleteFacultyRole(username,role);
+    res.render('index')
+  } catch(error){
+    console.error(error);
+    res.render('error', {message: "didnt work lol"});
+  }
+};
 
 
 
 module.exports = {
-    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,deleteRole
+    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,deleteRole,deleteCoordinatorRole
 }

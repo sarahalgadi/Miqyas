@@ -17,7 +17,8 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const chairRouter = require('./routes/chairRouter');
-const chairModel = require('./models/chairpersonModel.js');
+const sectionReportRoutes = require('./routes/sectionReport.js');
+
 
 app.get('/',async(req,res)=>{
  res.render('index');
@@ -30,7 +31,7 @@ app.get('/',async(req,res)=>{
 });
 
 app.use('/', chairRouter);
-
+app.use('/', sectionReportRoutes);
 
 
 app.use((req, res)=>{
