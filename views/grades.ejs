@@ -48,7 +48,7 @@
                         <table class="table table-bordered" id="activityTable">
                             <thead>
                                 <tr>
-                                    <th colspan="5" class="activityHeader">${activityName}</th>
+                                    <th colspan="5" class="activityHeader"><%= activity %></th>
                                 </tr>
                                 <tr>
                                     <th style="border: none;">Number</th>
@@ -129,7 +129,9 @@
             event.preventDefault();
             // Initialize the count for this tab if it doesn't exist
             if (!(tabIndex in tabRowCounts) || tabRowCounts[tabIndex] === 0) {
-                tabRowCounts[tabIndex] = 2;
+                tabRowCounts[tabIndex] = (document.getElementById('activityTable').rows.length) -1;
+            } else{
+                tabRowCounts[tabIndex]++;
             }
 
                 const activePane = button.closest('.tab-pane');
@@ -154,7 +156,6 @@
             cell5.innerHTML = `<button class="btn" style="background-color: #15416e;" onclick="deleteRow(this)"><i class="fas fa-times" style="color: white"></i></button>`;
 
                 // Increment the row count for this tab
-                tabRowCounts[tabIndex]++;
                 updateNumbers(table);
             }
 
@@ -179,70 +180,30 @@
             }
 
 
-            function updateNumbers() {
-                const table = document.getElementById('activityTable');
+            function updateNumbers(table) {
                 const rows = table.getElementsByTagName('tr');
-                //updates the numbering of rows to accomodate changes
-                for (let i = 1; i < rows.length; i++) {
+                    for (let i = 1; i < rows.length; i++) {
                     const cells = rows[i].getElementsByTagName('td');
-                    cells[0].innerHTML = `<input type="number" class="form-control" value="${i}" readonly style="border: none;">`;
+                    if (cells.length > 0) {
+                        // Update the first cell in the row
+                        cells[0].innerHTML = `<input type="number" class="form-control" value="${i-1}" readonly style="border: none;">`;
+                    }
                 }
             }
             
-            //-----------------function for to generate panes for each tab--------------
-            function generateTabsAndPanes(activities) {
-                const tabList = document.getElementById("activityTabs");
-                const tabContent = document.getElementById("activityTabContent");
-
-                if (activities.length === 0) {
-                    // If no activities found, display a message
-                    tabContent.innerHTML = "<p>No activities have been set for this course. <br>Please inform the course coordinator.</p>";
-                } else {
-                    activities.forEach((activity, index) => {
-                        const tabId = `tab${index}`;
-                        const paneId = `pane${index}`;
-
-                        // Create tab link
-                        const tabLink = document.createElement("li");
-                        tabLink.setAttribute("class", "nav-item");
-                        tabLink.innerHTML = `
-                    <a class="nav-link ${index === 0 ? 'active' : ''}" id="${tabId}-tab" data-bs-toggle="tab" href="#${paneId}" role="tab" aria-controls="${paneId}" aria-selected="${index === 0 ? 'true' : 'false'}">
-                        ${activity}
-                    </a>
-                `;
-
-                        // Create tab pane
-                        const tabPane = document.createElement("div");
-                        tabPane.setAttribute("class", `tab-pane fade ${index === 0 ? 'show active' : ''}`);
-                        tabPane.setAttribute("id", paneId);
-                        tabPane.setAttribute("role", "tabpanel");
-                        tabPane.setAttribute("aria-labelledby", `${tabId}-tab`);
-                        tabPane.innerHTML = generateTableContent(activity); // Generate table content
-                        
-                        // Append tab link and pane to respective containers
-                        tabList.appendChild(tabLink);
-                        tabContent.appendChild(tabPane);
-                    });
-                }
+            
+           
 
                 // After creating all tabs and panes, attach event listeners to the 'Add' buttons
                 const addButtons = document.querySelectorAll(".addButton");
                 addButtons.forEach((button, index) => {
-                    button.addEventListener("click", function () {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault();
                         addRow(this, index); // Pass the button element and index when adding a row
                     });
                 });
-            }
 
-            // Call the function to generate tabs and panes
-            generateTabsAndPanes(<%- JSON.stringify(activities) %>);
-
-            // Function to save the added questions
-            document.getElementById('saveButton').addEventListener('click', function () {
-                
-                // Enable the Input Grades button
-                document.getElementById('inputGradesButton').removeAttribute('disabled');
-            });
+            
         </script>
         <%- include('./partials/footer.ejs')%>
 </body>

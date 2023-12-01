@@ -97,15 +97,17 @@
                             </table>                            
                             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
                                 <div class="button-container">
-                                    <div id="errorText_<%= index %>"></div>
+                                    <div id="errorText_<%= index %>" class="error"></div>
                                     <button type="submit" id="saveButton_<%= index %>"
-                                        class="btn custom-button">Save</button>
-
-                                    <button id="inputGradesButton" class="btn custom-button" disabled>Calculate Overall
-                                        CLO Achievement</button>
+                                        class="btn custom-button save-button">Save</button>
+                                    </form>
+                                    <form action="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>" method="get">
+                                        <button id="inputGradesButton" type="submit" class="btn custom-button" >Calculate Overall CLO Achievement</button>
+                                    </form>
+                                                                      
                                 </div>
                             </div>
-                        </form>
+                     
                     </div>
                     <% }); %>
                         <% } %>
@@ -118,29 +120,27 @@
 
 <script>
     function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
-        const inputValue = parseFloat(inputElement.value);
-        const achievementElement = document.getElementById(`achievement_${tabIndex}_${studentID}`);
-        const saveButton = document.getElementById(`saveButton_${tabIndex}`);*/
-
+       
         const tableRow = inputElement.closest('tr'); 
         const inputValue = parseFloat(inputElement.value);
         const achievementElement = tableRow.querySelector('.achievement'); 
         const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button'); 
 
-}
+        const error = tableRow.closest('.tab-pane').querySelector('.error');
 
 
     if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
-        document.getElementById(`errorText_${tabIndex}`).innerText = "Grade should be a positive number and less than or equal to the question grade!";
+        error.innerText = "Grade should be a positive number and less than or equal to the question grade.";        
         saveButton.disabled = true;
-        achievementElement.innerText = ""; // Clear the achievement if the input is invalid
+        achievementElement.innerText = ""; 
     } else {
         // Clear the error message, enable the save button, and update the achievement
-        document.getElementById(`errorText_${tabIndex}`).innerText = "";
-        saveButton.disabled = false;
+        error.innerText = "";       
+         saveButton.disabled = false;
         const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
         achievementElement.innerText = calculatedAchievement + "%";
     }
+}
 </script>
 
 

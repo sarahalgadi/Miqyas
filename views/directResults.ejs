@@ -94,15 +94,13 @@
                             <% }); %>
                     </tbody>
                 </table>
-
+                <% if (condition && canAccess) {%>
                 <button class="btn custom-button save" type="submit">Submit Student Results</button>
+                <% } %>
             </form>
         </div>
-        <% if (condition && canAccess) {%>
-        <button class="btn custom-button col-2" type="submit">Submit Student Results</button>
-        <% } %>
 
-      </form>
+      
 
     </div>
     
