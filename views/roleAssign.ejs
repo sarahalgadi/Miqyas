@@ -45,6 +45,8 @@
 </head>
 <body>
   <%-include("./partials/nav.ejs")%>
+
+  <% if(user.department === department && userRoles.includes('chairperson')) { %>
   
     <div class="container">
 
@@ -97,6 +99,10 @@
           <button type="submit" class="btn btn-primary btn-lg btn-block" >Save Roles</button>
        </form>
       </div>
+
+      <% } else { %>
+        <h2>You are not allowed to access this page!</h2>
+        <% } %>
   </body>
 </html> 
   

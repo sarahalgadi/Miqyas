@@ -41,7 +41,9 @@
                             </li>
                             <% } %>
         </ul>
+        <% if (canAccess) { %>
 
+        
         <div class="tab-content" id="activityTabContent">
             <% if (activities && activities.length > 0) { %>
                 <% activities.forEach((activity, index) => { %>
@@ -112,11 +114,15 @@
                     <% }); %>
                         <% } %>
         </div>
+        <% } else { %>
+            <h2>You are not allowed to access this page!</h2>
+            <% } %>
 
 
 
         <%- include('./partials/footer.ejs')%>
 </body>
+
 
 <script>
     function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {

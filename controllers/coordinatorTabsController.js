@@ -1,16 +1,20 @@
 const ccModel = require('../models/coordinatorModel');
 const courseModel = require('../models/courseModel');
+const userModel = require('../models/UserModel')
 
 
 //loading the tabs of coordinator after clicking on viewing a course
 async function getCoordinatedCourse (req,res) {
     const {courseCode, term} = req.params;
+    const user = req.session.user;
     try{
+    const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
     const courseName = await courseModel.getCourseName(courseCode);
     const directSaved = await courseModel.getDirect(courseCode, term);
     const coordinatedSections = await ccModel.getCoordinatedSections(courseCode, term);
     const pastCoordinatedSemesters = await ccModel.getPastCourseReportSemesters(courseCode);
     const assignedWeights = {};
+    let canAccess = false;
   
           // Assuming tuples is an array of tuples returned from the model
           directSaved.forEach(tuple => {
@@ -18,10 +22,16 @@ async function getCoordinatedCourse (req,res) {
               const weight = tuple.weight;
               assignedWeights[type] = weight;
           });
-          //edited here ayat-------------------------------------------------------------------------------------------
     const title = 'Course: ' + courseCode;
-    res.render('coordinator', {title, courseCode, courseName, term, assignedWeights, coordinatedSections, pastCoordinatedSemesters});
-    } catch(error){
+  
+    //check for access
+    coordinatedCourses.forEach(function(course){
+        if(course.courseCode === courseCode)
+        canAccess = true;
+    })
+    res.render('coordinator', {title, courseCode, courseName, term, assignedWeights, coordinatedSections, pastCoordinatedSemesters, canAccess});
+
+    }catch(error){
       console.error(error);
       res.render('error', {message: "Error: Could not retrieve course."});
     }

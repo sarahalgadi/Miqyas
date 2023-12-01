@@ -27,8 +27,10 @@
                 <input type="hidden" name="courseName" value="<%= courseName %>">
                 <button class="custom-button">Direct CLO Assessment</button>
             </form>
-    
-            <button class="custom-button">Indirect CLO Assessment</button>
+            <form method="post" action="/indirect/<%= courseCode %>/<%= term %>/<%= section %>">
+                <button class="custom-button" type="submit">Indirect CLO Assessment</button>
+            </form>
+           
             <button class="custom-button">Prepare Report</button>
         </div>
     <%- include('./partials/footer.ejs')%>

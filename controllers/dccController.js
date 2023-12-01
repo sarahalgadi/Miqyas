@@ -1,11 +1,14 @@
 const dccModel = require('../models/dccModel');
+const userModel = require('../models/UserModel')
 
 //the page where users add clos for a list of courses
 async function editCLOs (req,res){
     const {department, term} = req.params;
+    const user = req.session.user;
     try{
+        const userRoles = await userModel.getUserRoles(user.username, term);
         const courses = await dccModel.getDepartmentCourses(department, term);
-        res.render('dcc', {title:'DCC: Edit CLO', courses, term, department});
+        res.render('dcc', {title:'DCC: Edit CLO', courses, term, department, user, userRoles});
     }catch(error){
         res.render('error', {message: "Error: Could not retrieve courses."})
     }

@@ -149,15 +149,24 @@ async function getDirectAssessmentResultsDepartment(req, res) {
 
   //this is for rendering the page for assinging grades for activities
   async function assignGrades(req, res){
+    const user = req.session.user;
     const{courseCode, term, section} = req.params;
     const courseName = req.body.courseName;
     try{
+      const userCourses = await userModel.getCourses(user.username, term);
       const directAssessment = await courseModel.getDirect(courseCode, term);
       const activities = directAssessment.map(item => item.type); // Extract just the activity names
       const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
       const CLOinfo = await courseModel.getCLOInfo(courseCode, term);
       const CLOnumbers = CLOinfo.CLOnumbers; 
-      res.render('grades', {title:'Direct Assessment: Assign Grades', courseCode, term, section, courseName, activities, CLOnumbers, assessmentDetails});
+      let canAccess = false;
+      if(userCourses){
+        userCourses.forEach(function(course){
+          if(course.courseCode == courseCode && course.sectionNumber == section)
+            canAccess = true;
+        });
+      }
+      res.render('grades', {title:'Direct Assessment: Assign Grades', courseCode, term, section, courseName, activities, CLOnumbers, assessmentDetails, canAccess});
     } catch(error){
       res.render('error', {message:"Error: Could not retrieve activities for the course"})
     }  
@@ -204,6 +213,7 @@ async function getDirectAssessmentResultsDepartment(req, res) {
   
 //providing student grades interface rendered here
 async function inputGrades(req, res){
+  const user = req.session.user;
   const{courseCode, term, section} = req.params;
     const courseName = req.body.courseName;
 
@@ -213,10 +223,16 @@ async function inputGrades(req, res){
       let students = await studentModel.getStudentInfo(courseCode, term, section);
       students = Array.isArray(students) ? students : [students];
       const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
-      console.log("students", students);
-      console.log("assessmentDetails", assessmentDetails);
-      const studentGrades = await studentModel.getStudentGrades(courseCode, term, section);
-      res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails, studentGrades});
+      const userCourses = await userModel.getCourses(user.username, term);
+      let canAccess = false;
+      if(userCourses){
+        userCourses.forEach(function(course){
+          if(course.courseCode == courseCode && course.sectionNumber == section)
+            canAccess = true;
+        });
+      }
+      const studentGrades = await studentModel.getStudentGrades(courseCode, term, section, canAccess);
+      res.render('studentgrades', {title:'Direct Assessment: Student Grades',courseCode, term, section, courseName, activities, students, assessmentDetails, studentGrades, canAccess});
     } catch(error){
       res.render('error', {message: "Error: Could not retrieve course activity data!"})
     }
@@ -262,9 +278,23 @@ res.send('<script>alert("Successfully saved!"); window.location.href = "/input-g
 
 //this is for viewing the page that makes the instructor upload the indirect assessment survey
 async function indirectAssessment(req, res) { 
+  const user = req.session.user;
   const {courseCode, term, section} = req.params;
   const courseName = req.body.courseName;
-  res.render('indirectAssessment', { title: 'Indirect Assessment', courseCode, section, term, courseName, message: '' });
+  const userCourses = await userModel.getCourses(user.username, term);
+  let canAccess = false;
+  try{
+    if(userCourses){
+      userCourses.forEach(function(course){
+        if(course.courseCode == courseCode && course.sectionNumber == section)
+          canAccess = true;
+      });
+    }
+    res.render('indirectAssessment', { title: 'Indirect Assessment', courseCode, section, term, courseName, message: '', canAccess});
+  } catch(error){
+    res.render('error', {message: "You are not allowed to access this page!"})
+  }
+  
 
 }
 

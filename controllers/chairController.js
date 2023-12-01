@@ -1,15 +1,18 @@
 const chairModel = require('../models/chairpersonModel.js');
 const courseModel = require('../models/courseModel.js')
+const userModel = require('../models/UserModel')
 
 
 //gets names and usernames of department faculty members to give them roles (dcc & qa)
 async function getFacultyFromDepartment (req,res) {
   const department = req.params.department;
   const semester = req.params.term; 
+  const user = req.session.user;
   try{
+    const userRoles = await userModel.getUserRoles(user.username, semester);
     const facultyNames = await chairModel.getFullNameDepartment(department);
     const roles = await chairModel.getCurrentRoles(department);
-    res.render('roleAssign',{facultyNames, department, semester, roles})
+    res.render('roleAssign',{facultyNames, department, semester, roles, user, userRoles})
   } catch(error){
     console.error(error);
     res.render('error', {message: "department faculty not found!"});
@@ -62,13 +65,14 @@ async function getFacultyFromCollege(req,res) {
   let college = req.params.college;
   const semester = req.params.term;
   const department = req.params.department;
+  const user = req.session.user;
   try{
-
+  const userRoles = await userModel.getUserRoles(user.username, semester);
   const names = await chairModel.getFullNameCollege(college);
   const courses= await courseModel.getCourseCode(department);
   const coordinator = await chairModel.getCurrentCoordinator(department, semester);
 
-  res.render('assignCoordinator', {names, college, courses, semester, department, coordinator});
+  res.render('assignCoordinator', {names, college, courses, semester, department, coordinator, user, userRoles});
   } catch(error){
     console.error(error);
     res.render('error', {message: "Error: Could not retrieve college faculty members."});

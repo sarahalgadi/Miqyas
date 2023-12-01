@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-
+        <% if(canAccess) { %>
         <div class="container-fluid" id="ccTabs">
             <!--Tabs-->
             <ul class="nav nav-tabs">
@@ -149,11 +149,11 @@
                             var reportType = document.getElementById("reportType").value;
                             var sectionDropdown = document.getElementById("section");
                             var sectionLabel = document.getElementById("sectionLabel");
-
+                    
                             // Clear existing options and reset label
                             sectionDropdown.innerHTML = '<option value="" selected disabled>Choose one</option>';
                             sectionLabel.innerHTML = (reportType === "sectionReport") ? "Select Section:" : "Select Semester:";
-
+                    
                             if (reportType === "courseReport") {
                                 // Add section options
                                 // Replace this with the logic to fetch and iterate over section data
@@ -166,7 +166,6 @@
                                 });
                             } else if (reportType === "sectionReport") {
                                 // Add semester options
-
                                 var coordinatedSections = <%= JSON.stringify(coordinatedSections) %>;
                                 coordinatedSections.forEach(function (section) {
                                     var option = document.createElement("option");
@@ -174,26 +173,22 @@
                                     option.text = "Section " + section; // Add "Section " before the section number
                                     sectionDropdown.add(option);
                                 });
-
                             }
-
-                            // enable the dropdown
-                            sectionDropdown.disabled = false;
                         }
+                    
                         function viewReport() {
-                            //will be modified later
-                            // Get selected values and perform further actions as needed
                             var reportType = document.getElementById("reportType").value;
-                            var selectedSection = document.getElementById("section").value;
-
-
-                            if (reportType === "sectionReport") {
-                                window.location.href = '/section-report/' + encodeURIComponent(selectedSection);
-                            } else if (reportType === "courseReport") {
-                                window.location.href = '/course-report/' + encodeURIComponent(selectedSection);
+                            var termOrSection = document.getElementById("section").value;
+                    
+                            if (reportType === "courseReport") {
+                                window.location.href = '/view-course-report/<%= courseCode %>/' + termOrSection;
+                            } else if (reportType === "sectionReport") {
+                                var term = document.getElementById("section").value; // Assuming term is selected for section report
+                                window.location.href = '/view-section-report/<%= courseCode %>/<%= term %>/' + termOrSection;
                             }
                         }
                     </script>
+                    
                 </div>
 
                 <!--Generating a report section-->
@@ -217,4 +212,9 @@
         <script src="/scripts/weightValidation.js"></script>
 
         <%- include('./partials/footer.ejs')%>
+
+        <% } else {%>
+            <h2>You are not allowed to access this course.</h2>
+            <% } %>
+        
 </body>

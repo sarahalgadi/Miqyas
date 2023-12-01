@@ -21,8 +21,7 @@
 
 <body>
     <%-include("./partials/nav.ejs")%>
-        <!--Welcome note that will retrieve the user's name-->
-        <!--I'm currently not retreiving this information, so I used X. To be edited later.-->
+       
         <div>
             <table id="welcome" class="table table-borderless">
                 <tr>
@@ -38,7 +37,7 @@
         <!--Courses available to the user will be retrieved from the database and displayed in cards-->
         <!--Currenlty i'm commenting out the code that would dynamically create the card based on the retrieved data, 
         as I do not have access to the database yet. It should be commented out once I firgue out how to retrieve from the database.-->
-        
+        <% if(user.department === department && userRoles.includes('DCC')) { %>
         <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
             <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;"><%= department %> Courses: </h2>
         </div>
@@ -54,13 +53,11 @@
                                 <div class="card-body">
                                     <button class="btn custom-button" data-bs-toggle="modal" data-bs-target="#addCLOModal" onclick="setModalCourse('<%= course.courseCode %>')" style="width: 100%;">
                                         Add CLOs</button>
-
-                             
                                 </div>
                             </div>
                         <% }) %>
                     <% } else { %>
-                        <h2>"You're currently not teaching courses this term."</h2>
+                        <h2>No courses under this department!</h2>
                     <% } %>
                 </div>
                 <hr>
@@ -121,6 +118,9 @@
         </div>
         </div>
         <script src="/scripts/addCLOs.js"></script>
+        <% } else {%>
+            <h2>You are not allowed to access this page!</h2>
+            <% } %>
 </body>
 <script>
     function setModalCourse(courseCode) {
