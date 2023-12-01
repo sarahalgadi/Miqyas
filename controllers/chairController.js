@@ -6,7 +6,8 @@ async function getFacultyFromDepartment (req,res) {
   const semester = req.params.term; 
   try{
     const facultyNames = await chairModel.getFullNameDepartment(department);
-    res.render('roleAssign',{facultyNames, department, semester})
+    const roles = await chairModel.getCurrentRoles(department);
+    res.render('roleAssign',{facultyNames, department, semester, roles})
   } catch(error){
     console.error(error);
     res.render('error', {message: "course not found!"});
@@ -79,14 +80,15 @@ async function saveCoordinators(req, res){
     const course = courses[i];
     const role = "coordinator";
   try{
-    await chairModel.addCoordinatorRole(course,username,semester);
-    await chairModel.addRoles(username,role,semester);
+    await chairModel.addCoordinatorRole(course,username,semester);// in coordinator table
+    await chairModel.addRoles(username,role,semester);//in faculty_role table
   }catch(error){
     console.error(error);
     res.render('error', {message: "course not found!"});
   }
 
 }};
+
 
 
 

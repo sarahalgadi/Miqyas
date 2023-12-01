@@ -53,4 +53,10 @@ async function getCurrentCoordinator (department){
     return rows;
 }
 
-module.exports ={getFullNameDepartment,getDepartment,addRoles,getFullNameCollege,addCoordinatorRole, getCourseCode,getCurrentCoordinator };
+async function getCurrentRoles (department){
+    const [rows, fields] = await pool.execute
+    ('SELECT f.fullName, r.role FROM faculty f JOIN faculty_role r ON f.username = r.username  WHERE f.department = ? ',[department]);
+    return rows;
+}
+
+module.exports ={getFullNameDepartment,getDepartment,addRoles,getFullNameCollege,addCoordinatorRole, getCourseCode,getCurrentCoordinator,getCurrentRoles };
