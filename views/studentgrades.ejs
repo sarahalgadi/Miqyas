@@ -43,11 +43,10 @@
         </ul>
 
         <div class="tab-content" id="activityTabContent">
-            <% if (activities && activities.length> 0) { %>
-                <% activities.forEach((activity, index)=> { %>
-                    <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane<%= index %>"
-                        role="tabpanel" aria-labelledby="tab<%= index %>-tab">
-                        <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
+            <% if (activities && activities.length > 0) { %>
+                <% activities.forEach((activity, index) => { %>
+                    <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane<%= index %>" role="tabpanel" aria-labelledby="tab<%= index %>-tab">
+                        <form action="/saveStudentGrades/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
                             <table class="table table-bordered" id="activityTable">
                                 <thead>
                                     <tr>
@@ -61,32 +60,41 @@
                                     <% assessmentDetails.forEach((question, index)=> { %>
                                         <% if (question.type===activity) { %>
                                             <tr>
-                                                <th colspan="5" style="border: none;" class="quest">Question <%=
-                                                        question.assessmentNumber %>: CLO <%= question.CLONumber %>
-                                                </th>
+                                                <th colspan="4" style="border: none;">Question <%= question.assessmentNumber %>: CLO <%= question.CLONumber %></th>
                                             </tr>
                                             <% students.forEach(student=> { %>
                                                 <tr>
-                                                    <td>
-                                                        <%= student.studentID %>
-                                                    </td>
-                                                    <td>
-                                                        <%= student.firstName %>
-                                                            <%= student.lastName %>
-                                                    </td>
-                                                    <td><input type="text" name="grade" min="0"
-                                                            max="<%= Number(question.grade)%>"
-                                                            class="form-control gradeInput"
-                                                            onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)"
-                                                            data-student-id="<%= student.studentID %>"></td>
-                                                    <td id="achievement_<%= index %>_<%= student.studentID %>"></td>
-
-                                                </tr>
-                                                <% }) %>
+                                                    <td><%= student.studentID %></td>
+                                                    <td><%= student.firstName %> <%= student.lastName %></td>
+                                                    <% if(studentGrades && studentGrades.length > 0){ %>
+                                                        <% const matchingGrade = studentGrades.find(grade => grade.studentID === student.studentID && grade.type === activity && grade.assessmentNumber === question.assessmentNumber); %>
+                                                        <td>
+                                                            <input type="text" name="grade" class="form-control gradeInput"
+                                                                value="<%= matchingGrade ? matchingGrade.studentGrade : '' %>"
+                                                                onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)"
+                                                                data-student-id="<%= student.studentID %>">
+                                                        </td>
+                                                        <td id="achievement_<%= index %>_<%= student.studentID %>" class="achievement">
+                                                            <%= matchingGrade ? matchingGrade.CLOAchievmentPerQuestion + '%' : '' %>
+                                                        </td>
+                                                    <% } else { %>
+                                                        <td>
+                                                            <input type="text" name="grade" class="form-control gradeInput"
+                                                                onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)"
+                                                                data-student-id="<%= student.studentID %>">
+                                                        </td>
+                                                        <td id="achievement_<%= index %>_<%= student.studentID %>" class="achievement"></td>
                                                     <% } %>
-                                                        <% }) %>
+                                                </tr>
+                                                <input type="hidden" name="studentID" id="sid_<%= index %>_<%= student.studentID %>" value="<%= student.studentID %>">
+                                                <input type="hidden" name="assessmentNumber" id="an_<%= index %>_<%= student.studentID %>" value="<%= question.assessmentNumber %>">
+                                                <input type="hidden" name="activity" id="act_<%= index %>_<%= student.studentID %>" value="<%= activity %>">
+                                                <div id="errorText_<%= index %>" class="error"></div>
+                                            <% }) %>
+                                        <% } %>
+                                    <% }) %>
                                 </tbody>
-                            </table>
+                            </table>                            
                             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
                                 <div class="button-container">
                                     <div id="errorText_<%= index %>"></div>
@@ -110,16 +118,16 @@
 
 <script>
     function updateAchievement(inputElement, questionGrade, studentID, tabIndex) {
-        /*const inputValue = parseFloat(inputElement.value);
+        const inputValue = parseFloat(inputElement.value);
         const achievementElement = document.getElementById(`achievement_${tabIndex}_${studentID}`);
         const saveButton = document.getElementById(`saveButton_${tabIndex}`);*/
 
-        const tableRow = inputElement.closest('tr');
+        const tableRow = inputElement.closest('tr'); 
         const inputValue = parseFloat(inputElement.value);
-        const achievementElement = tableRow.querySelector('.achievement');
-        const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button');
+        const achievementElement = tableRow.querySelector('.achievement'); 
+        const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button'); 
 
-    }
+}
 
 
     if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {

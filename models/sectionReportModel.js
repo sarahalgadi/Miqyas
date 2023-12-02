@@ -1,21 +1,11 @@
 const pool = require('../database');
 
-async function getCourseName(courseCode) {
-    const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
-    const [rows] = await pool.execute(sql, [courseCode]);
-    return rows.length > 0 ? rows[0].courseName : null;
-  }
 
 
-  async function getCLOInfo(courseCode, semester) {
-    const sql = 'SELECT  clo.statement, clo.CLONumber FROM course_learning_outcomes clo WHERE clo.courseCode = ? AND clo.semester = ?';
-    const [rows, fields] = await pool.execute(sql, [courseCode, semester]);
-    const CLOstatements = rows.map(row => row.statement);
-    const CLOnumbers = rows.map(row => row.CLONumber);
-    return {CLOstatements, CLOnumbers };
-  }
+  ////////-------------------------------------------------------------------------------
 
-  async function getCategoryCounts(courseCode, semester, section, department = null) {
+  //this is for counting categories per section
+  async function getCategoryCounts(courseCode, semester, section, department = null) { 
     let sql = `
       SELECT
         sc.CLONumber,
@@ -48,13 +38,8 @@ async function getCourseName(courseCode) {
     return rows;
   }
 
-  async function getDepartments() {
-    const sql = 'SELECT departmentName FROM department';
-    const [rows] = await pool.execute(sql);
-    const departmentNames = rows.map(row => row.departmentName);
-    return departmentNames;
-  }
-
+  
+//getting indirect assessment results per section
   async function getIndirectPerCLOPerSection(courseCode, semester, section) {
     const sql = `
       SELECT
@@ -78,7 +63,8 @@ async function getCourseName(courseCode) {
     return rows;
   }
 
-  async function getActionPlans(courseCode, semester, sectionNumber) {
+
+  async function getSectionActionPlans(courseCode, semester, sectionNumber) { 
     const sql = `
         SELECT statement, resources, startDate, endDate, responsibility, CLONumber
         FROM action_plan
@@ -108,6 +94,7 @@ async function getCourseName(courseCode) {
     }
 }
 
+//saving action plan into database from section
 async function saveActionPlan(
     statement,
     resources,
@@ -156,7 +143,7 @@ async function saveActionPlan(
     }
 }
 
-
+//saving clo achievements from adirect assessments per section
 async function saveDirectCLOPerSection(CLONumber, courseCode, sectionNumber, percentageOfCLOAchievement, semester){
     const sql = `
     INSERT INTO directclo_per_section 
@@ -183,18 +170,56 @@ async function saveDirectCLOPerSection(CLONumber, courseCode, sectionNumber, per
     }
 }
 
+//this function will return course code, section number, and semester of section reports written by a specific instructor
+async function getSectionReportCourses(username){
+  const sql = `SELECT DISTINCT
+                dc.courseCode,
+                dc.sectionNumber,
+                dc.semester
+              FROM
+                directclo_per_section dc
+              JOIN
+                course_section cs
+              ON
+                dc.courseCode = cs.courseCode
+                AND dc.sectionNumber = cs.sectionNumber
+                AND dc.semester = cs.semester
+              WHERE
+                cs.username = ?`;
+
+   try {
+     const [result] = await pool.execute(sql, [username]);
+     return result;
+        } catch (error) {
+                  console.error('Error in fetching course report info:', error);
+                  throw error;
+              }
+      
+}
+
+//get the course code, section and semester of sections who submitted their reports
+async function getDepartmentSectionReports(department){ 
+  const sql = `SELECT DISTINCT d.courseCode, d.sectionNumber, d.semester
+                FROM directclo_per_section d
+                JOIN course c ON d.courseCode = c.courseCode
+                WHERE c.department = ? `;
+    try{
+      const [result] = await pool.execute(sql, [department]);
+      return result;
+    } catch(error){
+      console.error('error in fetching section report info', error);
+      throw error;
+    }
+}
 
 
-
-  //todo: for action plan: delete and update and save!!!
 
   module.exports = {
-    getCourseName,
-    getCLOInfo,
     getCategoryCounts,
-    getDepartments,
     getIndirectPerCLOPerSection,
-    getActionPlans,
+    getSectionActionPlans,
     saveActionPlan,
-    saveDirectCLOPerSection
+    saveDirectCLOPerSection,
+    getSectionReportCourses,
+    getDepartmentSectionReports
   }

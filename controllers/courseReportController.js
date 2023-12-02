@@ -1,5 +1,5 @@
-const courseReportModel = require('../models/courseReport');
-
+const courseReportModel = require('../models/courseReportModel');
+const courseModel = require('../models/courseModel');
 //todo: error handling here... etc.
 //fixme: saving course report.. where to go after??? we need to discuss!!!!
 //viewing course report..editing..
@@ -7,14 +7,14 @@ async function editCourseReport(req, res) {
     const { courseCode, term } = req.params;
   
     try {
-      const courseName = await courseReportModel.getCourseName(courseCode);
+      const courseName = await courseModel.getCourseName(courseCode);
   
       if (courseName) {
-        const learningOutcomes = await courseReportModel.getCLOInfo(courseCode, term);
-        const categoryCounts = await courseReportModel.getCategoryCounts(courseCode, term);
-        const departments = await courseReportModel.getDepartments();
+        const learningOutcomes = await courseModel.getCLOInfo(courseCode, term);
+        const categoryCounts = await courseReportModel.getCourseCategoryCounts(courseCode, term);
+        const departments = await courseModel.getDepartments();
         const indirectSums = await courseReportModel.calculateIndirectPerCLO(courseCode, term);
-        const actionPlans = await courseReportModel.getActionPlan(courseCode, term);
+        const actionPlans = await courseReportModel.getAllActionPlans(courseCode, term);
         
         // Total for all indirect assessments
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
@@ -30,7 +30,7 @@ async function editCourseReport(req, res) {
         );
   
         // Get recommendation if it exists, as well as action plan
-        const recommendation = await courseReportModel.getRecommendation(courseCode, term, "rjan");
+        const recommendation = await courseReportModel.getRecommendation(courseCode, term);
   
         res.render('courseReport', {
           title: 'Course Report', //ayat i passed title here to render in page--------------
@@ -67,21 +67,21 @@ async function editCourseReport(req, res) {
     }
   
     try {
-      const courseName = await courseReportModel.getCourseName(courseCode);
+      const courseName = await courseModel.getCourseName(courseCode);
   
       if (courseName) {
-        const learningOutcomes = await courseReportModel.getCLOInfo(courseCode, term);
-        const categoryCounts = await courseReportModel.getCategoryCounts(courseCode, term, department);
-        const departments = await courseReportModel.getDepartments();
+        const learningOutcomes = await courseModel.getCLOInfo(courseCode, term);
+        const categoryCounts = await courseReportModel.getCourseCategoryCounts(courseCode, term, department);
+        const departments = await courseModel.getDepartments();
         const indirectSums = await courseReportModel.calculateIndirectPerCLO(courseCode, term);
-        const actionPlans = await courseReportModel.getActionPlan(courseCode, term);
+        const actionPlans = await courseReportModel.getAllActionPlans(courseCode, term);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
   
         // Calculate results for each CLO number per department
         const resultsPerCLO = calculateResultsPerCLO(categoryCounts);
   
         // Calculate results for all (just for the histogram's direct assessment)
-        const allcategory = await courseReportModel.getCategoryCounts(courseCode, term);
+        const allcategory = await courseReportModel.getCourseCategoryCounts(courseCode, term);
         const histo = calculateResultsPerCLO(allcategory);
         const [clohisto, indirecthisto, directhisto] = prepareHistogramData(
           learningOutcomes.CLOnumbers,
@@ -89,9 +89,8 @@ async function editCourseReport(req, res) {
           histo
         );
   
-        // Get recommendation if it exists, as well as action plan
-        const recommendation = await courseReportModel.getRecommendation(courseCode, term, "rjan"); // temporary username. SESSION MANAGEMENT!!!!!
-  
+        // Get recommendation if it exists
+        const recommendation = await courseReportModel.getRecommendation(courseCode, term); 
         res.render('courseReport', {
           title: 'Course Report', //ayat i passed title here to render in page--------------
           courseCode,
@@ -210,7 +209,8 @@ async function editCourseReport(req, res) {
   async function saveCourseReport(req, res) {
     try {
       const { courseCode, term } = req.params;
-      const username = "rjan"; //coordinator name is taken through session mgmnt.. I'm just using a placeholder
+      const user = req.session.user;
+      const username = user.username; 
       const recommendation = req.body.recommendation.trim();
   
       // Update the recommendation table

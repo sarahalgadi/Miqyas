@@ -52,6 +52,7 @@
             </div>
 
             <!-- currently in course instructor controller, route for course instructor, ci model too.-->
+            <% if (canAccess || userRoles.includes('QA')) { %>
             <form action="/submit-students/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
                 <table class="table table-bordered">
                     <thead>
@@ -97,8 +98,18 @@
                 <button class="btn custom-button save" type="submit">Submit Student Results</button>
             </form>
         </div>
-        </div>
+        <% if (condition && canAccess) {%>
+        <button class="btn custom-button col-2" type="submit">Submit Student Results</button>
+        <% } %>
 
-        <%- include('./partials/footer.ejs')%>
+      </form>
+
+    </div>
+    
+    </div>
+
+    <% } %>
+          
+    
 
 </body>

@@ -1,25 +1,25 @@
-const sectionReportModel = require('../models/sectionReport');
+const sectionReportModel = require('../models/sectionReportModel');
+const courseModel = require('../models/courseModel');
+
 //todo: error handling..
 //same controller as edit section report but without saving.. im just doing this bc viewing is in a separate ejs file.
-//todo: we need to add a code part which checks if there are entries in directclo_per_section
-//todo: because that table is the only proof we have that the instructor submitted the final section report.. 
-//todo: if the instructor did not.. we should render a page that says "no section report submitted!"
+
 async function viewSectionReport(req, res){
     const {courseCode, term, section} = req.params;
 
     try{
-        const courseName = await sectionReportModel.getCourseName(courseCode);
+        const courseName = await courseModel.getCourseName(courseCode);
         const title = 'Section Report';
-        const CLOs = await sectionReportModel.getCLOInfo(courseCode, term);
+        const CLOs = await courseModel.getCLOInfo(courseCode, term);
         const CLOnumbers = CLOs.CLOnumbers;
         const CLOstatements = CLOs.CLOstatements;
         const categoryCounts = await sectionReportModel.getCategoryCounts(courseCode, term, section); //per section
         const resultsPerCLO = calculateResultsPerCLO(categoryCounts); //direct assessment per clo per section.
-        const departments = await sectionReportModel.getDepartments();
+        const departments = await courseModel.getDepartments();
         const indirectSums = await sectionReportModel.getIndirectPerCLOPerSection(courseCode, term, section);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
         const condition = true; // this is for the submit button..explanation in the function below (per deparmtnet)
-        const actionPlans = await sectionReportModel.getActionPlans(courseCode, term, section);
+        const actionPlans = await sectionReportModel.getSectionActionPlans(courseCode, term, section);
         console.log(actionPlans);
 
         // Separate data into arrays for rendering in the histogram script.. inefficient but i had to hardcode this to make it work.
@@ -67,19 +67,19 @@ async function viewSectionReportDepartment(req, res){
     
 
     try{
-        const courseName = await sectionReportModel.getCourseName(courseCode);
+        const courseName = await courseModel.getCourseName(courseCode);
         const title = 'Section Report';
-        const CLOs = await sectionReportModel.getCLOInfo(courseCode, term);
+        const CLOs = await courseModel.getCLOInfo(courseCode, term);
         const CLOnumbers = CLOs.CLOnumbers;
         const CLOstatements = CLOs.CLOstatements;
         const categoryCounts = await sectionReportModel.getCategoryCounts(courseCode, term, section, department); //per section
         const resultsPerCLO = calculateResultsPerCLO(categoryCounts); //direct assessment per clo per section.
-        const departments = await sectionReportModel.getDepartments();
+        const departments = await courseModel.getDepartments();
         const indirectSums = await sectionReportModel.getIndirectPerCLOPerSection(courseCode, term, section);
         const totalIndirectPerCLO = calculateOverallSatisfaction(indirectSums);
         const condition = false; //i want to disable the submit button when we're displaying by department so that resultsPerCLO aren't saved into the db per department.. 
         //bc clicking on the submit button will save resultsperclo into the direct per section.. if we use per department.. inaccurate results overwriting original one!
-        const actionPlans = await sectionReportModel.getActionPlans(courseCode, term, section);
+        const actionPlans = await sectionReportModel.getSectionActionPlans(courseCode, term, section);
           // Calculate results for all depts (just for the histogram's direct assessment)
           const allcategory = await sectionReportModel.getCategoryCounts(courseCode, term, section);
           const histo = calculateResultsPerCLO(allcategory);
@@ -202,7 +202,7 @@ function calculateResultsPerCLO(categoryCounts) {
     return [clonumbers, indirectResults, directResults];
   }
 
-     
+  
 
 
 

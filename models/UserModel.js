@@ -1,7 +1,6 @@
 
 const pool = require('../database');
-//todo: this is gonna be the model for the home stuff, also getting coordinated course 
-//todo: ci and cc remove. make it in such a way that directAssessment and indirectAssessment
+
 
 async function getUserByUsername(username) {
     const sql = `
@@ -31,6 +30,7 @@ async function getUserByUsername(username) {
     }
 }
 
+//this is for getting instructor's courses
 async function getCourses(username, semester) {
     const sql = `
         SELECT cs.courseCode, cs.sectionNumber, cs.semester, c.courseName
@@ -47,6 +47,7 @@ async function getCourses(username, semester) {
     }
 }
 
+//this is used to get user roles for authentication purposes
 async function getUserRoles(username, semester) {
     const sql = `SELECT DISTINCT role FROM faculty_role WHERE username = ? AND semester = ?`;
 
@@ -59,7 +60,8 @@ async function getUserRoles(username, semester) {
         throw error;
     }
 }
-///fixme: very bad remove it
+
+//show courses user is coordinating
 async function getCoordinatedCourses(username, semester) {
     const sql = `
         SELECT c.courseCode, cr.courseName
@@ -77,8 +79,34 @@ async function getCoordinatedCourses(username, semester) {
     }
 }
 
+//todo: remove this, keep getCourses.. and in each controller that uses course info adjust.
+async function getInstructedCourses(username, semester){
+    const sql = `SELECT courseCode, sectionNumber FROM course_section WHERE username = ? AND semester = ?`;
+    try {
+        const [rows] = await pool.execute(sql, [username, semester]);
+        return rows; 
+    } catch (error) {
+        console.error('Error fetching course: ', error);
+        throw error;
+    }
+}
+
+async function getUserCollege (department){
+    const sql = 'SELECT college FROM department WHERE departmentName = ?';
+    try{
+        const[result] = await pool.execute(sql, [department]);
+        const college = result.map(row => row.college);
+        return college;
+
+    } catch(error){
+        console.log("error getting college name", error)
+    }
+}
 
 
 
-module.exports ={ getUserByUsername, getCurrentTerm, getCourses, getUserRoles, getCoordinatedCourses};
+
+
+
+module.exports ={ getUserByUsername, getCurrentTerm, getCourses, getUserRoles, getCoordinatedCourses, getInstructedCourses, getUserCollege};
 

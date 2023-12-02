@@ -1,22 +1,17 @@
-const ccModel = require('../models/cc');
-//todo: saving assessment.. where to go after??!
-const courses = [
-    { code: 'COURSE001', name: 'Course 1', term: "223"},
-    { code: 'COURSE002', name: 'Course 2', term:"224"},
-    { code: 'SE322', name: 'Course 3', term: "223" },
-  ];
-  const name = 'SE322';
-  //fixme: this is just for temp... it iwll be removed.
+const ccModel = require('../models/coordinatorModel');
+const courseModel = require('../models/courseModel');
 
+
+//loading the tabs of coordinator after clicking on viewing a course
 async function getCoordinatedCourse (req,res) {
     const {courseCode, term} = req.params;
     try{
-    const courseName = await ccModel.getCourseName(courseCode);
-    const directSaved = await ccModel.getDirect(courseCode, term);
+    const courseName = await courseModel.getCourseName(courseCode);
+    const directSaved = await courseModel.getDirect(courseCode, term);
     const coordinatedSections = await ccModel.getCoordinatedSections(courseCode, term);
     const pastCoordinatedSemesters = await ccModel.getPastCourseReportSemesters(courseCode);
     const assignedWeights = {};
-    console.log(coordinatedSections);
+  
           // Assuming tuples is an array of tuples returned from the model
           directSaved.forEach(tuple => {
               const type = tuple.type;
@@ -25,13 +20,14 @@ async function getCoordinatedCourse (req,res) {
           });
           //edited here ayat-------------------------------------------------------------------------------------------
     const title = 'Course: ' + courseCode;
-    res.render('cc', {title, courseCode, courseName, term, assignedWeights, coordinatedSections, pastCoordinatedSemesters});
+    res.render('coordinator', {title, courseCode, courseName, term, assignedWeights, coordinatedSections, pastCoordinatedSemesters});
     } catch(error){
       console.error(error);
-      res.render('error', {message: "course not found!"});
+      res.render('error', {message: "Error: Could not retrieve course."});
     }
 };
 
+//we are saving the types of direct assessment & weights 
 async function saveDirectAssessmentTypes (req, res){
         const {courseCode, term} = req.params;
         const formData = {
@@ -46,18 +42,18 @@ async function saveDirectAssessmentTypes (req, res){
             // Iterate over formData
             for (const [type, weight] of Object.entries(formData)) {
               // Check if weight is not null
-              if (weight !== null) {
+              if (weight !== null && weight < 100) {
                   try {
                       // Call the saveDirectAssessment function
                       await ccModel.addTypeAndWeight(courseCode, type, weight, term);
                      
                   } catch (error) {
-                      console.error(`Error saving direct assessment for type ${type}:`, error);
+                      console.error(`Error: Could not save direct assessment for type ${type}:`, error);
                   }
               }
           }
-          res.render('temp', {courses, name});//todo: how about we tell the user they correctly saved the report instead ..
-};
+          res.send('<script>alert("Successfully saved the direct assessment types!"); window.location.href = "/display-course/' + courseCode + '/' + term + '/'  + '";</script>');
+        };
 
 module.exports = {
     getCoordinatedCourse,

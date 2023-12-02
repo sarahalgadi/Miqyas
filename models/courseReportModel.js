@@ -1,24 +1,10 @@
 
 const pool = require('../database');
 
+//-------------------------------------------------------------------------
 
-async function getCourseName(courseCode) {
-  const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
-  const [rows] = await pool.execute(sql, [courseCode]);
-  return rows.length > 0 ? rows[0].courseName : null;
-}
-
-async function getCLOInfo(courseCode, semester) {
-  const sql = 'SELECT  clo.statement, clo.CLONumber FROM course_learning_outcomes clo WHERE clo.courseCode = ? AND clo.semester = ?';
-  const [rows, fields] = await pool.execute(sql, [courseCode, semester]);
-  const CLOstatements = rows.map(row => row.statement);
-  const CLOnumbers = rows.map(row => row.CLONumber);
- 
-
-  return {CLOstatements, CLOnumbers };
-}
-
-async function getCategoryCounts(courseCode, semester, department = null) {
+//get number of students under each category for clos across course
+async function getCourseCategoryCounts(courseCode, semester, department = null) {
   let sql = `
     SELECT
       sc.CLONumber,
@@ -50,14 +36,7 @@ async function getCategoryCounts(courseCode, semester, department = null) {
 }
 
 
-
-async function getDepartments() {
-  const sql = 'SELECT departmentName FROM department';
-  const [rows] = await pool.execute(sql);
-  const departmentNames = rows.map(row => row.departmentName);
-  return departmentNames;
-}
-
+//calculate all indirect assessment results for a specific course & semester
 async function calculateIndirectPerCLO(courseCode, semester) {
   const sql = `
     SELECT
@@ -81,8 +60,7 @@ async function calculateIndirectPerCLO(courseCode, semester) {
 }
 
 //todo: date here is retrieved as yyyy-mm-dd:hh-mm-ss... change it to look more userfriendly.
-
-async function getActionPlan(courseCode, semester) {
+async function getAllActionPlans(courseCode, semester) { 
   const sql = `
     SELECT *
     FROM action_plan
@@ -92,6 +70,8 @@ async function getActionPlan(courseCode, semester) {
   const [rows] = await pool.execute(sql, [courseCode, semester]);
   return rows;
 }
+
+
 async function saveRecommendation(courseCode, term, username, recommendation) {
   const sql = `
     INSERT INTO recommendation (courseCode, semester, username, statment)
@@ -102,7 +82,9 @@ async function saveRecommendation(courseCode, term, username, recommendation) {
 
   await pool.execute(sql, [courseCode, term, username, recommendation]);
 }
-async function updateSelectedActionPlans(courseCode, term, formData) { // here im updating action plan value.. in case it was selected/ deselected
+
+// action plan value update.. in case it was selected/ deselected
+async function updateSelectedActionPlans(courseCode, term, formData) { 
   const sqlGetActionPlans = `
     SELECT sectionNumber, CLONumber
     FROM action_plan
@@ -127,18 +109,8 @@ async function updateSelectedActionPlans(courseCode, term, formData) { // here i
   }
 }
 
-async function getRecommendation(courseCode, term, username) {
-  const sql = `
-      SELECT statment
-      FROM recommendation
-      WHERE courseCode = ? AND semester = ? AND username = ?;
-  `;
 
-  const [rows] = await pool.execute(sql, [courseCode, term, username]);
-  return rows.length > 0 ? rows[0].statment : ''; // return an empty string if no recommendation exists
-}
-
-async function getRec(courseCode, term) {
+async function getRecommendation(courseCode, term) {
   const sql = `
       SELECT statment
       FROM recommendation
@@ -161,21 +133,32 @@ async function getSelectedActionPlan(courseCode, semester) {
   return rows;
 }
 
+//getting sem and coursecode of course reports that are finished.
+async function getCoursesWithReports(department){ 
+  const sql = `SELECT r.courseCode, r.semester
+      FROM recommendation r
+      JOIN course c ON r.courseCode = c.courseCode
+      WHERE c.department = ?`;
+  try {
+        const [result] = await pool.execute(sql, [department]);
+        return result;
+           } catch (error) {
+                     console.error('Error in fetching course info:', error);
+                     throw error;
+                 }
 
 
+}
 
 
 
   module.exports = {
-    getCLOInfo,
-    getCourseName,
-    getCategoryCounts,
-    getDepartments,
+    getCourseCategoryCounts,
     calculateIndirectPerCLO,
-    getActionPlan,
+    getAllActionPlans,
     saveRecommendation,
     updateSelectedActionPlans,
     getRecommendation,
-    getRec, //for viewing course report controller
-    getSelectedActionPlan //for viewing course report controller
+    getSelectedActionPlan, //for viewing course report controller
+    getCoursesWithReports
   };

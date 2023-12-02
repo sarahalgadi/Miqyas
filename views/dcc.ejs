@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("./partials/head.ejs")%>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="/stylesheets/courseCards.css">
+        <style>
+            #welcome {
+                margin: 4rem;
+                margin-left: 4rem;
+                font-size: 18px;
+            }
+
+            h2 {
+                font-size: 30px;
+                font-weight: 600;
+            }
+        </style>
+</head>
+
+<body>
+    <%-include("./partials/nav.ejs")%>
+        <!--Welcome note that will retrieve the user's name-->
+        <!--I'm currently not retreiving this information, so I used X. To be edited later.-->
+        <div>
+            <table id="welcome" class="table table-borderless">
+                <tr>
+                    <td><strong>Term:</strong> <%= term %></td>
+                </tr>
+                <tr>
+                    <td><strong>Department:</strong> <%= department %></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <!--Courses available to the user will be retrieved from the database and displayed in cards-->
+        <!--Currenlty i'm commenting out the code that would dynamically create the card based on the retrieved data, 
+        as I do not have access to the database yet. It should be commented out once I firgue out how to retrieve from the database.-->
+        
+        <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
+            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;"><%= department %> Courses: </h2>
+        </div>
+        <div class="container mt-4">
+            <div class="card">
+                <div class="course-cards">
+                    <% if (courses && courses.length>0) { %>
+                        <% courses.forEach(function (course) { %>
+                            <div class="card">
+                                <h2 class="card-title">
+                                    <%= course.courseCode %>: <%= course.courseName %>
+                                </h2>
+                                <div class="card-body">
+                                    <button class="btn custom-button" data-bs-toggle="modal" data-bs-target="#addCLOModal" onclick="setModalCourse('<%= course.courseCode %>')" style="width: 100%;">
+                                        Add CLOs</button>
+
+                             
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <h2>"You're currently not teaching courses this term."</h2>
+                    <% } %>
+                </div>
+                <hr>
+            </div>
+        </div>
+
+        <!--Modal that will pop up to add CLOs-->
+        <div class="modal" id="addCLOModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add CLOs</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addCLOForm" action="/save-clos/:courseCode/<%= term %>" method="post">                        
+                            <table class="table table-bordered" id="cloTable">
+                            <thead>
+                                <tr>
+                                    <th style="border: none;">CLO Number</th>
+                                    <th>CLO Type</th>
+                                    <th>CLO Description</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="insertionPoint">
+                                <tr>
+                                    <td><input type="number" class="form-control" name="cloNumber" value="1" readonly
+                                            style="border: none;"></td>
+                                    <td>
+                                        <select name="domain" class="form-select" id="typeSelect" >
+                                            <option value="" selected disabled>Type</option>
+                                            <option value="Knowledge">Knowledge</option>
+                                            <option value="Values">Values</option>
+                                            <option value="Skills">Skills</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <textarea name="description" rows="1" class="form-control" required></textarea>
+                                    </td>
+                                    <td><button class="btn" style="background-color: #15416e;"
+                                            onclick="deleteCLO(this)"><i class="fas fa-times"
+                                                style="color: white"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                            <p id="validationMessage" style="font-weight: 400; color: #15416e; margin-top: 10px;"></p>
+                            <button id="addCLOButton" class="btn custom-button" onclick="addCLO(event)">Add CLO</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn custom-button" style="width: 100%" onclick="saveCLOs(event)" type="submit">Save</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        <script src="/scripts/addCLOs.js"></script>
+</body>
+<script>
+    function setModalCourse(courseCode) {
+        // Store the selected course code in a variable or an attribute
+        selectedCourseCode = courseCode;
+    
+        // Get the form element
+        var form = document.getElementById('addCLOForm');
+    
+        // Replace the placeholder in the action with the actual courseCode
+        form.action = `/save-clos/${courseCode}/<%= term %>`;
+        
+        // Fetch existing CLOs for the selected course code
+        fetch(`/get-clos/${courseCode}/<%= term %>`)
+            .then(response => response.json())
+            .then(clos => {
+                // Clear existing rows in the modal's table
+                const cloTable = document.getElementById('cloTable');
+                cloTable.innerHTML = '';
+    
+                // Populate the modal's table with existing CLOs if they exist
+                if (clos && clos.length > 0) {
+                    clos.forEach(clo => {
+                        cloCount = clos.length;
+                        const row = cloTable.insertRow(-1);
+    
+                        // Add input elements with existing CLO information
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        const cell4 = row.insertCell(3);
+    
+                        cell1.innerHTML = `<input type="number" name="cloNumber" class="form-control" value="${clo.CLONumber}" readonly style="border: none;">`;
+                        cell2.innerHTML = `<select name="domain" class="form-select" id="typeSelect">
+                                            <option value="Knowledge" ${clo.domain === 'Knowledge' ? 'selected' : ''}>Knowledge</option>
+                                            <option value="Values" ${clo.domain === 'Values' ? 'selected' : ''}>Values</option>
+                                            <option value="Skills" ${clo.domain === 'Skills' ? 'selected' : ''}>Skills</option>
+                                        </select>`;
+                        cell3.innerHTML = `<textarea name="description" rows="1" class="form-control" required>${clo.statement}</textarea>`;
+                        cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
+                    });
+                } else {
+                    // Add a default row if no existing CLOs
+                    addDefaultCLORow();
+                }
+            })
+            .catch(error => console.error('Error fetching CLOs:', error));
+    }
+    
+    function addDefaultCLORow() {
+        const cloTable = document.getElementById('cloTable');
+        const row = cloTable.insertRow(-1);
+    
+        // Add input elements for a default CLO row
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+    
+        cell1.innerHTML = '<input type="number" name="cloNumber" class="form-control" value="1" readonly style="border: none;">';
+        cell2.innerHTML = `<select name="domain" class="form-select" id="typeSelect">
+                                <option value="Knowledge">Knowledge</option>
+                                <option value="Values">Values</option>
+                                <option value="Skills">Skills</option>
+                            </select>`;
+        cell3.innerHTML = '<textarea name="description" rows="1" class="form-control" required></textarea>';
+        cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
+    }
+    
+</script>
+
+</html>

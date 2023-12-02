@@ -1,14 +1,10 @@
-
-
 const pool = require('../database');
 
-//Here, i will get the course name for the selected coursecode.
-async function getCourseName(courseCode) {
-    const sql = 'SELECT courseName FROM course WHERE courseCode = ?';
-    const [rows] = await pool.execute(sql, [courseCode]);
-    return rows.length > 0 ? rows[0].courseName : null;
-  }
 
+
+//-----------------------------------
+
+//saving direct assessment types and weights made by cc
 async function addTypeAndWeight(courseCode, type, weight, term) {
     const sql = 'INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE weight = VALUES(weight), type = VALUES(type)';
     try {
@@ -19,17 +15,7 @@ async function addTypeAndWeight(courseCode, type, weight, term) {
     }
 }
 
-//getting type and weight for saved activities in the same term and course
-async function getDirect(courseCode, term) {
-    const sql = 'SELECT type, weight FROM direct_assessment WHERE courseCode = ? AND semester = ?';
-    try {
-        const [rows] = await pool.execute(sql, [courseCode, term]);
-        return rows;
-    } catch (error) {
-        console.error('Error fetching direct assessment:', error);
-        throw error;
-    }
-}
+
 
 //getting sections under the course you're coordinating 
 async function getCoordinatedSections(courseCode, term) {
@@ -44,8 +30,9 @@ async function getCoordinatedSections(courseCode, term) {
     }
 }
 
+//this is for terms w submitted course report for a specified course code.
 async function getPastCourseReportSemesters(courseCode){
-    const sql = 'SELECT semester FROM recommendation WHERE courseCode = ?';// we use recommendation for fetching course report since it's the only thing that can be traced back to coordinator reports.
+    const sql = 'SELECT semester FROM recommendation WHERE courseCode = ?';
     try{
         const[rows] = await pool.execute(sql, [courseCode]);
         const semesters = rows.map(row => row.semester);
@@ -56,11 +43,9 @@ async function getPastCourseReportSemesters(courseCode){
     }
 }
 
-//todo: handling the case where the user clicks "view report"; will be done after section report is finalized
 
-module.exports ={getCourseName, 
+module.exports ={ 
     addTypeAndWeight,
-     getDirect, 
      getCoordinatedSections,
     getPastCourseReportSemesters};
 
