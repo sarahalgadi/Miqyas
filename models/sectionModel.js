@@ -33,6 +33,18 @@ async function getAssessmentDetails(courseCode, semester, section){
         throw error;
     }
 
+} 
+
+//deleting assessment details
+
+async function deleteAssessmentDetails (courseCode, sectionNumber, semester, type, assessmentNumber, CLONumber){
+    const sql = `DELETE FROM assessment_details  WHERE courseCode = ? AND sectionNumber = ? AND semester = ? AND type = ? AND assessmentNumber = ? AND CLONumber = ?`;
+    try{
+        const[result] = await pool.execute(sql, [courseCode, sectionNumber, semester, type, assessmentNumber, CLONumber]);
+    } catch(error){
+        console.error('error fetching details', error);
+        throw error;
+    }
 }
 
 //returns {grade: } 
@@ -81,6 +93,7 @@ module.exports = {
     saveAssessmentDetails,
     getAssessmentDetails,
     getTotalWeightOfAQuestion,
-    saveIndirectAssessmentData
+    saveIndirectAssessmentData,
+    deleteAssessmentDetails
     
 }

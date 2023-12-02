@@ -14,4 +14,8 @@ router.get('/assign-grades/:courseCode/:term/:section', [authMiddleware],courseI
 router.get('/input-grades/:courseCode/:term/:section', [authMiddleware],courseInstructorController.inputGrades);
 router.post('/indirect/:courseCode/:term/:section', courseInstructorController.indirectAssessment);
 router.post('/saveIndirect/:courseCode/:term/:section', courseInstructorController.saveIndirectAssessment);
+
+router.post('/deleteAssessmentDetails/:courseCode/:term/:section', [authMiddleware], courseInstructorController.deleteAssessmentDetails)
 module.exports = router;
+
+

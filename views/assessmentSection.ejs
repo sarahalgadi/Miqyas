@@ -31,7 +31,10 @@
                 <button class="custom-button" type="submit">Indirect CLO Assessment</button>
             </form>
            
-            <button class="custom-button">Prepare Report</button>
+            <form method="get" action="/edit-section-report/<%=courseCode %>/<%= term %>/<%= section %>">
+                <button class="custom-button">Prepare Report</button>
+            </form>
+          
         </div>
     <%- include('./partials/footer.ejs')%>
 </body>

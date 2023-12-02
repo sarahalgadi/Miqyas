@@ -191,6 +191,10 @@ async function getDirectAssessmentResultsDepartment(req, res) {
         cloMapped = Array.isArray(cloMapped) ? cloMapped : [cloMapped];
         let activityName = formData["activityName"];
 
+        if(!weight){
+          res.render('error', {message: "No weights have been set for the activity"});
+        }
+
         //--------weight validation ---------------
         const userWeights = weight.map(w => parseInt(w));
           // Calculate the sum of user-inputted weights
@@ -343,6 +347,21 @@ async function saveIndirectAssessment(req, res) {
   }
 }
 
+async function deleteAssessmentDetails(req, res){
+    const{courseCode, term, section} = req.params;
+    const qnumber = req.body.qNumber;
+    const activity = req.body.activity;
+    const clo = req.body.cloNumber;
+
+    try{
+      await courseInstructorModel.deleteAssessmentDetails(courseCode, section, term, activity, qnumber, clo);
+      res.status(200).json({ message: 'Assessment detail deleted successfully' });
+        } catch(error){
+          res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+
+}
 
 
 
@@ -355,5 +374,6 @@ module.exports = {
     inputGrades,
     saveGrades,
     saveIndirectAssessment,
-    indirectAssessment
+    indirectAssessment,
+    deleteAssessmentDetails
 }

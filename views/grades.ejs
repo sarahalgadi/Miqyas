@@ -76,7 +76,7 @@
                                                         <% }); %>
                                                     </select>
                                                 </td>
-                                                <td><button class="btn" style="background-color: #15416e;" onclick="deleteRow(this)"><i class="fas fa-times" style="color: white"></i></button></td>
+                                                <td><button class="btn" style="background-color: #15416e;" onclick="deleteType(this, '<%= activity %>', '<%= question.CLONumber %>', '<%= question.assessmentNumber %>', event)"><i class="fas fa-times" style="color: white"></i></button></td>
                                             </tr>
                                         <% } %>
                                     <% }); %>
@@ -178,6 +178,36 @@
                     tabRowCounts[index]--;
                     updateNumbers(table);
                 }
+            }
+            //for weights existing in the database only.. a delete api
+            function deleteType(button, activity, cloNumber, number, event) {
+                var row = button.closest('tr');
+                event.preventDefault();
+                fetch('/deleteAssessmentDetails/<%= courseCode %>/<%= term %>/<%= section %>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ qNumber: number, activity: activity, cloNumber: cloNumber }),
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Row deleted successfully:', data);                 
+                    row.remove();
+                    const tabContent = document.getElementById('activityTabContent');
+                    const index = Array.from(tabContent.children).indexOf(button.closest('.tab-pane'));
+    
+                    // Decrement the row count for this tab
+                    if (index in tabRowCounts) {
+                        tabRowCounts[index]--;
+                        updateNumbers(table);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting row:', error);
+                });
             }
 
 

@@ -11,3 +11,5 @@ router.post('/save-section-report/:courseCode/:term/:section', sectionReport.sav
 router.get('/view-section-report/:courseCode/:term/:section', viewReport.viewSectionReport);
 router.get('/view-section-report/:courseCode/:term/:section/:department', viewReport.viewSectionReportDepartment);
 module.exports = router;
+
+
