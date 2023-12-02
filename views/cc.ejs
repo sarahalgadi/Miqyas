@@ -1,197 +1,221 @@
+<!--Ayat i modified here-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-   <%- include("./partials/head.ejs") %>;
-   <link rel="stylesheet" href="/stylesheets/cc.css">
+    <%- include("./partials/head.ejs") %>;
+        <link rel="stylesheet" href="/stylesheets/cc.css">
 </head>
 
 <body>
     <%- include('./partials/nav.ejs')%>
-    <hr>
 
-    <div>
-        <div class="row container-fluid">
-            <div class="col-md-8">
-                <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;"><%= courseName %></h1>
-            </div>
-            <div class="col-md-4">
-                <h2 style="font-size: 20px; margin-left: 40%; margin-top: 1.5rem; padding: 1rem;">Term: <%= term %></h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!--Tabs-->
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active tab" data-bs-toggle="tab" href="#editActivites">Edit Activities</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link tab" data-bs-toggle="tab" href="#viewReports">View Past Reports</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link tab" data-bs-toggle="tab" href="#generateReport">Generate Report</a>
-            </li>
-        </ul>
-
-
-        
-        <div class="tab-content">
-            <!--Specifying activities-->
-            <div id="editActivites" class="tab-pane container active p-4 mt-4">
-                <h3>Select Assessment Activities to be Considered in CLO Assessment:</h3>
-                <hr>
-                <form action="/submit-form/<%= title %>/<%= term %>" method="post">
-
-                     <!-- Project -->
-                <div class="form-check p-2">
-                    <input class="form-check-input" type="checkbox" name="project" id="projectCheckbox" onchange="toggleWeightInput('projectWeight', this.checked)" <%= assignedWeights.project ? 'checked' : '' %>>
-                    <label class="form-check-label" for="projectCheckbox">Project</label>
-                    <input class="form-control d-none weight" type="number" name="project_weight" id="projectWeight"
-                        placeholder="Enter weight (%)" min="0" max="100" value="<%= assignedWeights.project || '' %>">
+        <div>
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 <%=courseCode %>: <%= courseName %>
+                    </h2>
                 </div>
-
-                <!-- Major -->
-                <div class="form-check p-2">
-                    <input class="form-check-input" type="checkbox" name="major" id="majorCheckbox"
-                        onchange="toggleWeightInput('majorWeight', this.checked)" <%= assignedWeights.major ? 'checked' : '' %>>
-                    <label class="form-check-label" for="majorCheckbox">Major</label>
-                    <input class="form-control d-none weight" type="number" name="major_weight" id="majorWeight"
-                        placeholder="Enter weight (%)" min="0" max="100" value="<%= assignedWeights.major || '' %>">
+                <div class="col-md-4">
+                    <h2 style="margin-left: 40%;">Term: <%= term %>
+                    </h2>
                 </div>
-
-                <!-- Assignment -->
-                <div class="form-check p-2">
-                    <input class="form-check-input" type="checkbox" name="assignment" id="assignmentCheckbox"
-                        onchange="toggleWeightInput('assignmentWeight', this.checked)" <%= assignedWeights.assignment ? 'checked' : '' %>>
-                    <label class="form-check-label" for="assignmentCheckbox">Assignment</label>
-                    <input class="form-control d-none weight" type="number" name="assignment_weight" id="assignmentWeight"
-                        placeholder="Enter weight (%)" min="0" max="100" value="<%= assignedWeights.assignment || '' %>">
-                </div>
-
-                <!-- Quiz -->
-                <div class="form-check p-2">
-                    <input class="form-check-input" type="checkbox" name="quiz" id="quizCheckbox"
-                        onchange="toggleWeightInput('quizWeight', this.checked)" <%= assignedWeights.quiz ? 'checked' : '' %>>
-                    <label class="form-check-label" for="quizCheckbox">Quiz</label>
-                    <input class="form-control d-none weight" type="number" name="quiz_weight" id="quizWeight"
-                        placeholder="Enter weight (%)" min="0" max="100" value="<%= assignedWeights.quiz || '' %>">
-                </div>
-
-                <!-- Final Exam -->
-                <div class="form-check p-2">
-                    <input class="form-check-input" type="checkbox" name="final_exam" id="finalExamCheckbox"
-                        onchange="toggleWeightInput('finalExamWeight', this.checked)" <%= assignedWeights.final_exam ? 'checked' : '' %>>
-                    <label class="form-check-label" for="finalExamCheckbox">Final Exam</label>
-                    <input class="form-control d-none weight" type="number" name="final_exam_weight" id="finalExamWeight"
-                        placeholder="Enter weight (%)" min="0" max="100" value="<%= assignedWeights.final_exam || '' %>">
-                </div>
-
-                <!-- Other -->
-                <div class="form-check p-2">
-                    <input class="form-check-input" type="checkbox" name="other" id="otherCheckbox"
-                        onchange="toggleWeightInput('otherWeight', this.checked)" <%= assignedWeights.other ? 'checked' : '' %>>
-                    <label class="form-check-label" for="otherCheckbox">Other</label>
-                    <input class="form-control d-none weight" type="number" name="other_weight" id="otherWeight"
-                        placeholder="Enter weight (%)" min="0" max="100" value="<%= assignedWeights.other || '' %>">
-                </div>
-                    <!--In case of error in validating the weights, message would be shown here-->
-                    <div class="error-text" id="errorText"></div>
-                    <button type="submit" onclick="validateWeights()" id="saveButton"
-                        class="custom-button mt-4">Save</button>
-                </form>
-            </div>
-            <!--so here, if course coordinator chooses course section report, only options are for course coordinating in the same term. -->
-            <!--if course coordinator chooses course report, previous semester reports.-->
-            <div id="viewReports" class="tab-pane fade p-4 mt-4">
-                <h3>Viewing <%= title %> Reports:</h3>
-                <form method="POST">
-                <label for="reportType" class="form-label">Select Report type:</label>
-                <select id="reportType" name="reportType" class="form-select" onchange="handleReportTypeChange()">
-                    <option value="" selected disabled>Select report type</option>
-                    <option value="courseReport">Course Report</option>
-                    <option value="sectionReport">Current Section Reports</option>
-                </select>
-                <br>
-                <br>
-                <label for="section" id="sectionLabel" class="form-label">Select Section or Semester:</label>
-                <select id="section" name="section" class="form-select" disabled>
-                    <option value="" selected disabled>Choose one</option>
-                </select>
-                <br>
-                <br>
-                <button type="button" class="custom-button" onclick="viewReport()">View Report</button>
-            </form>
-            
-            <script>
-                function handleReportTypeChange() {
-                    var reportType = document.getElementById("reportType").value;
-                    var sectionDropdown = document.getElementById("section");
-                    var sectionLabel = document.getElementById("sectionLabel");
-            
-                    // Clear existing options and reset label
-                    sectionDropdown.innerHTML = '<option value="" selected disabled>Choose one</option>';
-                    sectionLabel.innerHTML = (reportType === "sectionReport") ? "Select Section:" : "Select Semester:";
-            
-                    if (reportType === "courseReport") {
-                        // Add section options
-                        // Replace this with the logic to fetch and iterate over your section data
-                        var semesters = <%= JSON.stringify(pastCoordinatedSemesters) %>;
-                        semesters.forEach(function (semester) {
-                            var option = document.createElement("option");
-                            option.value = semester;
-                            option.text = "Term " + semester;
-                            sectionDropdown.add(option);
-                        });
-                    } else if (reportType === "sectionReport") {
-                        // Add semester options
-                        
-                        var coordinatedSections = <%= JSON.stringify(coordinatedSections) %>;
-                        coordinatedSections.forEach(function (section) {
-                            var option = document.createElement("option");
-                            option.value = section;
-                            option.text = "Section " + section; // Add "Section " before the section number
-                            sectionDropdown.add(option);
-                        });
-                        
-                    }
-            
-                    // enable the dropdown. bc i initially disabled.
-                    sectionDropdown.disabled = false;
-                }
-                function viewReport() {
-                    //will be modified later
-                    // Get selected values and perform further actions as needed
-                    var reportType = document.getElementById("reportType").value;
-                    var selectedSection = document.getElementById("section").value;
-            
-                   
-                    if (reportType === "sectionReport") {
-                        window.location.href = '/section-report/' + encodeURIComponent(selectedSection);
-                    } else if (reportType === "courseReport") {
-                        window.location.href = '/course-report/' + encodeURIComponent(selectedSection);
-                    }
-                }
-            </script>
-            </div>
-            <!--Generating a report-->
-            <div id="generateReport" class="tab-pane fade p-4 mt-4">
-                <h3>Generate Report</h3>
-                <form id="report" action="/course-report/<%= courseCode %>/<%= term %>" method="get">
-                    <p>You can click "Print" to view your prepared course report. </p>
-                    <input type="button" value="Print" class="custom-button" id="printButton">
-                    <input type="submit" value="Edit" class="custom-button">
-                </form>
             </div>
         </div>
-    </div>
-    </div>
-    <script>
-        document.getElementById('printButton').addEventListener('click', function () {
-          window.location.href = `/view-course-report/<%= courseCode %>/<%= term %>`;
-        });
-      </script>
-    <script src="/scripts/weightValidation.js"></script>
+
+        <div class="container-fluid" id="ccTabs">
+            <!--Tabs-->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active tab" data-bs-toggle="tab" href="#editActivites">Edit Activities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link tab" data-bs-toggle="tab" href="#viewReports">View Past Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link tab" data-bs-toggle="tab" href="#generateReport">Generate Report</a>
+                </li>
+            </ul>
+
+
+            <div class="tab-content">
+                <!--Specifying activities section-->
+                <div id="editActivites" class="tab-pane container active p-4 mt-4">
+                    <h3>Select Assessment Activities to be Considered in CLO Assessment</h3>
+                    <hr>
+                    <form action="/submit-form/<%= title %>/<%= term %>" method="post">
+
+                        <!-- Project -->
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="project" id="projectCheckbox"
+                                onchange="toggleWeightInput('projectWeight', this.checked)" <%=assignedWeights.project
+                                ? 'checked' : '' %>>
+                            <label class="form-check-label" for="projectCheckbox">Project</label>
+                            <input class="form-control d-none weight" type="number" name="project_weight"
+                                id="projectWeight" placeholder="Enter weight (%)" min="0" max="100"
+                                value="<%= assignedWeights.project || '' %>">
+                        </div>
+
+                        <!-- Major -->
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="major" id="majorCheckbox"
+                                onchange="toggleWeightInput('majorWeight', this.checked)" <%=assignedWeights.major
+                                ? 'checked' : '' %>>
+                            <label class="form-check-label" for="majorCheckbox">Major</label>
+                            <input class="form-control d-none weight" type="number" name="major_weight" id="majorWeight"
+                                placeholder="Enter weight (%)" min="0" max="100"
+                                value="<%= assignedWeights.major || '' %>">
+                        </div>
+
+                        <!-- Assignment -->
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="assignment" id="assignmentCheckbox"
+                                onchange="toggleWeightInput('assignmentWeight', this.checked)"
+                                <%=assignedWeights.assignment ? 'checked' : '' %>>
+                            <label class="form-check-label" for="assignmentCheckbox">Assignment</label>
+                            <input class="form-control d-none weight" type="number" name="assignment_weight"
+                                id="assignmentWeight" placeholder="Enter weight (%)" min="0" max="100"
+                                value="<%= assignedWeights.assignment || '' %>">
+                        </div>
+
+                        <!-- Quiz -->
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="quiz" id="quizCheckbox"
+                                onchange="toggleWeightInput('quizWeight', this.checked)" <%=assignedWeights.quiz
+                                ? 'checked' : '' %>>
+                            <label class="form-check-label" for="quizCheckbox">Quiz</label>
+                            <input class="form-control d-none weight" type="number" name="quiz_weight" id="quizWeight"
+                                placeholder="Enter weight (%)" min="0" max="100"
+                                value="<%= assignedWeights.quiz || '' %>">
+                        </div>
+
+                        <!-- Final Exam -->
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="final_exam" id="finalExamCheckbox"
+                                onchange="toggleWeightInput('finalExamWeight', this.checked)"
+                                <%=assignedWeights.final_exam ? 'checked' : '' %>>
+                            <label class="form-check-label" for="finalExamCheckbox">Final Exam</label>
+                            <input class="form-control d-none weight" type="number" name="final_exam_weight"
+                                id="finalExamWeight" placeholder="Enter weight (%)" min="0" max="100"
+                                value="<%= assignedWeights.final_exam || '' %>">
+                        </div>
+
+                        <!-- Other -->
+                        <div class="form-check p-2">
+                            <input class="form-check-input" type="checkbox" name="other" id="otherCheckbox"
+                                onchange="toggleWeightInput('otherWeight', this.checked)" <%=assignedWeights.other
+                                ? 'checked' : '' %>>
+                            <label class="form-check-label" for="otherCheckbox">Other</label>
+                            <input class="form-control d-none weight" type="number" name="other_weight" id="otherWeight"
+                                placeholder="Enter weight (%)" min="0" max="100"
+                                value="<%= assignedWeights.other || '' %>">
+                        </div>
+                        <!--In case of error in validating the weights, message would be shown here-->
+                        <div class="error-text" id="errorText"></div>
+                        <button type="submit" onclick="validateWeights()" id="saveButton"
+                            class="btn custom-button mt-4">Save</button>
+                    </form>
+                </div>
+
+                <!--Viewing past reports section-->
+                <!--If course coordinator chooses course section report, only options are for course coordinating in the same term. -->
+                <!--If course coordinator chooses course report, previous semester reports.-->
+
+                <div id="viewReports" class=" container tab-pane fade p-4 mt-4">
+                    <h3>
+                        <%= courseCode %> Reports
+                    </h3>
+                    <hr>
+
+                    <form method="POST">
+                        <label for="reportType" class="form-label">Select Report Type:</label>
+                        <select id="reportType" name="reportType" class="form-select"
+                            onchange="handleReportTypeChange()">
+                            <option value="" selected disabled>Report Type</option>
+                            <option value="courseReport">Course Report</option>
+                            <option value="sectionReport">Current Section Reports</option>
+                        </select>
+
+                        <label for="section" id="sectionLabel" class="form-label">Select Section or Semester:</label>
+                        <select id="section" name="section" class="form-select" disabled>
+                            <option value="" selected disabled>Semester</option>
+                        </select>
+
+                        <button type="button" class="btn custom-button viewButton" onclick="viewReport()">View
+                            Report</button>
+                    </form>
+
+                    <script>
+                        function handleReportTypeChange() {
+                            var reportType = document.getElementById("reportType").value;
+                            var sectionDropdown = document.getElementById("section");
+                            var sectionLabel = document.getElementById("sectionLabel");
+
+                            // Clear existing options and reset label
+                            sectionDropdown.innerHTML = '<option value="" selected disabled>Choose one</option>';
+                            sectionLabel.innerHTML = (reportType === "sectionReport") ? "Select Section:" : "Select Semester:";
+
+                            if (reportType === "courseReport") {
+                                // Add section options
+                                // Replace this with the logic to fetch and iterate over section data
+                                var semesters = <%= JSON.stringify(pastCoordinatedSemesters) %>;
+                                semesters.forEach(function (semester) {
+                                    var option = document.createElement("option");
+                                    option.value = semester;
+                                    option.text = "Term " + semester;
+                                    sectionDropdown.add(option);
+                                });
+                            } else if (reportType === "sectionReport") {
+                                // Add semester options
+
+                                var coordinatedSections = <%= JSON.stringify(coordinatedSections) %>;
+                                coordinatedSections.forEach(function (section) {
+                                    var option = document.createElement("option");
+                                    option.value = section;
+                                    option.text = "Section " + section; // Add "Section " before the section number
+                                    sectionDropdown.add(option);
+                                });
+
+                            }
+
+                            // enable the dropdown
+                            sectionDropdown.disabled = false;
+                        }
+                        function viewReport() {
+                            //will be modified later
+                            // Get selected values and perform further actions as needed
+                            var reportType = document.getElementById("reportType").value;
+                            var selectedSection = document.getElementById("section").value;
+
+
+                            if (reportType === "sectionReport") {
+                                window.location.href = '/section-report/' + encodeURIComponent(selectedSection);
+                            } else if (reportType === "courseReport") {
+                                window.location.href = '/course-report/' + encodeURIComponent(selectedSection);
+                            }
+                        }
+                    </script>
+                </div>
+
+                <!--Generating a report section-->
+                <div id="generateReport" class="container tab-pane fade p-4 mt-4">
+                    <h3>Generate Report</h3>
+                    <hr>
+                    <form id="report" action="/course-report/<%= courseCode %>/<%= term %>" method="get">
+                        <input type="button" value="View and Print Report" class="btn custom-button reportButton"
+                            id="printButton">
+                        <input type="submit" value="Edit Report" class="btn custom-button reportButton">
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+        <script>
+            document.getElementById('printButton').addEventListener('click', function () {
+                window.location.href = `/view-course-report/<%= courseCode %>/<%= term %>`;
+            });
+        </script>
+        <script src="/scripts/weightValidation.js"></script>
+
+        <%- include('./partials/footer.ejs')%>
 </body>
-

@@ -1,47 +1,51 @@
-.navbar-nav {
-    margin-left: 60%;
+h2{
+    font-weight: 600; 
+    margin: 1rem; 
+    padding: 1rem;
 }
-
-.navbar-nav .nav-link {
-    color: #15416e;
+.divider{
+    width: 90%;
+    margin: auto;
+}
+h3{
+    padding: 1rem;
     margin: 1rem;
-    font-size: large;
-    font: weight 500px;
 }
-
-.custom-button {
-    background-color: #15416e;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-family: Arial, sans-serif;
-    margin: 0.5rem;
+h4{
+    font-weight: 400;
+    margin: 1rem; 
+    padding: 1rem;
     margin-left: 7%;
-    width: 250px;
-    text-decoration: none;
 }
-
-.custom-button:hover {
-    background-color: #507eac;
-    color: #fff;
-    text-decoration: none;
-}
-
-#project,
-#majors,
-#final {
-    padding: 4rem;
-    font-weight: 500;
-    margin-left: 0;
-}
-
-.nav-link:hover {
-    color: #15416e;
-    background-color: #fff;
-}
-
-.nav-link {
-    background-color: #15416e;
+table .headings{
+    background-color:#15416e;
     color: white;
+    padding: 1rem;
+    text-align: center;
+}
+table .categories{
+    text-align: center;
+}
+.filter{
+    width: 70%;
+    margin: 1rem;
+    margin-top: 2rem;
+}
+.chart-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.save{
+    width: 10rem;
+}
+
+#saveContainer, #addContainer{
+    display: flex;
+    justify-content: end;
+    margin-top: 1rem;
+}
+#saveContainer .custom-button, #addContainer .custom-button{
+    padding: 1rem;
+    width: 10rem;
 }

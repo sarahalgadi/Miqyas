@@ -1,85 +1,104 @@
+<!--ayat i made changed here a lot-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <%- include("./partials/head.ejs") %>
-    <link rel="stylesheet" href="/stylesheets/directResults.css">
+        <link rel="stylesheet" href="/stylesheets/directResults.css">
 </head>
 
 <body>
     <%- include('./partials/nav.ejs')%>
-    <hr>
-    <div class="row container-fluid" style="font-family:Arial, Helvetica, sans-serif">
-        <div class="col-md-8">
-            <h2 style="font-weight: 600; margin: 1rem; padding: 1rem;"><%= courseCode %>: <%= courseName %> - Section
-                <%= section %></h2>
-            <h2 style="font-weight: 400; margin: 1rem; padding: 1rem;">Direct Assessment: Results</h2>
+        <div class="row">
+            <div class="col-md-8">
+                <h2>
+                    <%= courseCode %>: <%= courseName %> - Section <%= section %>
+                </h2>
+                <h3>Direct Assessment: Results</h3>
+            </div>
+            <div class="col-md-4">
+                <h2 style=" margin-left: 20%;">Term: <%= term %>
+                </h2>
+            </div>
         </div>
-        <div class="col-md-4">
-            <h2 style="font-weight: 600; margin-top: 1rem; margin-left: 20%; padding: 1rem; font-size: x-large;">Term
-                <%= term %></h2>
+        <hr class="divider">
+
+        <!--todo: save studnet ids per percentage frm each row input type hidden-->
+        <!--student table-->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>Student Achievements Per CLO:</h4>
+                </div>
+                <div class="col-md-4">
+                    <div class="dropdown">
+                        <button type="button" class="btn filter custom-button dropdown-toggle"
+                            data-bs-toggle="dropdown">
+                            Filter by Department
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item"
+                                    href="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>/All">All</a>
+                            </li>
+                            <% departments.forEach(department=> { %>
+                                <li><a class="dropdown-item"
+                                        href="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>/<%= department %>">
+                                        <%= department %>
+                                    </a></li>
+                                <% }); %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- currently in course instructor controller, route for course instructor, ci model too.-->
+            <form action="/submit-students/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="headings">Student ID</th>
+                            <th class="headings">Full Name</th>
+                            <% CLOnumbers.forEach(clonumber=> { %>
+                                <th class="headings">CLO <%= clonumber %>
+                                </th>
+                                <% }); %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% studentInfo.filter(student=> studentTotal.some(result => result.studentID ===
+                            student.studentID)).forEach(student => { %>
+                            <tr>
+                                <td>
+                                    <%= student.studentID %>
+                                </td>
+                                <td>
+                                    <%= student.firstName %>
+                                        <%= student.lastName %>
+                                </td>
+                                <% CLOnumbers.forEach(clonumber=> { %>
+                                    <td class="achievement">
+                                        <% const cloResult=studentTotal.find(result=> result.studentID ===
+                                            student.studentID && result.CLONumber === clonumber); %>
+                                            <%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) + '%'
+                                                : '0.00 %' %>
+
+                                                <!-- Hidden input fields for student ID, CLO number, and CLO percentage -->
+                                                <input type="hidden" name="studentID" value="<%= student.studentID %>">
+                                                <input type="hidden" name="cloNumbers" value="<%= clonumber %>">
+                                                <input type="hidden" name="cloPercentages"
+                                                    value="<%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) : '0.00' %>">
+                                    </td>
+                                    <% }); %>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+
+                <button class="btn custom-button save" type="submit">Submit Student Results</button>
+            </form>
         </div>
-    </div>
-
-
-       
-    <!--todo: save studnet ids per percentage frm each row input type hidden-->
-    <!--student table-->
-    <div class="container">
-        <h3 style="font-family:Arial, Helvetica, sans-serif">Student Achievements Per CLO:</h3>
-        <!-- currently in course instructor controller, route for course instructor, ci model too.-->
-        <form action="/submit-students/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
-          <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Student ID</th>
-                    <th>Full Name</th>
-                    <% CLOnumbers.forEach(clonumber => { %>
-                        <th>CLO <%= clonumber %></th>
-                    <% }); %>
-                </tr>
-            </thead>
-            <tbody>
-                <% studentInfo.filter(student => studentTotal.some(result => result.studentID === student.studentID)).forEach(student => { %>
-                    <tr>
-                        <td><%= student.studentID %></td>
-                        <td><%= student.firstName %> <%= student.lastName %></td>
-                        <% CLOnumbers.forEach(clonumber => { %>
-                            <td>
-                                <% const cloResult = studentTotal.find(result => result.studentID === student.studentID && result.CLONumber === clonumber); %>
-                                <%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) + '%' : '0.00 %' %>
-                                
-                                <!-- Hidden input fields for student ID, CLO number, and CLO percentage -->
-                                <input type="hidden" name="studentID" value="<%= student.studentID %>">
-                                <input type="hidden" name="cloNumbers" value="<%= clonumber %>">
-                                <input type="hidden" name="cloPercentages" value="<%= cloResult ? (cloResult.averageCloAchievement * 100).toFixed(2) : '0.00' %>">
-                            </td>
-                        <% }); %>
-                    </tr>
-                <% }); %>
-            </tbody>
-        </table>
-   
-       
-    <div class="row">
-      <div class="dropdown col-7">
-        <button type="button" class="btn custom-button dropdown-toggle" style="margin-left: 0;" data-bs-toggle="dropdown">
-          Filter
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>/All">All</a></li>
-            <% departments.forEach(department => { %>
-              <li><a class="dropdown-item" href="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>/<%= department %>"><%= department %></a></li>
-            <% }); %>
-          </ul>
         </div>
-        <button class="btn custom-button col-2" type="submit">Submit Student Results</button>
-      </form>
 
-    </div>
-    
-    </div>
-          
-    
+        <%- include('./partials/footer.ejs')%>
 
 </body>

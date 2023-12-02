@@ -1,5 +1,4 @@
-<!--assessment section..-->
-
+<!--Ayat i updated html and css here-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,15 +11,14 @@
     <%-include("./partials/nav.ejs")%>
         <div class="container-fluid row">
             <div class="col-md-8">
-                <!--Data needs to be retrieved here dynamically; figure out later-->
                 <h2><%= courseCode %>: <%= courseName %> - Section <%= section %></h2>
             </div>
             <div class="col-md-2">
-                <!--Current term needs to be retrieved here dynamically-->
                 <h3>Term: <%= term %></h3>
             </div>
         </div>
-        <div class="button-container">
+        <hr class="divider">
+        <div class="container button-container">
             <!--Button links will be changed to other pages when done-->
 
             <!--instructor model and routes and controller..-->
@@ -28,11 +26,11 @@
                 <input type="hidden" name="courseName" value="<%= courseName %>">
                 <button class="custom-button">Direct CLO Assessment</button>
             </form>
-      
+    
             <button class="custom-button">Indirect CLO Assessment</button>
             <button class="custom-button">Prepare Report</button>
         </div>
-
+    <%- include('./partials/footer.ejs')%>
 </body>
 
 </html>

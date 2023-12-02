@@ -23,7 +23,8 @@ async function getCoordinatedCourse (req,res) {
               const weight = tuple.weight;
               assignedWeights[type] = weight;
           });
-    const title = courseCode;
+          //edited here ayat-------------------------------------------------------------------------------------------
+    const title = 'Course: ' + courseCode;
     res.render('cc', {title, courseCode, courseName, term, assignedWeights, coordinatedSections, pastCoordinatedSemesters});
     } catch(error){
       console.error(error);

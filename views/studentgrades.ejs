@@ -1,95 +1,111 @@
+<!--Ayat i updated html and css here-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <%-include("./partials/head.ejs")%>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="stylesheet" href="/stylesheets/addQuestions.css">
+        <link rel="stylesheet" href="/stylesheets/directAssessment.css">
 </head>
 
 <body>
     <%-include("./partials/nav.ejs")%>
         <div class="row container-fluid">
             <div class="col-md-8">
-                <!--Data needs to be retrieved here dynamically; figure out later-->
-                <h2><%= courseCode %>: <%= courseName %> - Section <%= section %></h2>
-                <h2>Direct Assessment</h2>
+                <h2>
+                    <%= courseCode %>: <%= courseName %> - Section <%= section %>
+                </h2>
             </div>
             <div class="col-md-4">
-                <!--Current term needs to be retrieved here dynamically-->
-                <h3>Term: <%= term %></h3>
-               
+                <h3>Term: <%= term %>
+                </h3>
             </div>
         </div>
-
+        <hr class="divider">
+        <h3>Direct Assessment: Input Grades</h3>
         <ul class="nav nav-tabs" id="activityTabs" role="tablist">
-            <% if (activities && activities.length > 0) { %>
-                <% activities.forEach((activity, index) => { %>
+            <% if (activities && activities.length> 0) { %>
+                <% activities.forEach((activity, index)=> { %>
                     <li class="nav-item">
-                        <a class="nav-link <%= index === 0 ? 'active' : '' %>" id="tab<%= index %>-tab" data-bs-toggle="tab" href="#pane<%= index %>" role="tab" aria-controls="pane<%= index %>" aria-selected="<%= index === 0 ? 'true' : 'false' %>">
+                        <a class="nav-link <%= index === 0 ? 'active' : '' %>" id="tab<%= index %>-tab"
+                            data-bs-toggle="tab" href="#pane<%= index %>" role="tab" aria-controls="pane<%= index %>"
+                            aria-selected="<%= index === 0 ? 'true' : 'false' %>">
                             <%= activity %>
                         </a>
                     </li>
-                <% }); %>
-            <% } else { %>
-                <li class="nav-item">
-                    <p>No activities have been set for this course. <br>Please inform the course coordinator.</p>
-                </li>
-            <% } %>
+                    <% }); %>
+                        <% } else { %>
+                            <li class="nav-item">
+                                <p>No activities have been set for this course. <br>Please inform the course
+                                    coordinator.</p>
+                            </li>
+                            <% } %>
         </ul>
-        
+
         <div class="tab-content" id="activityTabContent">
-            <% if (activities && activities.length > 0) { %>
-                <% activities.forEach((activity, index) => { %>
-                    <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane<%= index %>" role="tabpanel" aria-labelledby="tab<%= index %>-tab">
+            <% if (activities && activities.length> 0) { %>
+                <% activities.forEach((activity, index)=> { %>
+                    <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane<%= index %>"
+                        role="tabpanel" aria-labelledby="tab<%= index %>-tab">
                         <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
                             <table class="table table-bordered" id="activityTable">
                                 <thead>
                                     <tr>
-                                        <th style="border: none;">ID</th>
-                                        <th>Student Name</th>
-                                        <th>Question Grade</th>
-                                        <th>CLO Achievement Per Question</th>
-                              
+                                        <th style="border: none;" class="headings">ID</th>
+                                        <th class="headings">Student Name</th>
+                                        <th class="headings">Question Grade</th>
+                                        <th style="border: none;" class="headings">CLO Achievement Per Question</th>
                                     </tr>
                                 </thead>
                                 <tbody id="insertionPoint">
-                                    <% assessmentDetails.forEach((question, index) => { %>
-                                        <% if (question.type === activity) { %>
+                                    <% assessmentDetails.forEach((question, index)=> { %>
+                                        <% if (question.type===activity) { %>
                                             <tr>
-                                                <th colspan="5" style="border: none;">Question <%= question.assessmentNumber %>: CLO <%= question.CLONumber %></th>
+                                                <th colspan="5" style="border: none;" class="quest">Question <%=
+                                                        question.assessmentNumber %>: CLO <%= question.CLONumber %>
+                                                </th>
                                             </tr>
-                                            <% students.forEach(student => { %>
+                                            <% students.forEach(student=> { %>
                                                 <tr>
-                                                    <td><%= student.studentID %></td>
-                                                    <td><%= student.firstName %> <%= student.lastName %></td>
-                                                    <td><input type="text" name="grade" min="0" max="<%= Number(question.grade)%>" class="form-control gradeInput"
-                                                         onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)" data-student-id="<%= student.studentID %>"></td>
+                                                    <td>
+                                                        <%= student.studentID %>
+                                                    </td>
+                                                    <td>
+                                                        <%= student.firstName %>
+                                                            <%= student.lastName %>
+                                                    </td>
+                                                    <td><input type="text" name="grade" min="0"
+                                                            max="<%= Number(question.grade)%>"
+                                                            class="form-control gradeInput"
+                                                            onchange="updateAchievement(this, <%= question.grade %>, '<%= student.studentID %>', <%= index %>)"
+                                                            data-student-id="<%= student.studentID %>"></td>
                                                     <td id="achievement_<%= index %>_<%= student.studentID %>"></td>
-                                                                                                 
+
                                                 </tr>
-                                            <% }) %>
-                                       <%  } %>
-                                       <% }) %>
+                                                <% }) %>
+                                                    <% } %>
+                                                        <% }) %>
                                 </tbody>
                             </table>
                             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
                                 <div class="button-container">
                                     <div id="errorText_<%= index %>"></div>
-                                    <button type="submit" id="saveButton_<%= index %>" class="btn custom-button">Save</button>
-                                  
-                                    <button id="inputGradesButton" class="btn custom-button" disabled>Calculate Overall CLO Achievement</button>
+                                    <button type="submit" id="saveButton_<%= index %>"
+                                        class="btn custom-button">Save</button>
+
+                                    <button id="inputGradesButton" class="btn custom-button" disabled>Calculate Overall
+                                        CLO Achievement</button>
                                 </div>
                             </div>
                         </form>
                     </div>
-                <% }); %>
-            <% } %>
+                    <% }); %>
+                        <% } %>
         </div>
 
-      
-            
-         
+
+
+        <%- include('./partials/footer.ejs')%>
 </body>
 
 <script>
@@ -98,25 +114,24 @@
         const achievementElement = document.getElementById(`achievement_${tabIndex}_${studentID}`);
         const saveButton = document.getElementById(`saveButton_${tabIndex}`);*/
 
-        const tableRow = inputElement.closest('tr'); 
+        const tableRow = inputElement.closest('tr');
         const inputValue = parseFloat(inputElement.value);
-        const achievementElement = tableRow.querySelector('.achievement'); 
-        const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button'); 
+        const achievementElement = tableRow.querySelector('.achievement');
+        const saveButton = tableRow.closest('.tab-pane').querySelector('.save-button');
 
-}
+    }
 
 
-        if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
-            document.getElementById(`errorText_${tabIndex}`).innerText = "Grade should be a positive number and less than or equal to the question grade!";
-            saveButton.disabled = true;
-            achievementElement.innerText = ""; // Clear the achievement if the input is invalid
-        } else {
-            // Clear the error message, enable the save button, and update the achievement
-            document.getElementById(`errorText_${tabIndex}`).innerText = "";
-            saveButton.disabled = false;
-            const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
-            achievementElement.innerText = calculatedAchievement + "%";
-        }
+    if (isNaN(inputValue) || inputValue < 0 || inputValue > questionGrade) {
+        document.getElementById(`errorText_${tabIndex}`).innerText = "Grade should be a positive number and less than or equal to the question grade!";
+        saveButton.disabled = true;
+        achievementElement.innerText = ""; // Clear the achievement if the input is invalid
+    } else {
+        // Clear the error message, enable the save button, and update the achievement
+        document.getElementById(`errorText_${tabIndex}`).innerText = "";
+        saveButton.disabled = false;
+        const calculatedAchievement = (inputValue / questionGrade * 100).toFixed(2);
+        achievementElement.innerText = calculatedAchievement + "%";
     }
 </script>
 

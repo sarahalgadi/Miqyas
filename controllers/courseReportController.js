@@ -33,6 +33,7 @@ async function editCourseReport(req, res) {
         const recommendation = await courseReportModel.getRecommendation(courseCode, term, "rjan");
   
         res.render('courseReport', {
+          title: 'Course Report', //ayat i passed title here to render in page--------------
           courseCode,
           term,
           courseName,
@@ -92,6 +93,7 @@ async function editCourseReport(req, res) {
         const recommendation = await courseReportModel.getRecommendation(courseCode, term, "rjan"); // temporary username. SESSION MANAGEMENT!!!!!
   
         res.render('courseReport', {
+          title: 'Course Report', //ayat i passed title here to render in page--------------
           courseCode,
           term,
           courseName,

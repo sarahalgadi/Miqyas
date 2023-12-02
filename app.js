@@ -43,8 +43,9 @@ const courses = [
   //res.render('temp', {courses, name})
 //});
 
+//Ayat i changed this in app-------------------------------------------
 app.get('/', async(req, res)=>{
-  res.render('login')
+  res.render('login', {title: 'Login'})
 })
 
 app.use(session({
