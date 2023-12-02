@@ -39,7 +39,7 @@ async function addCoordinatorRole ( courseCode, username,semester){
 
 async function getCurrentCoordinator (department, semester){
     const [rows, fields] = await pool.execute
-    ('SELECT f.fullName, co.courseCode FROM coordinator co JOIN faculty f ON co.username = f.username JOIN course c ON co.courseCode = c.courseCode WHERE c.department = ? AND co.semester = ? ',[department, semester]);
+    ('SELECT f.fullName, co.courseCode, co.username FROM coordinator co JOIN faculty f ON co.username = f.username JOIN course c ON co.courseCode = c.courseCode WHERE c.department = ? AND co.semester = ? ',[department, semester]);
     return rows;
 }
 
@@ -49,14 +49,14 @@ async function getCurrentRoles (department){
     return rows;
 }
 
-async function deleteFacultyRole(username, role) { 
+async function deleteFacultyRole(username, role, semester) { 
   
     const sqlDelete = `
       DELETE FROM faculty_role
-      WHERE username = ? AND role= ? ;
+      WHERE username = ? AND role= ? AND semester = ? ;
     `;
     
-    await pool.execute(sqlDelete, [ username, role]);
+    await pool.execute(sqlDelete, [ username, role, semester]);
    
   }
 
@@ -64,9 +64,9 @@ async function deleteFacultyRole(username, role) {
   
     const sqlDelete = `
       DELETE FROM coordinator
-      WHERE courseCode = ? AND semester = ?;
+      WHERE courseCode = ? AND semester = ? AND username = ?;
     `;
-    await pool.execute(sqlDelete, [ courseCode, semester]);
+    await pool.execute(sqlDelete, [ courseCode, semester, username]);
    
   }
 

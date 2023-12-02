@@ -140,7 +140,7 @@ async function saveCoordinators(req, res){
 async function deleteCoordinatorRole (req,res) {
   console.log("i am here pt2")
   const courseCode = req.body.courseCode;
-  const username = req.body.username;
+  const username = req.body.usernameToDelete;
   const role = req.body.role; 
   const semester = req.params.semester;
   console.log(courseCode,username,role,semester)
@@ -155,8 +155,8 @@ async function deleteCoordinatorRole (req,res) {
   const courses = await userModel.getCourses(user.username, term);
 
   try{
-    await chairModel.deleteCoordinator(courseCode,semester);
-    await chairModel.deleteFacultyRole(username,role);
+    await chairModel.deleteCoordinator(courseCode, username, semester)
+    await chairModel.deleteFacultyRole(username,role, semester);
     res.render('home', {title, term, user, userRoles, coordinatedCourses, userCollege, courses})
   } catch(error){
     console.error(error);

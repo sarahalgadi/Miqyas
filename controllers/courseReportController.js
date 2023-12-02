@@ -31,6 +31,9 @@ async function editCourseReport(req, res) {
   
         // Get recommendation if it exists, as well as action plan
         const recommendation = await courseReportModel.getRecommendation(courseCode, term);
+
+        //check for missing section reports
+        const missingReports = await courseReportModel.checkAvailableSectionReports(courseCode, term)
   
         res.render('courseReport', {
           title: 'Course Report', //ayat i passed title here to render in page--------------
@@ -48,7 +51,8 @@ async function editCourseReport(req, res) {
           clohisto,
           directhisto,
           indirecthisto,
-          recommendation
+          recommendation,
+          missingReports
         });
       } else {
         res.render('error', { message: 'Course not found' });
