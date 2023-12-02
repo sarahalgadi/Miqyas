@@ -149,7 +149,8 @@
             cell1.innerHTML = `<input type="number" name="QNumber" min="1" class="form-control" value="${tabRowCounts[tabIndex]}" readonly style="border: none;">`;
             cell2.innerHTML = `<textarea rows="1" name="description" class="form-control" required></textarea>`;
             cell3.innerHTML = `<input type="number" name="weight" class="form-control" required>`;
-            const cloOptions = <%= JSON.stringify(CLOnumbers) %>.map(clo => `<option value="${clo}">CLO ${clo}</option>`).join('');                cell4.innerHTML = `
+            const cloOptions = <%= JSON.stringify(CLOnumbers) %>.map(clo => `<option value="${clo}">CLO ${clo}</option>`).join('');                
+            cell4.innerHTML = `
                 <select class="form-select" name="cloMapped">
                     ${cloOptions}
                 </select>
@@ -161,7 +162,8 @@
             }
 
 
-            //handles deletion of row
+            //handles deletion of row //for stuff not saved in db
+
             function deleteRow(button) {
                 const activePane = button.closest('.tab-pane');
                 const table = activePane.querySelector('table');
@@ -182,6 +184,11 @@
             //for weights existing in the database only.. a delete api
             function deleteType(button, activity, cloNumber, number, event) {
                 var row = button.closest('tr');
+                const activePane = button.closest('.tab-pane');
+                const table = activePane.querySelector('table');
+                const tabContent = document.getElementById('activityTabContent');
+                const index = Array.from(tabContent.children).indexOf(button.closest('.tab-pane'));
+                
                 event.preventDefault();
                 fetch('/deleteAssessmentDetails/<%= courseCode %>/<%= term %>/<%= section %>', {
                     method: 'POST',
@@ -196,14 +203,14 @@
                 .then(data => {
                     console.log('Row deleted successfully:', data);                 
                     row.remove();
-                    const tabContent = document.getElementById('activityTabContent');
-                    const index = Array.from(tabContent.children).indexOf(button.closest('.tab-pane'));
+                  
     
                     // Decrement the row count for this tab
                     if (index in tabRowCounts) {
                         tabRowCounts[index]--;
-                        updateNumbers(table);
                     }
+                    updateNumbers(table);
+
                 })
                 .catch(error => {
                     console.error('Error deleting row:', error);

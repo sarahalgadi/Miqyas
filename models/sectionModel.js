@@ -9,7 +9,8 @@ async function saveAssessmentDetails(courseCode, assessmentNumber, statment, gra
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
         statment = VALUES(statment),
-        grade = VALUES(grade)
+        grade = VALUES(grade),
+        CLONumber = VALUES(CLONumber)
     `;
 
     try {
