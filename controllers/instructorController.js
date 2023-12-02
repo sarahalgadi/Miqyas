@@ -181,8 +181,8 @@ async function getDirectAssessmentResultsDepartment(req, res) {
       console.log(formData)
 
       try{
-       // let questions = formData["QNumber"];
-        //questions = Array.isArray(questions) ? questions : [questions];
+        let questions = formData["QNumber"];
+        questions = Array.isArray(questions) ? questions : [questions];
         let description = formData["description"];
         description = Array.isArray(description) ? description : [description];
         let weight = formData["weight"];
@@ -207,7 +207,7 @@ async function getDirectAssessmentResultsDepartment(req, res) {
           res.send('<script>alert("Weights exceed the total expected weight of assessment activity"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
         } else{
           for(let i = 0; i< description.length; i++){
-            await courseInstructorModel.saveAssessmentDetails(courseCode, (i+1), description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);      
+            await courseInstructorModel.saveAssessmentDetails(courseCode, questions[i], description[i], parseInt(weight[i]), parseInt(cloMapped[i]), term, activityName, section);      
       }      res.send('<script>alert("Successfully saved!"); window.location.href = "/assign-grades/' + courseCode + '/' + term + '/' + section + '";</script>');
 
        }} catch (error) {
