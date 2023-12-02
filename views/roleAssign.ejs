@@ -51,23 +51,31 @@
     <div class="container">
 
       <h1>Current Roles</h1>
+    
       <table class="table table-bordered table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Faculty</th>
-            <th scope="col">Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% roles.forEach(function(r) { %>
-          <tr>
-            <td class="col"><%= r.fullName %></td>
-            <td class="col"><%= r.role %></td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
+       <thead>
+         <tr>
+           <th scope="col">Faculty</th>
+           <th scope="col">Role</th>
+         </tr>
+       </thead>
+       <tbody>
+         <% roles.forEach(function(r) { %>
+           <form action="/delete-roles/<%= semester %>" method="post">
+         <tr>
+           <td class="col"><%= r.fullName %></td>
+           <td class="col"><%= r.role %></td>
+           <input type="hidden" value="<%= r.role %>" name="role">
+           <input type="hidden" value="<%= r.username %>" name="username">
+           <td><button type="submit" >delete</button></td>
+         </tr>
+       </form>
+         <% }); %>
+         
+       </tbody>
+     </table>
 
+     
         <h1 > <%= department %> Department Faculty Members</h1>
         <form action="/save-roles/<%= semester %>/<%= department %>" method="post">
         <table class="table  table-bordered  table-striped table-hover" >

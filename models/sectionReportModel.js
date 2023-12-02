@@ -212,6 +212,18 @@ async function getDepartmentSectionReports(department){
     }
 }
 
+//deleting action plan
+async function deleteActionPlan(courseCode, sectionNumber, semester, CLONumber) { 
+  
+  const sqlDelete = `
+    DELETE FROM action_plan
+    WHERE courseCode=? AND sectionNumber=? ANd semester=? AND CLONumber=?;
+  `;
+  await pool.execute(sqlDelete, [ courseCode, sectionNumber, semester, CLONumber]);
+ 
+}
+
+
 
 
   module.exports = {
@@ -221,5 +233,6 @@ async function getDepartmentSectionReports(department){
     saveActionPlan,
     saveDirectCLOPerSection,
     getSectionReportCourses,
-    getDepartmentSectionReports
+    getDepartmentSectionReports,
+    deleteActionPlan
   }

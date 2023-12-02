@@ -49,7 +49,26 @@ async function getCurrentRoles (department){
     return rows;
 }
 
+async function deleteFacultyRole(username, role) { 
+  
+    const sqlDelete = `
+      DELETE FROM faculty_role
+      WHERE username = ? AND role= ? ;
+    `;
+    
+    await pool.execute(sqlDelete, [ username, role]);
+   
+  }
+
+  async function deleteCoordinator(courseCode, username, semester) { 
+  
+    const sqlDelete = `
+      DELETE FROM coordinator
+      WHERE courseCode = ? AND semester = ?;
+    `;
+    await pool.execute(sqlDelete, [ courseCode, semester]);
+   
+  }
 
 
-
-module.exports ={getFullNameDepartment,addRoles,getFullNameCollege,addCoordinatorRole,getCurrentCoordinator, getCurrentRoles };
+module.exports ={getFullNameDepartment,addRoles,getFullNameCollege,addCoordinatorRole,getCurrentCoordinator, getCurrentRoles, deleteCoordinator, deleteFacultyRole };

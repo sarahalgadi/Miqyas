@@ -46,24 +46,35 @@
 <body>
   <%-include("./partials/nav.ejs")%>
   <% if(user.department === department && userRoles.includes('chairperson')) { %>
+
+
     <div class="container">
-        <h1><%= college %>  Faculty Members</h1>
-        <table class="table table-bordered table-striped table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Coordinator</th>
-              <th scope="col">Course</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% coordinator.forEach(function(c) { %>
-            <tr>
-              <td class="col"><%= c.fullName %></td>
-              <td class="col"><%= c.courseCode %></td>
-            </tr>
-            <% }); %>
-          </tbody>
-        </table>
+      <h1><%= college %>  Faculty Members</h1>
+      <table class="table table-bordered table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Coordinator</th>
+            <th scope="col">Course</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% coordinator.forEach(function(c) { %>
+            <form action="/delete-coordinator/<%= semester %>" method="post">
+          <tr>
+            <td class="col"><%= c.fullName %></td>
+            <td class="col"><%= c.courseCode %></td>
+            <input type="hidden" value="<%= c.role %>" name="role">
+          <input type="hidden" value="<%= c.username %>" name="username">
+          <input type="hidden" value="<%= c.courseCode %>" name="courseCode">
+            <td><button type="submit">delete</button></td>
+          </tr>
+        </form>
+          <% }); %>
+        </tbody>
+      </table>
+
+
+
           <form method="post" action="/save-coordinator-roles/<%= semester %>/<%= college %>/<%= department %>">
             <table class="table table-bordered table-striped table-hover">
               <thead>
