@@ -272,19 +272,19 @@ function calculateResultsPerCLO(categoryCounts) {
     async function deleteActionPlan (req,res) {
       console.log("i am here again :(")
       const courseCode = req.params.courseCode;
-      const sectionNumber = req.params.sectionNumber; 
+      const sectionNumber = req.params.section; 
       const semester= req.params.term;
       const CLONumber= req.body.cloNumber;
       console.log(courseCode,sectionNumber,semester,CLONumber)
       try{
         await sectionReportModel.deleteActionPlan(courseCode, sectionNumber, semester, CLONumber);
-        res.render('index')
+        res.status(200).json({ message: 'Action plan deleted successfully' });
       } catch(error){
         console.error(error);
-        res.render('error', {message: "didnt work lol"});
+        res.status(500).json({ error: 'Internal Server Error' });
       }
     };
-    
+
 
 
 

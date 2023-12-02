@@ -216,7 +216,7 @@ async function deleteActionPlan(courseCode, sectionNumber, semester, CLONumber) 
   
   const sqlDelete = `
     DELETE FROM action_plan
-    WHERE courseCode=? sectionNumber=? semester=? CLONumber=?;
+    WHERE courseCode=? AND sectionNumber=? ANd semester=? AND CLONumber=?;
   `;
   await pool.execute(sqlDelete, [ courseCode, sectionNumber, semester, CLONumber]);
  
