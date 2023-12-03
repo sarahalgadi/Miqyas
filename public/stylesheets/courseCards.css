@@ -6,7 +6,7 @@
 }
 
 .card {
-  background-color: #fff;
+  background-color: white;
   border-radius: 4px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -19,5 +19,9 @@
 }
 
 .card-body custom-button {
-  width: 100%
+  width: 100%;
+}
+.cardBorder{
+  background-color: #cbd5df;
+  margin: 20px;
 }

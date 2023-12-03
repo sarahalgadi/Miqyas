@@ -12,7 +12,8 @@ async function getFacultyFromDepartment (req,res) {
     const userRoles = await userModel.getUserRoles(user.username, semester);
     const facultyNames = await chairModel.getFullNameDepartment(department);
     const roles = await chairModel.getCurrentRoles(department);
-    res.render('roleAssign',{facultyNames, department, semester, roles, user, userRoles})
+    //sarah: i edited here
+    res.render('roleAssign',{title: 'Assign Roles', facultyNames, department, semester, roles, user, userRoles})
   } catch(error){
     console.error(error);
     res.render('error', {message: "department faculty not found!"});
@@ -71,8 +72,8 @@ async function getFacultyFromCollege(req,res) {
   const names = await chairModel.getFullNameCollege(college);
   const courses= await courseModel.getCourseCode(department);
   const coordinator = await chairModel.getCurrentCoordinator(department, semester);
-
-  res.render('assignCoordinator', {names, college, courses, semester, department, coordinator, user, userRoles});
+//sarah: i edited here
+  res.render('assignCoordinator', {title: 'Assign Roles', names, college, courses, semester, department, coordinator, user, userRoles});
   } catch(error){
     console.error(error);
     res.render('error', {message: "Error: Could not retrieve college faculty members."});

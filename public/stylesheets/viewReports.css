@@ -1,0 +1,11 @@
+h2{
+    font-weight: 400; 
+    margin: 1rem; 
+    padding: 1rem;
+    font-size: 24px;
+}
+.divider{
+    width: 90%;
+    margin: auto;
+    margin-top: 2rem;
+}

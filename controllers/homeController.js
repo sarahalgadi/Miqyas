@@ -11,7 +11,7 @@ async function getUser(req,res ){
       const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
       const userCollege = await userModel.getUserCollege(user.department);
       const fullName = user.fullName;
-      const title = "Miqyas: Home";
+      const title = "Home"; //sarah: edited here
       const courses = await userModel.getCourses(user.username, term);
       res.render('home', {user, title, fullName, term, courses, userRoles, coordinatedCourses, userCollege});
     } catch(error){

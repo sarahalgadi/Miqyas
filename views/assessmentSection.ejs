@@ -1,42 +1,64 @@
-<!--Ayat i updated html and css here-->
+<!--Ayat i updated here!!-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <%-include("./partials/head.ejs")%>
-    <link rel="stylesheet" href="/stylesheets/assessmentTypes.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/stylesheets/assessmentTypes.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
 <body>
     <%-include("./partials/nav.ejs")%>
         <div class="container-fluid row">
             <div class="col-md-8">
-                <h2><%= courseCode %>: <%= courseName %> - Section <%= section %></h2>
+                <h2>
+                    <%= courseCode %>: <%= courseName %> - Section <%= section %>
+                </h2>
             </div>
             <div class="col-md-2">
-                <h3>Term: <%= term %></h3>
+                <h3>Term: <%= term %>
+                </h3>
             </div>
         </div>
         <hr class="divider">
         <div class="container button-container">
-            <!--Button links will be changed to other pages when done-->
+            
+            <button id="directButton" class="btn custom-button" onclick="handleDirectAssessment()">Direct CLO Assessment</button>
 
-            <!--instructor model and routes and controller..-->
+            <!--Direct assessment options, will be displayed when above button is clicked-->
             <form method="post" action="/assign-grades/<%= courseCode %>/<%= term %>/<%= section %>">
                 <input type="hidden" name="courseName" value="<%= courseName %>">
-                <button class="custom-button">Direct CLO Assessment</button>
+                <button id="inputQsButton" class="btn custom-button direct">Add Questions & Deliverables</button>
             </form>
+            <form action="/input-grades/<%= courseCode %>/<%= term %>/<%= section %>" method="GET">
+                <button id="inputGradesButton" class="btn custom-button direct">Input Student Grades</button>
+            </form>
+
+            <form action="/directAssessmentResults/<%= courseCode %>/<%= term %>/<%= section %>" method="get">
+                <button id="cloButton" type="submit" class="btn custom-button direct">Calculate Overall CLO
+                    Achievement</button>
+            </form>
+
+
             <form method="post" action="/indirect/<%= courseCode %>/<%= term %>/<%= section %>">
                 <button class="custom-button" type="submit">Indirect CLO Assessment</button>
             </form>
-           
             <form method="get" action="/edit-section-report/<%=courseCode %>/<%= term %>/<%= section %>">
                 <button class="custom-button">Prepare Report</button>
             </form>
-          
+
         </div>
-    <%- include('./partials/footer.ejs')%>
+        <%- include('./partials/footer.ejs')%>
+
+            <script>
+                //function to display the two direct assessment buttons when direct assessment is clicked
+                function handleDirectAssessment() {
+                    document.getElementById('inputQsButton').style.display ='block';
+                    document.getElementById('inputGradesButton').style.display ='block';
+                    document.getElementById('cloButton').style.display ='block';
+                }
+            </script>
 </body>
 
 </html>

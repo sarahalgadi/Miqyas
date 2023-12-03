@@ -24,117 +24,117 @@
         <div class="col-md-4">
             <h2 style="margin-left: 30%">Term: <%= term %>
             </h2>
-            <!--Add links here later-->
-            <a class="custom-button" href="" style="margin-left: 35%">Back</a>
         </div>
     </div>
     <% if (canAccess){ %>
 
-    <hr style="margin-left: 5%; margin-right: 20%;">
-    <div class="container">
-        <button class="btn custom-button upload" onclick="showFileInput()">Upload Course Exit Survey Results
-            (.csv)</button>
-        <!-- allow only .csv file  -->
-        <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
-    </div>
+        <hr style="margin-left: 5%; margin-right: 20%;">
+        <div class="container">
+            <button class="btn custom-button upload" onclick="showFileInput()">Upload Course Exit Survey Results
+                (.csv)</button>
+            <!-- allow only .csv file  -->
+            <input type="file" id="fileInput" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
+        </div>
 
-    <!-- display data of  the uploaded csv in the website  -->
-    <div class="container" id="result" style="display: none;">
-        <h3>Indirect Assessment Results:</h3>
-        <span id="errorMessage"></span>
-        <!--I have a problem here the actual data isnt being saved; maybe problem with connecting the frontend with the expected backend data-->
-        <form id="formData" action="/saveIndirect/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
-            <table id="indirectTable" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>CLO</th>
-                        <th>Not Satisfied</th>
-                        <th>Barely Satisfied</th>
-                        <th>Somewhat Satisfied</th>
-                        <th>Adequetly Satisfied</th>
-                        <th>Fully Satisfied</th>
-                        <th>Achievement Results (%)</th>
-                    </tr>
-                </thead>
-                <tbody id="courseExitSurvey">
-                    <!-- data rows will be dynamically generated based on parsed csv file -->
-                </tbody>
-            </table>
-            <!-- Hidden inputs for indirect_assessment_responses table -->
-            <input type="hidden" name="courseCode" value="<%= courseCode %>">
-            <input type="hidden" name="semester" value="<%= term %>">
-            <input type="hidden" name="sectionNumber" value="<%= section %>">
-            
+        <!-- display data of  the uploaded csv in the website  -->
+        <div id="result" style="display: none;">
+            <div class="container">
+                <h3>Indirect Assessment Results:</h3>
+                <span id="errorMessage"></span>
+                <form id="formData" action="/saveIndirect/<%= courseCode %>/<%= term %>/<%= section %>" method="post">
+                    <table id="indirectTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>CLO</th>
+                                <th>Not Satisfied</th>
+                                <th>Barely Satisfied</th>
+                                <th>Somewhat Satisfied</th>
+                                <th>Adequetly Satisfied</th>
+                                <th>Fully Satisfied</th>
+                                <th>Achievement Results (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseExitSurvey">
+                            <!-- data rows will be dynamically generated based on parsed csv file -->
+                        </tbody>
+                    </table>
+                    <!-- Hidden inputs for indirect_assessment_responses table -->
+                    <input type="hidden" name="courseCode" value="<%= courseCode %>">
+                    <input type="hidden" name="semester" value="<%= term %>">
+                    <input type="hidden" name="sectionNumber" value="<%= section %>">
 
-            <button type="submit" class="btn custom-button save">Save Indirect Assessment Results</button>
-        </form>
-    </div>
-    <script>
-        //function to activate file input once upload button is clicked
-        function showFileInput() {
-            var fileInput = document.getElementById('fileInput');
-            fileInput.click();
-        }
 
-        // Function to handle file upload
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                const contents = e.target.result;
-                parseCSV(contents);
-            };
-
-            reader.readAsText(file);
-        }
-        //storing total responses
-        let totalResponses = 0;
-
-        // function to reset the table data in case a new csv file is uploaded again
-        function resetTable() {
-            //clear rows
-            const tableBody = document.getElementById('courseExitSurvey');
-            tableBody.innerHTML = '';
-
-            //remove bg color of achievement cells
-            const achievementResults = document.getElementById('indirectTable').getElementsByTagName('td');
-            for (let i = 1; i < achievementResults.length; i += 7) {
-                achievementResults[i].style.background = '';
+                    <button type="submit" class="btn custom-button save">Save Indirect Assessment Results</button>
+                </form>
+            </div>
+            <%- include('./partials/footer.ejs')%>
+        </div>
+        <script>
+            //function to activate file input once upload button is clicked
+            function showFileInput() {
+                var fileInput = document.getElementById('fileInput');
+                fileInput.click();
             }
-            //remove error message
-            document.getElementById('errorMessage').innerHTML = '';
-        }
-        //function to parse cvs file
-        function parseCSV(csvData) {
-            Papa.parse(csvData, {
-                header: false, // Don't treat the first row as headers initially
-                complete: function (results) {
-                    resetTable(); // Clear previous table data
-                    const data = results.data;
-                    const tableBody = document.getElementById('courseExitSurvey');
 
-                    let counter = 1; // Initialize counter for CLO values bc they're not usable in the csv file..
+            // Function to handle file upload
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
 
-                    // Extract the number from the responses string in the second row's first column
-                    const responsesString = data[1][0];
+                reader.onload = function (e) {
+                    const contents = e.target.result;
+                    parseCSV(contents);
+                };
 
-                    // Extracting the number from the string
-                    const extractedNumber = responsesString.match(/\d+/);
+                reader.readAsText(file);
+            }
+            //storing total responses
+            let totalResponses = 0;
 
-                    if (extractedNumber && extractedNumber.length > 0) {
-                        totalResponses = parseInt(extractedNumber[0], 10); // 10 for decimal
-                    }
+            // function to reset the table data in case a new csv file is uploaded again
+            function resetTable() {
+                //clear rows
+                const tableBody = document.getElementById('courseExitSurvey');
+                tableBody.innerHTML = '';
 
-                    // Start iterating from the 7th row bc thats where the data we need is
-                    for (let i = 6; i < data.length; i += 2) {
-                        const row = data[i];
+                //remove bg color of achievement cells
+                const achievementResults = document.getElementById('indirectTable').getElementsByTagName('td');
+                for (let i = 1; i < achievementResults.length; i += 7) {
+                    achievementResults[i].style.background = '';
+                }
+                //remove error message
+                document.getElementById('errorMessage').innerHTML = '';
+            }
+            //function to parse cvs file
+            function parseCSV(csvData) {
+                Papa.parse(csvData, {
+                    header: false, // Don't treat the first row as headers initially
+                    complete: function (results) {
+                        resetTable(); // Clear previous table data
+                        const data = results.data;
+                        const tableBody = document.getElementById('courseExitSurvey');
 
-                        const newRow = document.createElement('tr');
-                        // Populate the "CLO" column with the counter value and increment the counter
-                        let cloValue = counter++;
+                        let counter = 1; // Initialize counter for CLO values bc they're not usable in the csv file..
 
-                        newRow.innerHTML = `
+                        // Extract the number from the responses string in the second row's first column
+                        const responsesString = data[1][0];
+
+                        // Extracting the number from the string
+                        const extractedNumber = responsesString.match(/\d+/);
+
+                        if (extractedNumber && extractedNumber.length > 0) {
+                            totalResponses = parseInt(extractedNumber[0], 10); // 10 for decimal
+                        }
+
+                        // Start iterating from the 7th row bc thats where the data we need is
+                        for (let i = 6; i < data.length; i += 2) {
+                            const row = data[i];
+
+                            const newRow = document.createElement('tr');
+                            // Populate the "CLO" column with the counter value and increment the counter
+                            let cloValue = counter++;
+
+                            newRow.innerHTML = `
                             <td><input type="hidden" name="CLONumber" value="${cloValue}"> ${cloValue}</td>
                             <td><input type="hidden" name="NumNotSatisfied" value="${row[2]}">${row[2]}</td>
                             <td><input type="hidden" name="NumBarelySatisfied" value="${row[3]}">${row[3]}</td>
@@ -142,66 +142,67 @@
                             <td><input type="hidden" name="NumAdequatelySatisfied" value="${row[5]}">${row[5]}</td>
                             <td><input type="hidden" name="NumFullySatisfied" value="${row[6]}">${row[6]}</td>
                         `;
-                        tableBody.appendChild(newRow);
-                    }
+                            tableBody.appendChild(newRow);
+                        }
 
-                    updateTotalResponsesInHTML(totalResponses);
+                        updateTotalResponsesInHTML(totalResponses);
 
-                    // Calculate the indirect achievement % for each clo
-                    const table = document.getElementById('indirectTable');
-                    if (table) {
-                        const rows = table.getElementsByTagName('tr');
-                        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the table header row
-                            const cells = rows[i].getElementsByTagName('td');
-                            if (cells.length >= 6) { // Ensure  6 cells are available in the row
+                        // Calculate the indirect achievement % for each clo
+                        const table = document.getElementById('indirectTable');
+                        if (table) {
+                            const rows = table.getElementsByTagName('tr');
+                            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the table header row
+                                const cells = rows[i].getElementsByTagName('td');
+                                if (cells.length >= 6) { // Ensure  6 cells are available in the row
 
-                                //last two cells contain adequetly and fully satisfied
-                                const lastTwoCellsSum = parseInt(cells[4].textContent, 10) + parseInt(cells[5].textContent, 10);
+                                    //last two cells contain adequetly and fully satisfied
+                                    const lastTwoCellsSum = parseInt(cells[4].textContent, 10) + parseInt(cells[5].textContent, 10);
 
-                                // Check if the achievement result cell (6th cell) exists
-                                let achievementResultCell = cells[6];
-                                // Calculate the achievement result percentage
-                                let achievementResult = 0;
-                                if (totalResponses !== 0) {
-                                    achievementResult = (lastTwoCellsSum / totalResponses) * 100;
-                                } else {
-                                    document.getElementById('errorMessage').innerHTML = "<strong> Error:</strong> Please upload a valid file where total responses is not zero.";
-                                    achievementResult = NaN;
-                                }
+                                    // Check if the achievement result cell (6th cell) exists
+                                    let achievementResultCell = cells[6];
+                                    // Calculate the achievement result percentage
+                                    let achievementResult = 0;
+                                    if (totalResponses !== 0) {
+                                        achievementResult = (lastTwoCellsSum / totalResponses) * 100;
+                                    } else {
+                                        document.getElementById('errorMessage').innerHTML = "<strong> Error:</strong> Please upload a valid file where total responses is not zero.";
+                                        achievementResult = NaN;
+                                    }
 
-                                // Update or create the achievement result cell accordingly
-                                if (!achievementResultCell) {
-                                    achievementResultCell = document.createElement('td');
-                                    rows[i].appendChild(achievementResultCell);
-                                }
+                                    // Update or create the achievement result cell accordingly
+                                    if (!achievementResultCell) {
+                                        achievementResultCell = document.createElement('td');
+                                        rows[i].appendChild(achievementResultCell);
+                                    }
 
-                                // Set the content of the achievement result cell
-                                achievementResultCell.textContent = isNaN(achievementResult) ? '' : achievementResult.toFixed(2);
+                                    // Set the content of the achievement result cell
+                                    achievementResultCell.textContent = isNaN(achievementResult) ? '' : achievementResult.toFixed(2);
 
-                                // Style the cell if needed based on error condition
-                                if (isNaN(achievementResult)) {
-                                    achievementResultCell.style.background = 'lightgrey';
+                                    // Style the cell if needed based on error condition
+                                    if (isNaN(achievementResult)) {
+                                        achievementResultCell.style.background = 'lightgrey';
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
 
-            //displaying the table after parsing
-            const tableContainer = document.getElementById('result');
-            tableContainer.style.display = "block";
-        }
-        function updateTotalResponsesInHTML(total) {
-            // Update the total responses value in html element
-            const totalResponsesElement = document.getElementById('totalResponsesInput');
-            if (totalResponsesElement) {
-                totalResponsesElement.value = total;
+                //displaying the table after parsing
+                const tableContainer = document.getElementById('result');
+                tableContainer.style.display = "block";
             }
-        }
-    </script>
+            function updateTotalResponsesInHTML(total) {
+                // Update the total responses value in html element
+                const totalResponsesElement = document.getElementById('totalResponsesInput');
+                if (totalResponsesElement) {
+                    totalResponsesElement.value = total;
+                }
+            }
+        </script>
 
-    <% } %>
+        <% } %>
+
 </body>
 
 </html>

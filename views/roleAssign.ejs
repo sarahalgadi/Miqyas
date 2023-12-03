@@ -1,108 +1,110 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-  crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="../stylesheets/style.css">
-  <title>Faculty List</title>
-  <style>
-    body {
-      background-color: #f8f9fa;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h1 {
-      background-color: #15416e;
-      color: white;
-      padding: 20px;
-      font-size: 25px;
-    }
-    table {
-      background-color: white;
-    }
-    th {
-      background-color: #15416e;
-      color: white;
-    }
-    td {
-      vertical-align: middle;
-    }
-    .btn-primary {
-      background-color: #15416e;
-      border-color: #15416e;
-    }
 
-  </style>
+<head>
+  <%-include("./partials/head.ejs")%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/chair.css">
 </head>
+
 <body>
   <%-include("./partials/nav.ejs")%>
-
-  <% if(user.department === department && userRoles.includes('chairperson')) { %>
-  
-    <div class="container">
-
-      <h1>Current Roles</h1>
-      <table class="table table-bordered table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Faculty</th>
-            <th scope="col">Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% roles.forEach(function(r) { %>
-          <tr>
-            <td class="col"><%= r.fullName %></td>
-            <td class="col"><%= r.role %></td>
-          </tr>
-          <% }); %>
-        </tbody>
+    <div>
+      <table class="table table-borderless">
+        <tr>
+          <td rowspan="2">
+            <h2>
+              Department Curriculum Committee <br>and Quality Assurance Members
+            </h2>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><strong>Term:</strong>
+            <%= semester %>
+          </td>
+          <td><strong>Department:</strong>
+            <%= user.department %>
+          </td>
+        </tr>
       </table>
+    </div>
+    <hr class="divider">
 
-        <h1 > <%= department %> Department Faculty Members</h1>
-        <form action="/save-roles/<%= semester %>/<%= department %>" method="post">
-        <table class="table  table-bordered  table-striped table-hover" >
-          <thead >
-            <tr>
-              <th scope="col">Faculty Name</th>
-              <th scope="col">Username</th>
-              <th scope="col">Roles</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% facultyNames.forEach(function(faculty) { %>
+    <% if(user.department===department && userRoles.includes('chairperson')) { %>
+
+      <div class="container">
+        <h4>Current Roles</h4>
+        <div class="container tableContainer">
+          <table class="table table-bordered table-striped table-hover">
+            <thead>
               <tr>
-                <td class="col"><%= faculty.fullName %></td>
-                <td class="col"><%= faculty.username %></td>
-                <td class="col">
-                  <label>
-                    <input type="checkbox" name="department curriculum committee" value="<%= faculty.username %>"> Curriculum Committee
-                  </label>
-                  <br>
-                  <label>
-                    <input type="checkbox" name="quality assurance" value="<%= faculty.username %>"> Quality Assurance
-                  </label>
-                </td>
+                <th class="headings">Faculty</th>
+                <th class="headings">Role</th>
               </tr>
-            <% }); %>
-          </tbody>
-        </table>
-          <button type="submit" class="btn btn-primary btn-lg btn-block" >Save Roles</button>
-       </form>
+            </thead>
+            <tbody>
+              <% roles.forEach(function(r) { %>
+                <tr>
+                  <td>
+                    <%= r.fullName %>
+                  </td>
+                  <td>
+                    <%= r.role %>
+                  </td>
+                </tr>
+                <% }); %>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>
+          <%= department %> Department Faculty Members
+        </h4>
+        <form action="/save-roles/<%= semester %>/<%= department %>" method="post">
+          <div class="container tableContainer">
+            <table class="table table-bordered table-striped table-hover">
+              <thead>
+                <tr>
+                  <th class="headings">Faculty Name</th>
+                  <th class="headings">Username</th>
+                  <th class="headings">Roles</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% facultyNames.forEach(function(faculty) { %>
+                  <tr>
+                    <td>
+                      <%= faculty.fullName %>
+                    </td>
+                    <td>
+                      <%= faculty.username %>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="checkbox" class="roleCheck" name="department curriculum committee" value="<%= faculty.username %>">
+                        Curriculum Committee
+                      </label>
+                      <br>
+                      <label>
+                        <input type="checkbox" class="roleCheck" name="quality assurance" value="<%= faculty.username %>"> Quality
+                        Assurance
+                      </label>
+                    </td>
+                  </tr>
+                  <% }); %>
+              </tbody>
+            </table>
+            <button id="saveRoles" type="submit" class="btn custom-button">Save Roles</button>
+          </div>
+        </form>
       </div>
 
       <% } else { %>
         <h2>You are not allowed to access this page!</h2>
         <% } %>
-  </body>
-</html> 
-  
+
+        <%- include('./partials/footer.ejs')%>
+</body>
+
+</html>

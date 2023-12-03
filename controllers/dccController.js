@@ -8,7 +8,7 @@ async function editCLOs (req,res){
     try{
         const userRoles = await userModel.getUserRoles(user.username, term);
         const courses = await dccModel.getDepartmentCourses(department, term);
-        res.render('dcc', {title:'DCC: Edit CLO', courses, term, department, user, userRoles});
+        res.render('dcc', {title:'CLOs', courses, term, department, user, userRoles}); //sarah: edited here
     }catch(error){
         res.render('error', {message: "Error: Could not retrieve courses."})
     }
