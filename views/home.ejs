@@ -62,7 +62,7 @@
                             </div>
                             <% }) %>
                                 <% } else { %>
-                                    <h4>"You're currently not teaching courses this term."</h4>
+                                    <h4>You're currently not teaching courses this term.</h4>
                                     <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
                                         <button class="btn custom-button" href="#" style="width: 100%;">View Your Past
                                             Reports</button>
@@ -145,19 +145,12 @@
                     </div>
                     <% } %>
 
-                        <!--if quality assurance-->
-                        <% if (userRoles.includes('QA')) { %>
-                            <div class="container qaContainer">
-                                <div class="row">
-                                    <h3>Quality Assurance Activities: </h3>
-                                </div>
-                            </div>
-                            <% } %>
+                        
 
                                 <!--Viewing department reports is unified-->
                                 <!--edit form action here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
                                 <div class="container buttonContainer">
-                                    <form>
+                                    <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
                                         <button class="btn custom-button" href="#">View
                                             Department Reports</button>
                                     </form>

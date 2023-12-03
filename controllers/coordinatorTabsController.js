@@ -48,7 +48,7 @@ async function saveDirectAssessmentTypes (req, res){
           final_exam: req.body.final_exam === 'on' ? parseInt(req.body.final_exam_weight) : null,
           other: req.body.other === 'on' ? parseInt(req.body.other_weight) : null,
         };
-      
+      console.log(courseCode);
             // Iterate over formData
             for (const [type, weight] of Object.entries(formData)) {
               // Check if weight is not null

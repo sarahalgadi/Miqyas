@@ -33,3 +33,8 @@ table .headings{
 form{
     margin-bottom: 10rem;
 }
+
+.delete{
+    width: 100%;
+   
+}

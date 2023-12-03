@@ -1,8 +1,9 @@
 const sectionReportModel = require('../models/sectionReportModel');
 const courseModel = require('../models/courseModel');
+const { calculateOverallSatisfaction} = require('./utils');
+const { calculateResultsPerCLO } = require('./utils');
 
-//todo: error handling here as well .. and saving course section report.. what happens then?
-//fixme: saving report.. i did not redirect anywhere.. we need to figure this out.
+
 async function editSectionReport(req, res){
     const {courseCode, term, section} = req.params;
 
@@ -112,73 +113,7 @@ async function editSectionReportDepartment(req, res){
     }
 }
 
-//calculation for each category (coutning me and ae. this is not exported.)
 
-function calculateResultsPerCLO(categoryCounts) {
-    const resultsPerCLO = {};
-  
-    for (const data of categoryCounts) {
-      const { CLONumber, category, studentCount } = data;
-  
-      if (!resultsPerCLO[CLONumber]) {
-        resultsPerCLO[CLONumber] = { me: 0, ae: 0, totalStudentCount: 0 };
-      }
-  
-      // Sum ME and AE counts
-      if (category === 2) {
-        resultsPerCLO[CLONumber].me += studentCount;
-      } else if (category === 3) {
-        resultsPerCLO[CLONumber].ae += studentCount;
-      }
-  
-      // Sum total student count for all categories
-      resultsPerCLO[CLONumber].totalStudentCount += studentCount;
-    }
-  
-    // Calculate the results for each CLO
-    for (const cloNumber in resultsPerCLO) {
-      const { me, ae, totalStudentCount } = resultsPerCLO[cloNumber];
-      resultsPerCLO[cloNumber].results = totalStudentCount > 0 ? ((me + ae) * 100) / totalStudentCount : 0;
-    }
-  
-    return resultsPerCLO;
-  }
-//calculation for indirect.. per section results..
-  function calculateOverallSatisfaction(indirectSums) {
-    const overallSatisfactionPerCLO = {};
-  
-    for (const data of indirectSums) {
-      const {
-        CLONumber,
-        totalFullySatisfied,
-        totalAdequatelySatisfied,
-        totalSatisfied,
-        totalBarelySatisfied,
-        totalNotSatisfied
-      } = data;
-  
-      const totalSatisfactionCount =
-      parseInt(totalFullySatisfied) +
-      parseInt(totalAdequatelySatisfied) +
-      parseInt(totalSatisfied) +
-      parseInt(totalBarelySatisfied) +
-      parseInt(totalNotSatisfied);
-    
-  
-      if (totalSatisfactionCount > 0) {
-        const overallSatisfaction =
-        (parseInt(totalFullySatisfied) + parseInt(totalAdequatelySatisfied)) / totalSatisfactionCount;
-  
-        
-        overallSatisfactionPerCLO[CLONumber] = (overallSatisfaction * 100).toFixed(2);
-      } else {
-        // Handle division by zero or no data
-        overallSatisfactionPerCLO[CLONumber] = 0;
-      }
-    }
-  
-    return overallSatisfactionPerCLO;
-  }
 
   //function for getting histogram data as arrays to be able to render it properly..
   function prepareHistogramData(clonums,indirectSums, resultsPerCLO) {
@@ -200,8 +135,9 @@ function calculateResultsPerCLO(categoryCounts) {
     return [clonumbers, indirectResults, directResults];
   }
 
-  async function saveSectionReport(req, res){
 
+  //saving section report info.. for retrieving later as well as action plan(s)
+  async function saveSectionReport(req, res){
     let {courseCode, term, section} = req.params;
 
     section = parseInt(section);
@@ -251,7 +187,7 @@ function calculateResultsPerCLO(categoryCounts) {
     for (const cloNumber in calculatedResults) {
         const cloData = calculatedResults[cloNumber];
      try {
-        await sectionReportModel.saveDirectCLOPerSection( ////fixme: AFTER SAVING REPORT, what to render?????  we need to discuss this
+        await sectionReportModel.saveDirectCLOPerSection( 
             parseInt(cloNumber),
             courseCode,
             section,
@@ -266,8 +202,8 @@ function calculateResultsPerCLO(categoryCounts) {
     }
 
 }
-   
-    }
+  res.render('success', {title:"Submitted", message: "Your report has been submitted."})
+ }
 
     async function deleteActionPlan (req,res) {
       console.log("i am here again :(")

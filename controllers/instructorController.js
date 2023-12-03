@@ -5,6 +5,7 @@ const studentModel = require('../models/studentModel');
 
 
 
+//----------------------DIRECT ASSESSMENT------------------------------------------------------------------
 //this is the table where instructors calculate overall clo achievement per student for each clo.. has to be saved into db.. for reports.
 async function getDirectAssessmentResults(req,res) {
 
@@ -13,7 +14,7 @@ async function getDirectAssessmentResults(req,res) {
     const {courseCode, term, section} = req.params;
 
     try{
-      const userRoles = await userModel.getUserRoles(user.username, term);
+      const userRoles = await userModel.getUserRoleQA(user.username)
       const userCourses = await userModel.getCourses(user.username, term);
       const studentInfo = await studentModel.getStudentInfo(courseCode, term, section);
       const learningOutcomes = await courseModel.getCLOInfo(courseCode, term);
@@ -62,7 +63,7 @@ async function getDirectAssessmentResultsDepartment(req, res) {
 
   try{
     const userCourses = await userModel.getCourses(user.username, term);
-    const userRoles = await userModel.getUserRoles(user.username, term);
+    const userRoles = await userModel.getUserRolesQA(user.username);
   
       if (department === 'All') {
           return res.redirect(`/directAssessmentResults/${courseCode}/${term}/${section}`);
@@ -252,15 +253,23 @@ async function saveGrades(req,res){
   console.log("students...", formData)
   let grade = formData.grade; //student grades
   grade = Array.isArray(grade) ? grade : [grade];
+
+  let students = formData.studentID;
+  students = Array.isArray(students) ? students : [students];
+
+  let assessmentNumbers = formData.assessmentNumber;
+  assessmentNumbers = Array.isArray(assessmentNumbers) ? assessmentNumbers : [assessmentNumbers];
+
+  let activity = formData.activity;
+  activity = Array.isArray(activity)?  activity : [activity];
 try{
   for(let i = 0; i<grade.length; i++){
     if(grade[i]!==''){// because it returns empty string if no grade was given.
       const studentGrade = parseFloat(grade[i]);
-      const studentID = formData.studentID[i];
-      const assessmentNumber = parseInt(formData.assessmentNumber[i]);
-      const type = formData.activity[i];
+      const studentID = students[i];
+      const assessmentNumber = parseInt(assessmentNumbers[i]);
+      const type = activity[i];
       //i'll get the total weight to do division since percentage isn't extracted as it's dynamically scripted
-
       let total = await courseInstructorModel.getTotalWeightOfAQuestion(courseCode, term, section, type, assessmentNumber);
       //it returns it as an object w grade attribute
       const CLOPercentage = (studentGrade/ total.grade * 100).toFixed(2);
@@ -279,6 +288,22 @@ res.send('<script>alert("Successfully saved!"); window.location.href = "/input-g
   } 
 }
 
+async function deleteAssessmentDetails(req, res){
+  const{courseCode, term, section} = req.params;
+  const qnumber = req.body.qNumber;
+  const activity = req.body.activity;
+  const clo = req.body.cloNumber;
+
+  try{
+    await courseInstructorModel.deleteAssessmentDetails(courseCode, section, term, activity, qnumber, clo);
+    res.status(200).json({ message: 'Assessment detail deleted successfully' });
+      } catch(error){
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+}
+
+//---------------------------------------------------------------------------------------------------
+//------------------------INDIRECT ASSESSMENT--------------------------------------------------------
 
 //this is for viewing the page that makes the instructor upload the indirect assessment survey
 async function indirectAssessment(req, res) { 
@@ -315,6 +340,8 @@ async function saveIndirectAssessment(req, res) {
       const NumBarelySatisfied = formData['NumBarelySatisfied'];
       const NumNotSatisfied =formData['NumNotSatisfied'];
 
+      
+
   try {
       console.log("formdata", req.body);
       for(let i=0; i< CLONumber.length; i++){
@@ -347,21 +374,7 @@ async function saveIndirectAssessment(req, res) {
   }
 }
 
-async function deleteAssessmentDetails(req, res){
-    const{courseCode, term, section} = req.params;
-    const qnumber = req.body.qNumber;
-    const activity = req.body.activity;
-    const clo = req.body.cloNumber;
 
-    try{
-      await courseInstructorModel.deleteAssessmentDetails(courseCode, section, term, activity, qnumber, clo);
-      res.status(200).json({ message: 'Assessment detail deleted successfully' });
-        } catch(error){
-          res.status(500).json({ error: 'Internal Server Error' });
-        }
-
-
-}
 
 
 

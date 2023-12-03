@@ -20,9 +20,28 @@ async function saveCLOs(req,res){
     const formData = req.body;
     const user = req.session.user;
     const department = user.department;
-   
+    const existingCLOs = await dccModel.getCLOs(courseCode, term);
 
-    try{
+
+
+    try{ 
+
+        //deleting CLOs that don't exist in retrieved
+
+        // Extract CLO numbers from formData
+        const formDataCLONumbers = formData.cloNumber;
+
+        // Identify CLOs to delete
+        const cloNumbersToDelete = existingCLOs
+        .filter(clo => !formDataCLONumbers.includes(clo.CLONumber))
+        .map(clo => clo.CLONumber);
+
+        // Delete identified CLOs
+        for (const cloNumberToDelete of cloNumbersToDelete) {
+        await dccModel.deleteCLOs(cloNumberToDelete, courseCode, term);
+}
+
+        //adding CLOs
         const arrayLength = formData.cloNumber.length;
         for (let i = 0; i < arrayLength; i++) {
             const cloNumber = formData.cloNumber[i];

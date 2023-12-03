@@ -42,7 +42,7 @@
                 <div id="editActivites" class="tab-pane container active p-4 mt-4">
                     <h3>Select Assessment Activities to be Considered in CLO Assessment</h3>
                     <hr>
-                    <form action="/submit-form/<%= title %>/<%= term %>" method="post">
+                    <form action="/submit-form/<%= courseCode %>/<%= term %>" method="post">
 
                         <!-- Project -->
                         <div class="form-check p-2">
@@ -136,7 +136,7 @@
                         </select>
 
                         <label for="section" id="sectionLabel" class="form-label">Select Section or Semester:</label>
-                        <select id="section" name="section" class="form-select" disabled>
+                        <select id="section" name="section" class="form-select" >
                             <option value="" selected disabled>Semester</option>
                         </select>
 

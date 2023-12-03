@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--todo: more client side error validation might be needed here.. idk.. like statement should not be empty?-->
 
 <head>
     <%- include("./partials/head.ejs") %>
@@ -12,7 +11,6 @@
 <body>
     <%- include('./partials/nav.ejs')%>
 
-        <div class="row container-fluid">
             <div class="col-md-8">
                 <h2>
                     <%= courseCode %>: <%= courseName %> - Section
@@ -166,7 +164,7 @@
                     <thead>
                         <tr>
                             <th class="headings" rowspan="2">CLO Number</th>
-                            <th class="headings" colspan="6">Action Plan & Recommendation</th>
+                            <th class="headings" colspan="6">Action Plans</th>
                         </tr>
                         <tr>
                             <th class="headings">Action</th>

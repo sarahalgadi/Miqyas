@@ -55,21 +55,14 @@ async function saveRoles(req, res){
 
 async function deleteRole (req,res) {
   console.log("i am here")
-  const useranme = req.body.username;
+  const username = req.body.username;
   const role = req.body.role; 
-  console.log(useranme,role)
+  console.log(username,role)
 
-  //to render home..
-  const user = req.session.user;
-  const term = await userModel.getCurrentTerm(user.username);
-  const userRoles = await userModel.getUserRoles(user.username, term);
-  const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
-  const userCollege = await userModel.getUserCollege(user.department);
-  const title = "Miqyas: Home";
-  const courses = await userModel.getCourses(user.username, term);
+ 
   try{
-    await chairModel.deleteFacultyRole(useranme,role);
-    res.render('home', {title, user, term, userRoles, coordinatedCourses, userCollege, courses})
+    await chairModel.deleteFacultyRole(username,role);
+    res.render('success', {title: "Deleted Successfully", message: "Role has been successfully deleted!"})
   } catch(error){
     console.error(error);
     res.render('error', {message: "Error: Could not delete role."});
@@ -146,19 +139,11 @@ async function deleteCoordinatorRole (req,res) {
   const semester = req.params.semester;
   console.log(courseCode,username,role,semester)
 
-  //to render home
-  const user = req.session.user;
-  const term = await userModel.getCurrentTerm(user.username);
-  const userRoles = await userModel.getUserRoles(user.username, term);
-  const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
-  const userCollege = await userModel.getUserCollege(user.department);
-  const title = "Miqyas: Home";
-  const courses = await userModel.getCourses(user.username, term);
 
   try{
-    await chairModel.deleteCoordinator(courseCode, username, semester)
-    await chairModel.deleteFacultyRole(username,role, semester);
-    res.render('home', {title, term, user, userRoles, coordinatedCourses, userCollege, courses})
+    await chairModel.deleteCoordinator(courseCode, semester)
+    await chairModel.deleteFacultyRole(username, semester);
+    res.render('success', {title: "Deleted Successfully", message: "Coordinator role has been successfully deleted!"})
   } catch(error){
     console.error(error);
     res.render('error', {message: "Error: Could not delete coordinator role."});

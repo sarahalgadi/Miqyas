@@ -23,6 +23,9 @@
         </h2>
       </div>
     </div>
+
+   <%  if (recommendation) { %> <!--check if course report is submitted.. if not then we won't view the report,-->
+ 
     <hr class="divider">
     <!--Direct assessment section-->
     <div class="row">
@@ -80,7 +83,7 @@
                   <% } %>
                     <!-- Display results for each CLO -->
                     <td class="categories">
-                      <%= resultsPerCLO[CLOnumbers[i]] ? resultsPerCLO[CLOnumbers[i]].results.toFixed(2) : 0 %>
+                      <%= resultsPerCLO[CLOnumbers[i]] ? resultsPerCLO[CLOnumbers[i]].results.toFixed(2) : 0 %> %
                     </td>
             </tr>
             <% } %>
@@ -127,7 +130,7 @@
               </td>
               <td class="categories">
                 <% if (totalIndirectPerCLO[sum.CLONumber] !==undefined) { %>
-                  <%= totalIndirectPerCLO[sum.CLONumber] %>
+                  <%= totalIndirectPerCLO[sum.CLONumber] %> %
                     <% } else { %>
                       N/A
                       <% } %>
@@ -164,7 +167,7 @@
               <thead>
                 <tr>
                   <th class="headings" rowspan="2">CLO Number</th>
-                  <th class="headings" colspan="6">Action Plan & Recommendation</th>
+                  <th class="headings" colspan="6">Action Plans</th>
                 </tr>
                 <tr>
                   <th class="headings">Action</th>
@@ -218,6 +221,9 @@
         <%= recommendation || '' %>
       </p>
     </div>
+    <% }else { %>
+      Course report has not been submitted yet.
+   <% } %>
 
     <%- include('./partials/footer.ejs')%>
 

@@ -42,6 +42,7 @@
               <tr>
                 <th class="headings">Coordinator</th>
                 <th class="headings">Course</th>
+                <th class="headings"></th>
               </tr>
             </thead>
             <tbody>
@@ -57,7 +58,7 @@
                     <input type="hidden" value="coordinator" name="role">
                     <input type="hidden" value="<%= c.username %>" name="usernameToDelete">
                     <input type="hidden" value="<%= c.courseCode %>" name="courseCode">
-                    <td><button type="submit" class="btn custom-button">Delete</button></td>
+                    <td><button type="submit" class="btn delete custom-button">Delete</button></td>
                   </tr>
                 </form>
                 <% }); %>
@@ -102,7 +103,7 @@
                   <% }); %>
               </tbody>
             </table>
-            <div id="errorText"></div>
+            <div id="errorText" style="text-align: end;"></div>
             <button id="saveRoles" type="submit" class="btn custom-button">Save Roles</button>
         </div>
         </form>

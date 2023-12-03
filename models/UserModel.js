@@ -104,9 +104,21 @@ async function getUserCollege (department){
 }
 
 
+async function getUserRoleQA(username) {
+    const sql = `SELECT DISTINCT role FROM faculty_role WHERE username = ?`;
+
+    try {
+        const [rows] = await pool.execute(sql, [username]);
+        const roles = rows.map(row => row.role);
+        return roles;
+    } catch (error) {
+        console.error('Error fetching user roles: ', error);
+        throw error;
+    }
+}
 
 
 
 
-module.exports ={ getUserByUsername, getCurrentTerm, getCourses, getUserRoles, getCoordinatedCourses, getInstructedCourses, getUserCollege};
+module.exports ={ getUserByUsername, getCurrentTerm, getCourses, getUserRoles, getCoordinatedCourses, getInstructedCourses, getUserCollege, getUserRoleQA};
 

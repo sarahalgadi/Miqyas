@@ -1,8 +1,8 @@
 const courseReportModel = require('../models/courseReportModel');
 const courseModel = require('../models/courseModel');
-//todo: error handling here... etc.
-//fixme: saving course report.. where to go after??? we need to discuss!!!!
-//viewing course report..editing..
+const { calculateResultsPerCLO } = require('./utils');
+const { calculateOverallSatisfaction} = require('./utils');
+//viewing course report... this page will pull up calculations across sections.. and allows coordinator to submit.
 async function editCourseReport(req, res) {
     const { courseCode, term } = req.params;
   
@@ -36,7 +36,7 @@ async function editCourseReport(req, res) {
         const missingReports = await courseReportModel.checkAvailableSectionReports(courseCode, term)
   
         res.render('courseReport', {
-          title: 'Course Report', //ayat i passed title here to render in page--------------
+          title: 'Course Report', 
           courseCode,
           term,
           courseName,
@@ -63,6 +63,7 @@ async function editCourseReport(req, res) {
     }
   }
 
+  //same as the controller above,, but calculations are done per department chosen in the filter dropdown
   async function displayByDepartment(req, res) {
     const { courseCode, term, department } = req.params;
   
@@ -92,7 +93,8 @@ async function editCourseReport(req, res) {
           totalIndirectPerCLO,
           histo
         );
-  
+        const missingReports = await courseReportModel.checkAvailableSectionReports(courseCode, term)
+
         // Get recommendation if it exists
         const recommendation = await courseReportModel.getRecommendation(courseCode, term); 
         res.render('courseReport', {
@@ -111,7 +113,8 @@ async function editCourseReport(req, res) {
           clohisto,
           directhisto,
           indirecthisto,
-          recommendation
+          recommendation,
+          missingReports
         });
       } else {
         res.render('error', { message: 'Course not found' });
@@ -122,71 +125,9 @@ async function editCourseReport(req, res) {
     }
   }
   
-  function calculateResultsPerCLO(categoryCounts) {
-    const resultsPerCLO = {};
+
   
-    for (const data of categoryCounts) {
-      const { CLONumber, category, studentCount } = data;
   
-      if (!resultsPerCLO[CLONumber]) {
-        resultsPerCLO[CLONumber] = { me: 0, ae: 0, totalStudentCount: 0 };
-      }
-  
-      // Sum ME and AE counts
-      if (category === 2) {
-        resultsPerCLO[CLONumber].me += studentCount;
-      } else if (category === 3) {
-        resultsPerCLO[CLONumber].ae += studentCount;
-      }
-  
-      // Sum total student count for all categories
-      resultsPerCLO[CLONumber].totalStudentCount += studentCount;
-    }
-  
-    // Calculate the results for each CLO
-    for (const cloNumber in resultsPerCLO) {
-      const { me, ae, totalStudentCount } = resultsPerCLO[cloNumber];
-      resultsPerCLO[cloNumber].results = totalStudentCount > 0 ? ((me + ae) * 100) / totalStudentCount : 0;
-    }
-  
-    return resultsPerCLO;
-  }
-  
-   function calculateOverallSatisfaction(indirectSums) {
-    const overallSatisfactionPerCLO = {};
-  
-    for (const data of indirectSums) {
-      const {
-        CLONumber,
-        totalFullySatisfied,
-        totalAdequatelySatisfied,
-        totalSatisfied,
-        totalBarelySatisfied,
-        totalNotSatisfied
-      } = data;
-  
-      const totalSatisfactionCount =
-      parseInt(totalFullySatisfied) +
-      parseInt(totalAdequatelySatisfied) +
-      parseInt(totalSatisfied) +
-      parseInt(totalBarelySatisfied) +
-      parseInt(totalNotSatisfied);
-    
-  
-      if (totalSatisfactionCount > 0) {
-        const overallSatisfaction =
-        (parseInt(totalFullySatisfied) + parseInt(totalAdequatelySatisfied)) / totalSatisfactionCount;
-  
-        
-        overallSatisfactionPerCLO[CLONumber] = (overallSatisfaction * 100).toFixed(2);
-      } else {
-        // Handle division by zero or no data
-        overallSatisfactionPerCLO[CLONumber] = 0;
-      }
-    }
-  
-    return overallSatisfactionPerCLO;
-  }
   
   function prepareHistogramData(clonums,indirectSums, resultsPerCLO) {
     const clonumbers = [];
@@ -216,14 +157,16 @@ async function editCourseReport(req, res) {
       const user = req.session.user;
       const username = user.username; 
       const recommendation = req.body.recommendation.trim();
+      console.log(username)
   
       // Update the recommendation table
       await courseReportModel.saveRecommendation(courseCode, term, username, recommendation);
   
       // Update the selected action plans
       await courseReportModel.updateSelectedActionPlans(courseCode, term, req.body);
+
+      res.render('success', {title:"Submitted", message: "Your report has been submitted!"})
   
-      res.redirect('/'); //todo: is this the place to go to after report is saved?
     } catch (error) {
       console.error(error);
       res.render('error', { message: 'Could not save the course report' });

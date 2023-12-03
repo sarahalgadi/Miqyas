@@ -41,6 +41,7 @@
               <tr>
                 <th class="headings">Faculty</th>
                 <th class="headings">Role</th>
+                <th class="headings"></th>
               </tr>
             </thead>
             <tbody>
@@ -51,7 +52,7 @@
                 <td><%= r.role %></td>
                 <input type="hidden" value="<%= r.role %>" name="role">
                 <input type="hidden" value="<%= r.username %>" name="username">
-                <td><button type="submit" class="btn custom-button">Delete</button></td>
+                <td><button type="submit" class="btn delete custom-button">Delete</button></td>
               </tr>
             </form>
               <% }); %>

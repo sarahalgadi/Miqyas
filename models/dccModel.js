@@ -5,7 +5,7 @@ const pool = require('../database');
 //get courses and their names under dcc's department
 async function getDepartmentCourses (department, semester){
 
-    const sql = 'SELECT c.courseCode, c.courseName FROM course c JOIN coordinator co ON c.courseCode = co.courseCode WHERE c.department= ? AND co.semester = ? ';
+    const sql = 'SELECT DISTINCT c.courseCode, c.courseName FROM course c JOIN course_section co ON c.courseCode = co.courseCode WHERE c.department= ? AND co.semester = ? ';
     try {
         const [result] = await pool.execute(sql, [department, semester]);
         return result;
@@ -38,5 +38,17 @@ async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
    }
 
 
+//deleting clos
+async function deleteCLOs(CLONumber, courseCode, semester){
+    
+    try{
+        const [rows, fields] = await pool.execute
+        ('DELETE FROM course_learning_outcomes WHERE CLONumber = ? AND courseCode = ? AND semester = ?', [CLONumber, courseCode, semester]);
+    } catch(error){
+        console.error('error deleting clos', error);
+        throw error;
+    }
+}
 
-module.exports ={ getDepartmentCourses ,addCLOs, getCLOs};
+
+module.exports ={ getDepartmentCourses ,addCLOs, getCLOs, deleteCLOs};

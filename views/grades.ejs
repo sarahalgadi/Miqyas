@@ -46,13 +46,12 @@
 
     <div class="tab-content" id="activityTabContent">
         <% if (activities && activities.length > 0) { %>
-            <% activities.forEach((activity, index) => { %>
-                <div class="tab-pane fade <%= index === 0 ? 'show active' : '' %>" id="pane<%= index %>" role="tabpanel" aria-labelledby="tab<%= index %>-tab">
-                    <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
+            <% activities.forEach((activity, activityIndex) => { %>
+                <div class="tab-pane fade <%= activityIndex === 0 ? 'show active' : '' %>" id="pane<%= activityIndex %>" role="tabpanel" aria-labelledby="tab<%= activityIndex %>-tab">                    <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
                         <table class="table table-bordered" id="activityTable">
                             <thead>
                                 <tr>
-                                    <th colspan="5" class="activityHeader"><%= activity %></th>
+                                    <th colspan="6" class="activityHeader"><%= activity %></th>
                                 </tr>
                                 <tr>
                                     <th style="border: none;">Index</th>
@@ -65,11 +64,13 @@
                             </thead>
                             <% if (assessmentDetails.length > 0) { %>
                                 <tbody id="insertionPoint">
+                                    <% let activityCounter = 1; %>
+
                                     <% assessmentDetails.forEach((question, index) => { %>
                                         <% if (question.type === activity) { %>
                                             <tr>
-                                                <td><input type="tel"  min="1"  max="99" class="form-control" value="<%= index + 1 %>" name="QNumber" style="border: none;"></td>
-                                                <td><input type="number" min="0" max="99" name="QNumber" value="<%= question.assessmentNumber %>"></td>
+                                                <td><input type="tel"  min="1"  max="99" class="form-control" value="<%= assessmentDetails.length > 0 ? activityCounter : 1 %>" name="QNumber" style="border: none;"></td>
+                                                <td><input type="number" class="form-control" min="0" max="99" name="QNumber" value="<%= question.assessmentNumber %>"></td>
                                                 <td>
                                                     <textarea rows="1" name="description" class="form-control" value="<%= question.statment %>" required><%= question.statment %></textarea>
                                                 </td>
@@ -83,6 +84,7 @@
                                                 </td>
                                                 <td><button class="btn" style="background-color: #15416e;" onclick="deleteType(this, '<%= activity %>', '<%= question.CLONumber %>', '<%= question.assessmentNumber %>', event)"><i class="fas fa-times" style="color: white"></i></button></td>
                                             </tr>
+                                            <% activityCounter += 1; %>
                                         <% } %>
                                     <% }); %>
                                 </tbody>
@@ -90,7 +92,7 @@
                                 <tbody id="insertionPoint">
                                     <tr>
                                         <td><input type="tel" class="form-control" min="1" value="1"  readonly style="border: none;"></td>
-                                        <td><input type="number" min="0" max="99" name="QNumber"></td>
+                                        <td><input type="number" class="form-control" min="0" max="99" name="QNumber"></td>
                                         <td>
                                             <textarea rows="1" name="description" class="form-control" required></textarea>
                                         </td>
@@ -104,6 +106,7 @@
                                         </td>
                                         <td><button class="btn" style="background-color: #15416e;" onclick="deleteRow(this)"><i class="fas fa-times" style="color: white"></i></button></td>
                                     </tr>
+                               
                                 </tbody>
                             <% } %>
                         </table>
@@ -113,19 +116,20 @@
                             <div class="button-container">
                                 <button id="addRowButton" class="btn custom-button addButton">Add Question/Deliverable</button>
                                 <button type="submit" id="saveButton" class="btn custom-button">Save</button>
+                            </form>
+
+                                <form action="/input-grades/<%= courseCode %>/<%= term %>/<%= section %>" method="GET">
+                                    <button id="inputGradesButton" class="btn custom-button">Input Grades</button>
+                                </form>
                             </div>
                         </div>
-                    </form>
+                  
                     <!--Get the page where we can input student's grades-->
-                    <form action="/input-grades/<%= courseCode %>/<%= term %>/<%= section %>" method="GET">
-                        <button id="inputGradesButton" class="btn custom-button">Input Grades</button>
-                    </form>
+                   
                 </div>
             <% }); %>
         <% } %>
     </div>
-
-
 
             <script>
                 //---------functions for manipulating the table-------------
@@ -154,7 +158,7 @@
                 const cell6 = row.insertCell(5);
 
             cell1.innerHTML = `<input type="tel" class="form-control" min="1" value="${tabRowCounts[tabIndex]}" readonly style="border: none;">`;
-            cell2.innerHTML = `<input type="number" min="0" max="99" name="QNumber">`;
+            cell2.innerHTML = `<input type="number" class="form-control" min="0" max="99" name="QNumber">`;
             cell3.innerHTML = `<textarea rows="1" name="description" class="form-control" required>`;
             cell4.innerHTML = `<input type="number" name="weight" min="1" class="form-control" required>`;
             const cloOptions = <%= JSON.stringify(CLOnumbers) %>.map(clo => `<option value="${clo}">CLO ${clo}</option>`).join('');                
