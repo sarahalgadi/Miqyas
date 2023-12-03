@@ -150,6 +150,32 @@ async function getCoursesWithReports(department){
 
 }
 
+//check section availability for section reports.. if not all sections submitted, we cannot do a course report..
+async function checkAvailableSectionReports (courseCode, semester){
+  const query = `
+      SELECT cs.*
+      FROM course_section cs
+      LEFT JOIN directclo_per_section dcp
+      ON cs.courseCode = dcp.courseCode
+        AND cs.sectionNumber = dcp.sectionNumber
+        AND cs.semester = dcp.semester
+      WHERE dcp.courseCode IS NULL
+        AND dcp.semester IS NULL
+        AND dcp.sectionNumber IS NULL
+        AND cs.courseCode = ?
+        AND cs.semester = ?
+    `;
+
+    try{
+      const [missingSections] = await pool.query(query, [courseCode, semester]);
+      return missingSections;
+    } catch(error){
+      console.error('error in fetching missing section reports:', error);
+      throw error;
+    }
+
+}
+
 
 
   module.exports = {
@@ -160,5 +186,6 @@ async function getCoursesWithReports(department){
     updateSelectedActionPlans,
     getRecommendation,
     getSelectedActionPlan, //for viewing course report controller
-    getCoursesWithReports
+    getCoursesWithReports,
+    checkAvailableSectionReports
   };

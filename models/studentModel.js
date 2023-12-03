@@ -98,7 +98,7 @@ async function getDirectPerCLOPerStudentDepartment(courseCode, term, section, de
 
 //saving into student_coursesection table the CLO achievement as well as the computed categories
 //this data will then be retrieved for section report calculation
-async function saveStudentCategories(courseCode, semester, sectionNumber, studentID, CLONumber, studentCLOPercentage, category){//todo: moved to student
+async function saveStudentCategories(courseCode, semester, sectionNumber, studentID, CLONumber, studentCLOPercentage, category){
     const sql = `
     INSERT INTO student_coursesection 
     (courseCode, semester, sectionNumber, studentID, CLONumber, studentCLOPercentage, category)

@@ -53,7 +53,28 @@ async function saveRoles(req, res){
   }
 };
 
+async function deleteRole (req,res) {
+  console.log("i am here")
+  const useranme = req.body.username;
+  const role = req.body.role; 
+  console.log(useranme,role)
 
+  //to render home..
+  const user = req.session.user;
+  const term = await userModel.getCurrentTerm(user.username);
+  const userRoles = await userModel.getUserRoles(user.username, term);
+  const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
+  const userCollege = await userModel.getUserCollege(user.department);
+  const title = "Miqyas: Home";
+  const courses = await userModel.getCourses(user.username, term);
+  try{
+    await chairModel.deleteFacultyRole(useranme,role);
+    res.render('home', {title, user, term, userRoles, coordinatedCourses, userCollege, courses})
+  } catch(error){
+    console.error(error);
+    res.render('error', {message: "Error: Could not delete role."});
+  }
+};
 
 //------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -117,8 +138,35 @@ async function saveCoordinators(req, res){
 
 }};
 
+async function deleteCoordinatorRole (req,res) {
+  console.log("i am here pt2")
+  const courseCode = req.body.courseCode;
+  const username = req.body.usernameToDelete;
+  const role = req.body.role; 
+  const semester = req.params.semester;
+  console.log(courseCode,username,role,semester)
+
+  //to render home
+  const user = req.session.user;
+  const term = await userModel.getCurrentTerm(user.username);
+  const userRoles = await userModel.getUserRoles(user.username, term);
+  const coordinatedCourses = await userModel.getCoordinatedCourses(user.username, term);
+  const userCollege = await userModel.getUserCollege(user.department);
+  const title = "Miqyas: Home";
+  const courses = await userModel.getCourses(user.username, term);
+
+  try{
+    await chairModel.deleteCoordinator(courseCode, username, semester)
+    await chairModel.deleteFacultyRole(username,role, semester);
+    res.render('home', {title, term, user, userRoles, coordinatedCourses, userCollege, courses})
+  } catch(error){
+    console.error(error);
+    res.render('error', {message: "Error: Could not delete coordinator role."});
+  }
+};
+
 
 
 module.exports = {
-    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,
+    getFacultyFromDepartment, saveRoles, getFacultyFromCollege,saveCoordinators,deleteCoordinatorRole, deleteRole
 }

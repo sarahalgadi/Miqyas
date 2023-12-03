@@ -200,8 +200,8 @@
                                     <td><textarea name="resources"><%= actionPlan.resources || '' %></textarea></td>
                                     <td>
                                         <!-- Add a delete button (you can customize this part) -->
-                                        <button class="btn custom-button" onclick="deletePlan(this)"> <i
-                                                class="fas fa-times"></i> Delete</button>
+                                        <button type="submit" class="btn custom-button" onclick="deleteActionPlan(this,'<%= actionPlan.CLONumber %>', event)"> 
+                                            <i class="fas fa-times"></i> Delete</button>
                                     </td>
                                 </tr>
                                 <% }); %>
@@ -290,6 +290,29 @@
         const rowIndex = row.parentNode.parentNode.rowIndex;
         table.deleteRow(rowIndex);
         setTimeout(handleInputChange, 100);
+    }
+
+    //for action plans that are saved in the db
+    function deleteActionPlan(button, cloNumber, event) {
+        var row = button.closest('tr');
+        event.preventDefault();
+        fetch('/delete-action-plan/<%= courseCode %>/<%= term %>/<%= section %>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ cloNumber: cloNumber }),
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            console.log('Row deleted successfully:', data);                 
+            row.remove();
+        })
+        .catch(error => {
+            console.error('Error deleting row:', error);
+        });
     }
 
 

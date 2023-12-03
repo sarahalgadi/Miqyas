@@ -45,15 +45,17 @@
             </thead>
             <tbody>
               <% roles.forEach(function(r) { %>
-                <tr>
-                  <td>
-                    <%= r.fullName %>
-                  </td>
-                  <td>
-                    <%= r.role %>
-                  </td>
-                </tr>
-                <% }); %>
+                <form action="/delete-roles/<%= semester %>" method="post">
+              <tr>
+                <td><%= r.fullName %></td>
+                <td><%= r.role %></td>
+                <input type="hidden" value="<%= r.role %>" name="role">
+                <input type="hidden" value="<%= r.username %>" name="username">
+                <td><button type="submit" class="btn custom-button">Delete</button></td>
+              </tr>
+            </form>
+              <% }); %>
+              
             </tbody>
           </table>
         </div>
