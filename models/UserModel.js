@@ -79,7 +79,6 @@ async function getCoordinatedCourses(username, semester) {
     }
 }
 
-//todo: remove this, keep getCourses.. and in each controller that uses course info adjust.
 async function getInstructedCourses(username, semester){
     const sql = `SELECT courseCode, sectionNumber FROM course_section WHERE username = ? AND semester = ?`;
     try {

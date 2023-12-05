@@ -38,6 +38,7 @@ async function login(req, res) {
 async function logout(req, res) {
     const { token } = req.body;
     // Delete refresh token from the database
+    req.session.destroy();
     await TokenModel.deleteRefreshToken(req.user.username, token);
 
     res.sendStatus(204);
