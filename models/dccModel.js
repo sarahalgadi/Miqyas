@@ -28,7 +28,7 @@ async function getCLOs (courseCode, semester){
 async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
 
     try{
-        const [rows, fields] = await pool.execute
+        await pool.execute
         ('INSERT INTO course_learning_outcomes (CLONumber, statement, domain ,courseCode ,semester) VALUES (?,?,?,?, ?) ON DUPLICATE KEY UPDATE statement = VALUES(statement) , domain = VALUES(domain)', [CLONumber, statement, domain ,courseCode, semester]);
     } catch(error){
         console.error('error saving clos', error);
@@ -42,7 +42,7 @@ async function addCLOs (CLONumber, statement, domain ,courseCode, semester){
 async function deleteCLOs(CLONumber, courseCode, semester){
     
     try{
-        const [rows, fields] = await pool.execute
+        await pool.execute
         ('DELETE FROM course_learning_outcomes WHERE CLONumber = ? AND courseCode = ? AND semester = ?', [CLONumber, courseCode, semester]);
     } catch(error){
         console.error('error deleting clos', error);

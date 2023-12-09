@@ -8,7 +8,7 @@ const pool = require('../database');
 async function addTypeAndWeight(courseCode, type, weight, term) {
     const sql = 'INSERT INTO direct_assessment (courseCode, type, weight, semester) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE weight = VALUES(weight), type = VALUES(type)';
     try {
-        const [result] = await pool.execute(sql, [courseCode, type, weight, term]); 
+        await pool.execute(sql, [courseCode, type, weight, term]); 
     } catch (error) {
         console.error('Error saving direct assessment:', error);
         throw error;
