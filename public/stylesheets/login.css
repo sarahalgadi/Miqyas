@@ -1,0 +1,30 @@
+.about{
+  background-color: #15416e;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+h1{
+  color: white;  
+  font-style: italic; 
+  font-family: Helvetica, sans-serif; 
+  padding: 4rem;
+  font-size: 45px;
+}
+p{
+  color: white; 
+  text-align: justify; 
+  padding: 4rem; 
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  margin-top: 1rem;
+}
+.card{
+  padding: 2rem;
+}
+.card-title{
+    font-size: 24px;
+    margin: 1rem;
+}
+.custom-button{
+  width: 100%
+}

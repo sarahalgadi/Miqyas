@@ -1,0 +1,40 @@
+.divider{
+    width: 90%;
+    margin: auto;
+}
+.table{
+    margin: 1rem;
+}
+h2{
+    font-size: 30px;
+    font-weight: 600;
+}
+.card h3{
+    font-size: 20px;
+    font-weight: 500;
+}
+table .headings{
+    background-color:#15416e;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+.tableContainer{
+    padding: 1rem;
+}
+.delete{
+    background-color: #15416e;
+}
+.addCLOContainer{
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 1rem;
+}
+.modal-footer .custom-button{
+    width: 100%;
+}
+#validationMessage{
+    font-weight: 400; 
+    color: #15416e; 
+    margin-top: 10px;
+}

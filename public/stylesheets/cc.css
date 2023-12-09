@@ -1,0 +1,58 @@
+h2{
+    font-weight: 600; 
+    margin: 1rem; 
+    padding: 1rem;
+}
+h3{
+    font-weight: 500; 
+    margin: 1rem; 
+    padding: 1rem;
+}
+#ccTabs{
+    margin: 1rem;
+    padding: 1rem;
+}
+#ccTabs .nav-link{
+    padding: 1rem;
+}
+
+form {
+    margin-left: 10%;
+    margin-right: 10%;
+    font-size: 16px;
+}
+form select{
+    margin-bottom: 2rem;
+}
+.tab{
+    background-color: #15416e;
+    color: white;
+}
+.tab:hover{
+    color: #15416e;
+    background-color: white;
+}
+.error-text {
+    color: maroon;
+    margin-top: 8px;
+}
+#saveButton, .viewButton{
+    float: right;
+    width: 10rem;
+}
+#saveButton[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.weight{
+    width: 50%;
+}
+.reportButton{
+    width: 40%;
+    padding: 1rem;
+    margin: 1rem;
+    
+}
+#editActivites, #viewReports, #generateReport{
+    margin-bottom: 5rem;
+}

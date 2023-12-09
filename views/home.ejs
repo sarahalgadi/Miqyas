@@ -1,0 +1,158 @@
+<head>
+    <%- include("./partials/head.ejs") %>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="/stylesheets/courseCards.css">
+        <link rel="stylesheet" href="/stylesheets/home.css">
+</head>
+
+<body>
+    <%- include('./partials/nav.ejs')%>
+        <div>
+            <table id="welcome" class="table table-borderless">
+                <tr>
+                    <td>
+                        <h2>Welcome, <%= user.fullName %>
+                        </h2>
+                    </td>
+                    <td><strong>Term:</strong>
+                        <%= term %>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong>Department:</strong>
+                        <%= user.department %>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <hr class="divider">
+
+        <!--if instructor, course cards for current term show here-->
+        <div class="container courseContainer">
+            <div class="row">
+                <h3>Current Courses: </h3>
+            </div>
+            <div class="container mt-2">
+                <div class="course-cards">
+                    <% if (courses && courses.length>0) { %>
+                        <% courses.forEach(function (course) { %>
+                            <div class="card cardBorder">
+                                <div class="card">
+                                    <h5 class="card-title">
+                                        <%= course.courseCode %>: <%= course.courseName %> - Section: <%=
+                                                    course.sectionNumber %>
+                                    </h5>
+                                    <hr>
+                                    <div class="card-body">
+                                        <!--in home routes. assessment section file will be rendered then!-->
+                                        <form
+                                            action="/view-section-details/<%= course.courseCode %>/<%= term %>/<%= course.sectionNumber %>"
+                                            method="POST">
+                                            <input type="hidden" name="courseName" value="<%= course.courseName %>">
+                                            <button class="btn custom-button" type="submit" style="width: 100%;">View
+                                                Section Details</button>
+                                        </form>
+                                        <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
+                                            <button class="btn custom-button" href="#" style="width: 100%;">View Your
+                                                Past Reports</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <h4>You're currently not teaching courses this term.</h4>
+                                    <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
+                                        <button class="btn custom-button" href="#" style="width: 100%;">View Your Past
+                                            Reports</button>
+                                    </form>
+                                    <% } %>
+                </div>
+            </div>
+        </div>
+
+
+        <!--if coordinator, coordinated course will show here-->
+        <% if (userRoles.includes('coordinator') && coordinatedCourses && coordinatedCourses.length> 0) { %>
+            <div class="container coordinatorContainer">
+                <div class="row">
+                    <h3>Coordinated Courses: </h3>
+                </div>
+
+                <div class="course-cards container mt-2 col-6">
+                    <% coordinatedCourses.forEach(function(coordinatedCourse) { %>
+                        <div class="card cardBorder">
+                            <div class="card">
+                                <h5 class="card-title">
+                                    Coordinated Course
+                                </h5>
+                                <div class="card-body">
+                                    <h5>
+                                        <%= coordinatedCourse.courseCode %>: <%= coordinatedCourse.courseName %>
+                                                </sh5>
+                                                <hr>
+                                                <form
+                                                    action="/display-course/<%= coordinatedCourse.courseCode %>/<%= term %>"
+                                                    method="get">
+                                                    <button class="custom-button btn" type="submit">View Course</a>
+                                                </form>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+                <% } %>
+            </div>
+
+            <!--if chairperson, chairperson activities shown here-->
+            <% if (userRoles.includes('chairperson')) { %>
+                <div class="container chairContainer">
+                    <div class="row">
+                        <h3>Chairperson Activities: </h3>
+                    </div>
+
+                    <div class="container buttonContainer">
+                        <form action="/view-faculty-department/<%= user.department %>/<%= term %>" method="get">
+                            <button class="btn custom-button" type="submit">Assign Quality
+                                Assurance and Department Curriculum Committee Roles</button>
+                        </form>
+
+                        <form action="/view-faculty-college/<%= userCollege %>/<%= user.department %>/<%= term %>"
+                            method="get">
+                            <button class="btn custom-button" type="submit">Assign Coordinator
+                                Roles</button>
+                        </form>
+                    </div>
+
+                    <% } %>
+                </div>
+
+                <!--if dcc-->
+                <% if (userRoles.includes('DCC')) { %>
+                    <div class="container chairContainer">
+                        <div class="row">
+                            <h3>Department Curriculum Committee Activities: </h2>
+                        </div>
+
+                        <div class="container buttonContainer">
+
+                            <form method="post" action="/edit-clos/<%= user.department %>/<%= term %>">
+                                <button class="btn custom-button" type="submit">Add or
+                                    Update Course Learning Outcomes</button>
+                            </form>
+                        </div>
+                    </div>
+                    <% } %>
+
+                        
+
+                                <!--Viewing department reports is unified-->
+                                <!--edit form action here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+                                <div class="container buttonContainer">
+                                    <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
+                                        <button class="btn custom-button" href="#">View
+                                            Department Reports</button>
+                                    </form>
+                                </div>
+                                <%- include('./partials/footer.ejs')%>

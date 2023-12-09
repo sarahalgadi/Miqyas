@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%-include("./partials/head.ejs")%>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/stylesheets/courseReport.css">
+</head>
+
+<body>
+  <%-include("./partials/nav.ejs")%>
+
+    <div class="row container-fluid">
+      <div class="col-md-8">
+        <h2>
+          <%= courseCode %>: <%= courseName %>
+        </h2>
+        <% if (missingReports && missingReports.length > 0) { %>
+          <% missingReports.forEach(section => { %>
+           Section <%= section.sectionNumber %> did not submit the section report. 
+          <% }) %>
+          You can only prepare course report once all section reports are submitted!
+       <% } else { %>
+
+        <h3>CLO Assessment Course Report</h3>
+      </div>
+      <div class="col-md-4">
+        <h2 style="margin-left: 20%;">Term: <%= term %>
+        </h2>
+      </div>
+    </div>
+    <hr class="divider">
+    <!--Direct assessment section-->
+    <div class="row">
+      <div class="col-md-8">
+        <h4>Direct Assessment Results:</h4>
+      </div>
+      <div class="col-md-4">
+        <div class="dropdown">
+          <button type="button" class="btn custom-button filter dropdown-toggle" data-bs-toggle="dropdown">
+            Filter by Department
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/course-report/<%= courseCode %>/<%= term %>/All">All</a></li>
+            <% departments.forEach(department=> { %>
+              <li><a class="dropdown-item" href="/course-report/<%= courseCode %>/<%= term %>/<%= department %>">
+                  <%= department %>
+                </a></li>
+              <% }); %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="headings">CLO Number</th>
+            <th class="headings">CLO Description</th>
+            <th class="headings">Below Expectations</th>
+            <th class="headings">Developing Expectations</th>
+            <th class="headings">Meeting Expectations</th>
+            <th class="headings">Above Expectations</th>
+            <th class="headings">Results</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let i=0; i < CLOnumbers.length; i++) { %>
+            <tr>
+              <td>
+                <%= CLOnumbers[i] %>
+              </td>
+              <td>
+                <%= CLOstatements[i] %>
+              </td>
+              <!-- PER CATEGORY INFO -->
+              <% for (let category of [0, 1, 2, 3]) { %>
+                <% const categoryData=categoryCounts.find(data=> parseInt(data.CLONumber) === parseInt(CLOnumbers[i]) &&
+                  parseInt(data.category) === parseInt(category)); %>
+                  <td class="categories">
+                    <%= categoryData ? categoryData.studentCount : 0 %>
+                  </td>
+                  <% } %>
+                    <!-- Display results for each CLO -->
+                    <td class="categories">
+                      <%= resultsPerCLO[CLOnumbers[i]] ? resultsPerCLO[CLOnumbers[i]].results.toFixed(2) : 0 %> %
+                    </td>
+            </tr>
+            <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!--Indirect assessment section-->
+    <div class="row">
+      <h4>Indirect Assessment Results</h4>
+    </div>
+    <div class="container" id="result">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th class="headings">CLO Number</th>
+            <th class="headings">Not Satisfied</th>
+            <th class="headings">Barely Satisfied</th>
+            <th class="headings">Somewhat Satisfied</th>
+            <th class="headings">Adequately Satisfied</th>
+            <th class="headings">Fully Satisfied</th>
+            <th class="headings">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% indirectSums.forEach(sum=> { %>
+            <tr>
+              <td class="categories">CLO <%= sum.CLONumber %>
+              </td>
+              <td class="categories">
+                <%= sum.totalNotSatisfied %>
+              </td>
+              <td class="categories">
+                <%= sum.totalBarelySatisfied %>
+              </td>
+              <td class="categories">
+                <%= sum.totalSatisfied %>
+              </td>
+              <td class="categories">
+                <%= sum.totalAdequatelySatisfied %>
+              </td>
+              <td class="categories">
+                <%= sum.totalFullySatisfied %>
+              </td>
+              <td class="categories">
+                <% if (totalIndirectPerCLO[sum.CLONumber] !==undefined) { %>
+                  <%= totalIndirectPerCLO[sum.CLONumber] %> %
+                    <% } else { %>
+                      N/A
+                      <% } %>
+              </td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <!--Overall assessment section-->
+    <div class="row">
+      <h4>Overall Assessment Results</h4>
+    </div>
+    <!--Histogram displays here-->
+    <div class="container chart-container" id="result">
+      <canvas id="assessmentChart" width="400" height="150"></canvas>
+    </div>
+
+    <!--Action plans section-->
+    <div class="row">
+      <h4>Select Action Plan:</h4>
+    </div>
+
+    <form id="coordinatorForm" action="/save-course-report/<%= courseCode %>/<%= term %>" method="post">
+      <div class="container" id="result">
+        <!-- im extracting sections, making them unique, looping over them, creating  a checkbox for unique section number. then under each table we have the entries per clo.-->
+        <div class="checkbox-sections">
+          <% const uniqueSections=[...new Set(actionPlans.map(entry=> entry.sectionNumber))]; %>
+
+            <% uniqueSections.forEach(sectionNumber=> { %>
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input sectionCheckbox"
+                  id="<%= `showTableSection${sectionNumber}` %>"> Section <%= sectionNumber %>
+              </label><br>
+              <table class="table table-bordered d-none" id="<%= `actionPlan${sectionNumber}` %>">
+                <thead>
+                  <tr>
+                    <th class="headings" rowspan="2">CLO Number</th>
+                    <th class="headings" colspan="6">Action Plans</th>
+                  </tr>
+                  <tr>
+                    <th class="headings">Action</th>
+                    <th class="headings">Responsible</th>
+                    <th class="headings">Start Time</th>
+                    <th class="headings">End Time</th>
+                    <th class="headings">Resources</th>
+                    <th class="headings">Select Plan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% actionPlans.filter(e=> e.sectionNumber === sectionNumber).forEach(action => { %>
+                    <tr>
+                      <td>
+                        <%= action.CLONumber %>
+                      </td>
+                      <td>
+                        <%= action.statement %>
+                      </td>
+                      <td>
+                        <%= action.responsibility %>
+                      </td>
+                      <td>
+                        <%= action.startDate %>
+                      </td>
+                      <td>
+                        <%= action.endDate %>
+                      </td>
+                      <td>
+                        <%= action.resources %>
+                      </td>
+                      <td>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox"
+                            name="<%= `selection_${sectionNumber}_${action.CLONumber}` %>" value="1">
+                          <label class="form-check-label"
+                            for="<%= `selection_${sectionNumber}_${action.CLONumber}` %>"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+              </table>
+
+              <% }); %>
+        </div>
+      </div>
+
+      <!--Recommendation section-->
+      <div class="row">
+        <h4>Provide Recommendation for Course:</h4>
+      </div>
+
+      <div class="container">
+        <div id="recommendationError" style="color: maroon; margin-bottom: 1rem;"></div>
+        <textarea id="recommendation" name="recommendation" placeholder="What do you recommend?"class="form-control" rows="5" style="resize: vertical;"
+          required><% if (recommendation ) { %><%= recommendation %><% } %></textarea>
+      </div>
+
+      <button type="button" class="btn custom-button save" style="margin-left: 75%" onclick="validateAndSubmit()">Save Report</button>
+    </form>
+ <% } %>
+    <%- include('./partials/footer.ejs')%>
+
+</body>
+
+<script>
+  // histogram script
+  // i had to split them into arrays in the server-side.. because javascript could not understand ejs objects.
+
+
+  const clonumbers = "<%= clohisto %>".split(',').map(Number);
+  const indirectres = "<%= indirecthisto %>".split(',').map(Number);
+  const directres = "<%= directhisto %>".split(',').map(Number);
+
+  const cloData = [];
+  for (let i = 0; i < clonumbers.length; i++) {
+    const obj =
+    {
+      clo: "CLO " + clonumbers[i],
+      directResult: directres[i],
+      indirectResult: indirectres[i]
+    };
+    cloData.push(obj);
+  }
+
+  const cloLabels = cloData.map(item => item.clo);
+  const directResults = cloData.map(item => item.directResult);
+  const indirectResults = cloData.map(item => item.indirectResult);
+
+  const ctx = document.getElementById('assessmentChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: cloLabels,
+      datasets: [
+        {
+          label: 'Direct Results',
+          backgroundColor: 'rgba(21, 65, 110, 0.9)',
+          borderColor: 'rgba(96, 137, 179)',
+          borderWidth: 1,
+          data: directResults,
+        },
+        {
+          label: 'Indirect Results',
+          backgroundColor: 'rgba(174, 183, 191, 0.8)',
+          borderColor: 'rgba(225, 230, 235)',
+          borderWidth: 1,
+          data: indirectResults,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+  ;
+</script>
+
+<script>
+  const sectionCheckboxes = document.querySelectorAll('.sectionCheckbox');
+
+  // Add an event listener to each section checkbox
+  sectionCheckboxes.forEach(sectionCheckbox => {
+    sectionCheckbox.addEventListener('change', function () {
+      // Extract the section number from the checkbox ID
+      const sectionNumber = this.id.replace('showTableSection', '');
+
+      // Find the corresponding action plan table using the section number
+      const actionPlanTable = document.getElementById(`actionPlan${sectionNumber}`);
+
+      // If the section checkbox is checked, show the corresponding action plan table otherwise hide it
+      actionPlanTable.classList.toggle('d-none', !this.checked);
+    });
+  });
+</script>
+<script>
+  function validateAndSubmit() {
+    // Get the rec text
+    var recommendation = document.getElementById('recommendation').value;
+
+    // Check if the recommendation is empty
+    if (recommendation.trim() === '') {
+      // Display an error message
+      document.getElementById('recommendationError').innerText = 'You should submit a recommendation for the course!';
+    } else {
+      document.getElementById('recommendationError').innerText = '';
+
+
+      document.getElementById('coordinatorForm').submit();
+    }
+  }
+</script>
+
+
+
+</html>

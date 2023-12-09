@@ -1,0 +1,70 @@
+h2{
+    font-weight: 600;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+h3{
+    font-weight: 500;
+    margin-top: 1rem;
+    padding: 1rem;
+    font-size: x-large;
+    margin-left: 1rem;
+}
+.divider{
+    width: 90%;
+    margin: auto;
+}
+.tab-content{
+    padding: 4rem;
+    padding-top: 0;
+}
+#activityTabs .nav-link{
+    background-color: #15416e;
+    color: white;
+    padding: 10px;
+    width: 8rem;
+    text-align: center;
+}
+#activityTabs .nav-link.active, #activityTabs .nav-link:hover {
+    background-color: white;
+    color: #15416e;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.custom-button {
+    width: 200px;
+    padding: 1em;
+}
+.custom-button:disabled {
+    background-color: lightgrey;
+}
+#activityTabs{
+    margin: 2rem;
+}
+th{
+    font-weight: 400;
+}
+table .activityHeader{
+    border: none;
+    padding: 1rem;
+    background-color:#15416e;
+    color: white;
+    border-radius: 1%;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+table .headings{
+    background-color: #15416e;
+    color: white;
+    padding: 1rem;
+}
+table .question{
+    background-color: lightgrey;
+    font-weight: 500;
+}

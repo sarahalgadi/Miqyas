@@ -1,0 +1,51 @@
+<!--Ayat i updated html and css here-->
+<html lang="en">
+
+<head>
+  <%- include('./partials/head.ejs')%>
+    <link rel="stylesheet" href="/stylesheets/login.css">
+</head>
+
+<body>
+  <header>
+    <%- include('./partials/navLogin.ejs')%>
+  </header>
+
+  <div class="mt-4">
+    <!--Brief about section-->
+    <div class="row about">
+      <div class="col-md-4">
+        <h1>Miqyas</h1>
+      </div>
+      <div class="col-md-6">
+        <p>A seamless blend of precision on the pathway to educational excellence.</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="login" class="card">
+        <h2 class="card-title">Login</h2>
+        <hr>
+        <form action="/auth/login" method="post" id="loginForm">
+          <div class="container">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" type="text" placeholder="Enter Username" id="username" name="username" required>
+            <span id="usernameError" class="text-danger"></span><br>
+
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" type="password" placeholder="Enter Password" id="password" name="password"
+              required>
+
+            <button id="submit" type="submit" class="btn custom-button">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <%- include('./partials/footer.ejs')%>
+
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+/*All CSS placed here should be general and applicable in all pages. Do not place specifics here.*/
+.navbar-nav {
+    margin-left: 60%;
+}
+
+.navbar-nav .nav-link {
+    color: #15416e;
+    margin: 1rem;
+    font-size: large;
+    font: weight 500px;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: #cbd5df;
+    border-radius: 5%;
+}
+
+.custom-button {
+    background-color: #15416e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: Arial, sans-serif;
+    margin-top: 1rem;
+    text-decoration: none;
+}
+
+.custom-button:hover {
+    background-color: #507eac;
+    color: #fff;
+    text-decoration: none;
+}
+.body{
+    font-family: Arial, Helvetica, sans-serif;
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("./partials/head.ejs")%>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet" href="/stylesheets/directAssessment.css">
+</head>
+
+
+<body>
+    <%-include("./partials/nav.ejs")%>
+        <div class="row container-fluid">
+            <div class="col-md-8">
+                <h2>
+                    <%= courseCode %>: <%= courseName %> - Section <%= section %>
+                </h2>
+            </div>
+            <div class="col-md-4">
+                <h3>Term: <%= term %>
+                </h3>
+            </div>
+        </div>
+        <hr class="divider">
+        <h2>Direct Assessment</h2>
+        <% if (canAccess){ %>
+
+            <ul class="nav nav-tabs" id="activityTabs" role="tablist">
+                <% if (activities && activities.length> 0) { %>
+                    <% activities.forEach((activity, index)=> { %>
+                        <li class="nav-item">
+                            <a class="nav-link <%= index === 0 ? 'active' : '' %>" id="tab<%= index %>-tab"
+                                data-bs-toggle="tab" href="#pane<%= index %>" role="tab"
+                                aria-controls="pane<%= index %>" aria-selected="<%= index === 0 ? 'true' : 'false' %>">
+                                <%= activity %>
+                            </a>
+                        </li>
+                        <% }); %>
+                            <% } else { %>
+                                <li class="nav-item">
+                                    <p>No activities have been set for this course. <br>Please inform the course
+                                        coordinator.</p>
+                                </li>
+                                <% } %>
+            </ul>
+
+    <div class="tab-content" id="activityTabContent">
+        <% if (activities && activities.length > 0) { %>
+            <% activities.forEach((activity, activityIndex) => { %>
+                <div class="tab-pane fade <%= activityIndex === 0 ? 'show active' : '' %>" id="pane<%= activityIndex %>" role="tabpanel" aria-labelledby="tab<%= activityIndex %>-tab">                    <form action="/saveAssessment/<%= courseCode %>/<%= term %>/<%= section %>" method="POST">
+                        <table class="table table-bordered" id="activityTable">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" class="activityHeader"><%= activity %></th>
+                                </tr>
+                                <tr>
+                                    <th style="border: none;">Index</th>
+                                    <th>Question Number</th>
+                                    <th>Description</th>
+                                    <th>Weight</th>
+                                    <th>CLO Mapping</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <% if (assessmentDetails.length > 0) { %>
+                                <tbody id="insertionPoint">
+                                    <% let activityCounter = 1; %>
+
+                                    <% assessmentDetails.forEach((question, index) => { %>
+                                        <% if (question.type === activity) { %>
+                                            <tr>
+                                                <td><input type="tel"  min="1"  max="99" class="form-control" value="<%= assessmentDetails.length > 0 ? activityCounter : 1 %>" name="QNumber" style="border: none;"></td>
+                                                <td><input type="number" class="form-control" min="0" max="99" name="QNumber" value="<%= question.assessmentNumber %>"></td>
+                                                <td>
+                                                    <textarea rows="1" name="description" class="form-control" value="<%= question.statment %>" required><%= question.statment %></textarea>
+                                                </td>
+                                                <td><input type="number" name="weight" min="1" class="form-control" value="<%= question.grade %>" required></td>
+                                                <td>
+                                                    <select class="form-select" name="cloMapped">
+                                                        <% CLOnumbers.forEach(clo => { %>
+                                                            <option value="<%= clo %>" <% if (clo === question.CLONumber) { %>selected<% } %>>CLO <%= clo %></option>
+                                                        <% }); %>
+                                                    </select>
+                                                </td>
+                                                <td><button class="btn" style="background-color: #15416e;" onclick="deleteType(this, '<%= activity %>', '<%= question.CLONumber %>', '<%= question.assessmentNumber %>', event)"><i class="fas fa-times" style="color: white"></i></button></td>
+                                            </tr>
+                                            <% activityCounter += 1; %>
+                                        <% } %>
+                                    <% }); %>
+                                </tbody>
+                            <% } else { %>
+                                <tbody id="insertionPoint">
+                                    <tr>
+                                        <td><input type="tel" class="form-control" min="1" value="1"  readonly style="border: none;"></td>
+                                        <td><input type="number" class="form-control" min="0" max="99" name="QNumber"></td>
+                                        <td>
+                                            <textarea rows="1" name="description" class="form-control" required></textarea>
+                                        </td>
+                                        <td><input type="number" name="weight" min="1" class="form-control" required></td>
+                                        <td>
+                                            <select class="form-select" name="cloMapped">
+                                                <% CLOnumbers.forEach(clo => { %>
+                                                    <option value="<%= clo %>">CLO <%= clo %></option>
+                                                <% }); %>
+                                            </select>
+                                        </td>
+                                        <td><button class="btn" style="background-color: #15416e;" onclick="deleteRow(this)"><i class="fas fa-times" style="color: white"></i></button></td>
+                                    </tr>
+                               
+                                </tbody>
+                            <% } %>
+                        </table>
+                        <input type="hidden" name="activityName" value="<%= activity %>">
+                        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                            <!--Edit button links here later!!-->
+                            <div class="button-container">
+                                <button id="addRowButton" class="btn custom-button addButton">Add Question/Deliverable</button>
+                                <button type="submit" id="saveButton" class="btn custom-button">Save</button>
+                            </form>
+
+                                <form action="/input-grades/<%= courseCode %>/<%= term %>/<%= section %>" method="GET">
+                                    <button id="inputGradesButton" class="btn custom-button">Input Grades</button>
+                                </form>
+                            </div>
+                        </div>
+                  
+                    <!--Get the page where we can input student's grades-->
+                   
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+            <script>
+                //---------functions for manipulating the table-------------
+                // Keep track of row counts for each tab
+                const tabRowCounts = {};
+                function addRow(button, tabIndex) {
+                    // Prevent form submission
+                    event.preventDefault();
+                    // Initialize the count for this tab if it doesn't exist
+                    if (!(tabIndex in tabRowCounts) || tabRowCounts[tabIndex] === 0) {
+                        tabRowCounts[tabIndex] = (document.getElementById('activityTable').rows.length) - 1;
+                    } else {
+                        tabRowCounts[tabIndex]++;
+                    }
+
+                    const activePane = button.closest('.tab-pane');
+                    const table = activePane.querySelector('table');
+
+                // Insert a new row for the new CLO and add the HTML for the added cells
+                const row = table.insertRow(-1);
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                const cell5 = row.insertCell(4);
+                const cell6 = row.insertCell(5);
+
+            cell1.innerHTML = `<input type="tel" class="form-control" min="1" value="${tabRowCounts[tabIndex]}" readonly style="border: none;">`;
+            cell2.innerHTML = `<input type="number" class="form-control" min="0" max="99" name="QNumber">`;
+            cell3.innerHTML = `<textarea rows="1" name="description" class="form-control" required>`;
+            cell4.innerHTML = `<input type="number" name="weight" min="1" class="form-control" required>`;
+            const cloOptions = <%= JSON.stringify(CLOnumbers) %>.map(clo => `<option value="${clo}">CLO ${clo}</option>`).join('');                
+            cell5.innerHTML = `
+                <select class="form-select" name="cloMapped">
+                    ${cloOptions}
+                </select>
+            `;
+            cell6.innerHTML = `<button class="btn" style="background-color: #15416e;" onclick="deleteRow(this)"><i class="fas fa-times" style="color: white"></i></button>`;
+
+                    // Increment the row count for this tab
+                    updateNumbers(table);
+                }
+
+
+            //handles deletion of row //for stuff not saved in db
+
+            function deleteRow(button) {
+                const activePane = button.closest('.tab-pane');
+                const table = activePane.querySelector('table');
+
+                    const rowIndex = button.closest('tr').rowIndex;
+                    table.deleteRow(rowIndex);
+
+                    // Find the corresponding tab index for the row's table
+                    const tabContent = document.getElementById('activityTabContent');
+                    const index = Array.from(tabContent.children).indexOf(activePane);
+
+                // Decrement the row count for this tab
+                if (index in tabRowCounts) {
+                    tabRowCounts[index]--;
+                    updateNumbers(table);
+                }
+            }
+            //for weights existing in the database only.. a delete api
+            function deleteType(button, activity, cloNumber, number, event) {
+                var row = button.closest('tr');
+                const activePane = button.closest('.tab-pane');
+                const table = activePane.querySelector('table');
+                const tabContent = document.getElementById('activityTabContent');
+                const index = Array.from(tabContent.children).indexOf(button.closest('.tab-pane'));
+                
+                event.preventDefault();
+                fetch('/deleteAssessmentDetails/<%= courseCode %>/<%= term %>/<%= section %>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ qNumber: number, activity: activity, cloNumber: cloNumber }),
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Row deleted successfully:', data);                 
+                    row.remove();
+                  
+    
+                    // Decrement the row count for this tab
+                    if (index in tabRowCounts) {
+                        tabRowCounts[index]--;
+                    }
+                    updateNumbers(table);
+
+                })
+                .catch(error => {
+                    console.error('Error deleting row:', error);
+                });
+            }
+
+
+                function updateNumbers(table) {
+                    const rows = table.getElementsByTagName('tr');
+                    for (let i = 1; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName('td');
+                    if (cells.length > 0) {
+                        // Update the first cell in the row
+                        cells[0].innerHTML = `<input type="tel" class="form-control" value="${i-1}" readonly style="border: none;">`;
+                    }
+                }
+            }
+            
+            
+           
+
+                // After creating all tabs and panes, attach event listeners to the 'Add' buttons
+                const addButtons = document.querySelectorAll(".addButton");
+                addButtons.forEach((button, index) => {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault();
+                        addRow(this, index); // Pass the button element and index when adding a row
+                    });
+                });
+
+
+            </script>
+
+            <% } else {%>
+                <h2>You are not allowed to access this page!</h2>
+                <% } %>
+            
+        <%- include('./partials/footer.ejs')%>
+</body>
+
+</html>

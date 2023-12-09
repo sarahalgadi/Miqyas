@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%-include("./partials/head.ejs")%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/stylesheets/chair.css">
+</head>
+
+<body>
+  <%-include("./partials/nav.ejs")%>
+    <div>
+      <table class="table table-borderless">
+        <tr>
+          <td rowspan="2">
+            <h2>
+              Department Curriculum Committee <br>and Quality Assurance Members
+            </h2>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><strong>Term:</strong>
+            <%= semester %>
+          </td>
+          <td><strong>Department:</strong>
+            <%= user.department %>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <hr class="divider">
+
+    <% if(user.department===department && userRoles.includes('chairperson')) { %>
+
+      <div class="container">
+        <h4>Current Roles</h4>
+        <div class="container tableContainer">
+          <table class="table table-bordered table-striped table-hover">
+            <thead>
+              <tr>
+                <th class="headings">Faculty</th>
+                <th class="headings">Role</th>
+                <th class="headings"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% roles.forEach(function(r) { %>
+                <form action="/delete-roles/<%= semester %>" method="post">
+              <tr>
+                <td><%= r.fullName %></td>
+                <td><%= r.role %></td>
+                <input type="hidden" value="<%= r.role %>" name="role">
+                <input type="hidden" value="<%= r.username %>" name="username">
+                <td><button type="submit" class="btn delete custom-button">Delete</button></td>
+              </tr>
+            </form>
+              <% }); %>
+              
+            </tbody>
+          </table>
+        </div>
+
+        <h4>
+          <%= department %> Department Faculty Members
+        </h4>
+        <form action="/save-roles/<%= semester %>/<%= department %>" method="post">
+          <div class="container tableContainer">
+            <table class="table table-bordered table-striped table-hover">
+              <thead>
+                <tr>
+                  <th class="headings">Faculty Name</th>
+                  <th class="headings">Username</th>
+                  <th class="headings">Roles</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% facultyNames.forEach(function(faculty) { %>
+                  <tr>
+                    <td>
+                      <%= faculty.fullName %>
+                    </td>
+                    <td>
+                      <%= faculty.username %>
+                    </td>
+                    <td>
+                      <label>
+                        <input type="checkbox" class="roleCheck" name="department curriculum committee" value="<%= faculty.username %>">
+                        Curriculum Committee
+                      </label>
+                      <br>
+                      <label>
+                        <input type="checkbox" class="roleCheck" name="quality assurance" value="<%= faculty.username %>"> Quality
+                        Assurance
+                      </label>
+                    </td>
+                  </tr>
+                  <% }); %>
+              </tbody>
+            </table>
+            <button id="saveRoles" type="submit" class="btn custom-button">Save Roles</button>
+          </div>
+        </form>
+      </div>
+
+      <% } else { %>
+        <h2>You are not allowed to access this page!</h2>
+        <% } %>
+
+        <%- include('./partials/footer.ejs')%>
+</body>
+
+</html>

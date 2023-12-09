@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("./partials/head.ejs") %>
+    <link rel="stylesheet" href="/stylesheets/courseReport.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <%- include('./partials/nav.ejs')%>
+
+      <div class="col-md-8">
+        <h2>
+          <%= courseCode %>: <%= courseName %> - Section <%= section %>
+        </h2>
+        <h3>CLO Assessment Report</h3>
+      </div>
+      <div class="col-md-4">
+        <h2 style="margin-left: 20%;">Term: <%= term %>
+        </h2>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="row">
+      <div class="col-md-8">
+        <h4>Direct Assessment Results</h4>
+      </div>
+      <div class="col-md-4">
+        <div class="dropdown">
+          <button type="button" class="btn filter custom-button dropdown-toggle"
+            data-bs-toggle="dropdown">
+            Filter by Department
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item"
+                href="/view-section-report/<%= courseCode %>/<%= term %>/<%= section %>/All">All</a></li>
+            <% departments.forEach(department=> { %>
+              <li><a class="dropdown-item"
+                  href="/view-section-report/<%= courseCode %>/<%= term %>/<%= section %>/<%= department %>">
+                  <%= department %>
+                </a></li>
+              <% }); %>
+          </ul>
+        </div>
+      </div>
+      </div>
+
+      <!--direct assessment-->
+      <div class="container">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th class="headings">CLO Number</th>
+              <th class="headings">CLO Description</th>
+              <th class="headings">Below Expectations</th>
+              <th class="headings">Developing Expectations</th>
+              <th class="headings">Meeting Expectations</th>
+              <th class="headings">Above Expectation</th>
+              <th class="headings">Results</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let i=0; i < CLOnumbers.length; i++) { %>
+              <tr>
+                <td>CLO <%= CLOnumbers[i] %>
+                </td>
+                <td>
+                  <%= CLOstatements[i] %>
+                </td>
+                <!-- PER CATEGORY INFO -->
+                <% for (let category of [0, 1, 2, 3]) { %>
+                  <% const categoryData=categoryCounts.find(data=> parseInt(data.CLONumber) === parseInt(CLOnumbers[i])
+                    && parseInt(data.category) === parseInt(category)); %>
+                    <td class="categories">
+                      <%= categoryData ? categoryData.studentCount : 0 %>
+                    </td>
+                    <% } %>
+                      <!-- Display results for each CLO -->
+                      <td class="categories">
+                        <%= resultsPerCLO[CLOnumbers[i]] ? resultsPerCLO[CLOnumbers[i]].results.toFixed(2) : 0 %>%
+                      </td>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!--indirect assessment-->
+      <div class="row">
+        <h4>Indirect Assessment Results</h4>
+      </div>
+      <div class="container" id="result">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th class="headings">CLO Number</th>
+              <th class="headings">Not Satisfied</th>
+              <th class="headings">Barely Satisfied</th>
+              <th class="headings">Somewhat Satisfied</th>
+              <th class="headings">Adequately Satisfied</th>
+              <th class="headings">Fully Satisfied</th>
+              <th class="headings">Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% indirectSums.forEach(sum=> { %>
+              <tr>
+                <td class="categories">CLO <%= sum.CLONumber %>
+                </td>
+                <td class="categories">
+                  <%= sum.totalNotSatisfied %>
+                </td>
+                <td class="categories">
+                  <%= sum.totalBarelySatisfied %>
+                </td>
+                <td class="categories">
+                  <%= sum.totalSatisfied %>
+                </td>
+                <td class="categories">
+                  <%= sum.totalAdequatelySatisfied %>
+                </td>
+                <td class="categories">
+                  <%= sum.totalFullySatisfied %>
+                </td>
+                <td class="categories">
+                  <% if (totalIndirectPerCLO[sum.CLONumber] !==undefined) { %>
+                    <%= totalIndirectPerCLO[sum.CLONumber] %>%
+                      <% } else { %>
+                        N/A
+                        <% } %>
+                </td>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <!--Histogram-->
+      <div class="row">
+        <h4>Overall Assessment Results</h4>
+      </div>
+      <div class="container chart-container" id="result">
+        <canvas id="assessmentChart" width="400" height="150"></canvas>
+      </div>
+
+      <!--action plan-->
+      <div class="row">
+        <h4>Action Plan to Improve the Course</h4>
+      </div>
+
+      <div class="container" id="result">
+        <table id="action-plan" class="table table-bordered">
+          <thead>
+            <tr>
+              <th class="headings" rowspan="2">CLO Number</th>
+              <th class="headings" colspan="6">Action Plans</th>
+            </tr>
+            <tr>
+              <th class="headings">Action</th>
+              <th class="headings">Responsible</th>
+              <th class="headings">Start Time</th>
+              <th class="headings">End Time</th>
+              <th class="headings">Resources</th>
+            </tr>
+          </thead>
+          <tbody id="action-plan-body">
+            <% if (actionPlans && actionPlans.length> 0) { %>
+              <% actionPlans.forEach((actionPlan)=> { %>
+                <tr>
+                  <td>
+                    <%= actionPlan.CLONumber %>
+                  </td>
+                  <td>
+                    <%= actionPlan.statement || '' %>
+                  </td>
+                  <td>
+                    <%= actionPlan.responsibility || '' %>
+                  </td>
+                  <td>
+                    <%= actionPlan.startDate || '' %>
+                  </td>
+                  <td>
+                    <%= actionPlan.endDate || '' %>
+                  </td>
+                  <td>
+                    <%= actionPlan.resources || '' %>
+                  </td>
+
+                </tr>
+                <% }); %>
+                  <% } %>
+          </tbody>
+        </table>
+
+        <%- include('./partials/footer.ejs')%>
+</body>
+
+<script>
+  // histogram script. this is the same script used for course reports too.. so we can do it in a separate file.
+  // i had to split them into arrays in the server-side.. because javascript could not understand ejs objects.
+  const clonumbers = "<%= clohisto %>".split(',').map(Number);
+  const indirectres = "<%= indirecthisto %>".split(',').map(Number);
+  const directres = "<%= directhisto %>".split(',').map(Number);
+
+  const cloData = [];
+  for (let i = 0; i < clonumbers.length; i++) {
+    const obj =
+    {
+      clo: "CLO " + clonumbers[i],
+      directResult: directres[i],
+      indirectResult: indirectres[i]
+    };
+    cloData.push(obj);
+  }
+
+  const cloLabels = cloData.map(item => item.clo);
+  const directResults = cloData.map(item => item.directResult);
+  const indirectResults = cloData.map(item => item.indirectResult);
+
+  const ctx = document.getElementById('assessmentChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: cloLabels,
+      datasets: [
+        {
+          label: 'Direct Results',
+          backgroundColor: 'rgba(21, 65, 110, 0.9)',
+          borderColor: 'rgba(96, 137, 179)',
+          borderWidth: 1,
+          data: directResults,
+        },
+        {
+          label: 'Indirect Results',
+          backgroundColor: 'rgba(174, 183, 191, 0.8)',
+          borderColor: 'rgba(225, 230, 235)',
+          borderWidth: 1,
+          data: indirectResults,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+  ;
+</script>

@@ -1,0 +1,39 @@
+h2 {
+    font-weight: 600;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+h3 {
+    font-weight: 500;
+    margin: 1rem;
+    padding: 1rem;
+}
+.divider{
+    width: 90%;
+    margin: auto;
+}
+h4{
+    margin-top: 2rem;
+    font-weight: 400;
+}
+.filter{
+    width: 90%;
+    margin: 1rem;
+    margin-top: 2rem;
+}
+table .headings{
+    background-color:#15416e;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+table .achievement{
+    text-align: center;
+}
+.save{
+    float: right;
+}
+form{
+    margin-bottom: 15rem;
+}
