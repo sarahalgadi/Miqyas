@@ -15,7 +15,7 @@ async function getFullNameDepartment (department){
 
 //so we update semester in faculty_role anytime username + role are duplicated. this is updated every semester by uni. to get current semester.
 async function addRoles ( username, role, semester){
-    const [rows, fields] = await pool.execute
+    const [rows] = await pool.execute
     ('INSERT INTO faculty_role (username, role, semester) VALUES (?,?,?) ON DUPLICATE KEY UPDATE semester = VALUES(semester)',[username, role,semester]);
     return rows;
     
@@ -23,7 +23,7 @@ async function addRoles ( username, role, semester){
 
 //getting faulty name and useranme in the college FOR COORDINATOR
 async function getFullNameCollege (college){
-    const [rows, fields] = await pool.execute
+    const [rows] = await pool.execute
     ('SELECT f.fullName,  f.username  FROM faculty f JOIN department d ON f.department = d.departmentName WHERE d.college = ?',[college]);
     return rows;
 }
@@ -31,20 +31,20 @@ async function getFullNameCollege (college){
 
 
 async function addCoordinatorRole ( courseCode, username,semester){
-    const [rows, fields] = await pool.execute
+    const [rows] = await pool.execute
     ('INSERT INTO coordinator (courseCode, username, semester) VALUES (?,?,?) ON DUPLICATE KEY UPDATE username = VALUES(username)',[courseCode,username,semester]);
     return rows;
     
 }
 
 async function getCurrentCoordinator (department, semester){
-    const [rows, fields] = await pool.execute
+    const [rows] = await pool.execute
     ('SELECT f.fullName, co.courseCode, co.username FROM coordinator co JOIN faculty f ON co.username = f.username JOIN course c ON co.courseCode = c.courseCode WHERE c.department = ? AND co.semester = ? ',[department, semester]);
     return rows;
 }
 
 async function getCurrentRoles (department){
-    const [rows, fields] = await pool.execute
+    const [rows] = await pool.execute
     ('SELECT f.fullName, f.username, r.role FROM faculty f JOIN faculty_role r ON f.username = r.username  WHERE f.department = ? AND (r.role = "QA" OR  r.role = "DCC") ',[department]);
     return rows;
 }
