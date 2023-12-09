@@ -108,28 +108,32 @@ async function saveCoordinators(req, res){
   usernames = Array.isArray(usernames) ? usernames : [usernames];
   courses = Array.isArray(courses) ? courses : [courses];
 
-  
+  console.log("usernames", usernames
+  );
+  console.log("courses", courses);
   
   if(courses.length < usernames.length){
     res.render('error', {message: "Error: You need to specify a course for the coordinator!"})
   }
 
-  for (let i = 0; i < usernames.length; i++) {
-    const username = usernames[i];
-    const course = courses[i];
-    const role = "coordinator";
-  try{
-    await chairModel.addCoordinatorRole(course,username,semester);
-    await chairModel.addRoles(username,role,semester);
+  try {
+    for (let i = 0; i < usernames.length; i++) {
+      const username = usernames[i];
+      const course = courses[i];
+      const role = "coordinator";
+
+      await chairModel.addCoordinatorRole(course, username, semester);
+      await chairModel.addRoles(username, role, semester);
+    }
+
+    // Send the response only once after the loop has completed
     res.send('<script>alert("Successfully saved the roles!"); window.location.href = "/view-faculty-college/' + college + '/' + department + '/' + semester + '";</script>');
-
-
-  }catch(error){
+  } catch (error) {
     console.error(error);
-    res.render('error', {message: "Error: Could not save coordinator roles!"});
+    // If an error occurs, send the error response
+    return res.render('error', { message: "Error: Could not save coordinator roles!" });
   }
-
-}};
+}
 
 async function deleteCoordinatorRole (req,res) {
   console.log("i am here pt2")

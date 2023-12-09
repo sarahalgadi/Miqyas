@@ -39,13 +39,15 @@ function validateWeights() {
     for (let i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             const weightValue = parseInt(weights[i].value);
-
-            // Check if the weight is a valid integer between 0 and 100
-            if (isNaN(weightValue) || weightValue < 0 || weightValue > 100 || !Number.isInteger(weightValue)) {
-                errorText.innerText = 'Invalid weight! Please enter an integer between 0 and 100.';
-                saveButton.disabled = true; // Disable the button
-                return;
+            
+            if (weightValue) {
+                if (isNaN(weightValue) || weightValue < 0 || weightValue > 100 || !Number.isInteger(weightValue)) {
+                    errorText.innerText = 'Invalid weight! Please enter an integer between 0 and 100.';
+                    saveButton.disabled = true; // Disable the button
+                    return;
+                }
             }
+            
         }
     }
 
@@ -55,7 +57,7 @@ function validateWeights() {
     for (let i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             totalWeight += parseInt(weights[i].value);
-        }
+        } 
     }
 
     // Check if the total weight is at least 50%
@@ -93,3 +95,8 @@ const weightInputs = document.querySelectorAll('input[type="number"]');
 weightInputs.forEach(input => {
     input.addEventListener('input', handleInputChange);
 });
+
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+checkboxes.forEach(checkbox=>{
+    checkbox.addEventListener('change', handleInputChange);
+})

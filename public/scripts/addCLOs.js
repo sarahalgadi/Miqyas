@@ -57,7 +57,7 @@ function updateCLONumbers() {
     const rows = table.getElementsByTagName('tr');
     
     // Iterate through rows starting from the second row
-    for (let i = 1; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
         const cells = rows[i].getElementsByTagName('td');
         
         // Update the cloNumber value based on the current row's input value

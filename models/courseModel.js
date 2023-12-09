@@ -17,13 +17,6 @@ async function getCourseName(courseCode) {
   }
 
 
-  async function getCLOInfo(courseCode, semester) { 
-    const sql = 'SELECT  clo.statement, clo.CLONumber FROM course_learning_outcomes clo WHERE clo.courseCode = ? AND clo.semester = ?';
-    const [rows, fields] = await pool.execute(sql, [courseCode, semester]);
-    const CLOstatements = rows.map(row => row.statement);
-    const CLOnumbers = rows.map(row => row.CLONumber);
-    return {CLOstatements, CLOnumbers };
-  }
 
   async function getDepartments() { 
     const sql = 'SELECT departmentName FROM department';
