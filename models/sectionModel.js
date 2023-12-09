@@ -41,7 +41,7 @@ async function getAssessmentDetails(courseCode, semester, section){
 async function deleteAssessmentDetails (courseCode, sectionNumber, semester, type, assessmentNumber, CLONumber){
     const sql = `DELETE FROM assessment_details  WHERE courseCode = ? AND sectionNumber = ? AND semester = ? AND type = ? AND assessmentNumber = ? AND CLONumber = ?`;
     try{
-        const[result] = await pool.execute(sql, [courseCode, sectionNumber, semester, type, assessmentNumber, CLONumber]);
+        await pool.execute(sql, [courseCode, sectionNumber, semester, type, assessmentNumber, CLONumber]);
     } catch(error){
         console.error('error fetching details', error);
         throw error;
@@ -81,7 +81,7 @@ async function saveIndirectAssessmentData(CLONumber, courseCode, semester, secti
     
 try{
     const [rows] = await pool.execute(first_query, [CLONumber, courseCode, semester, sectionNumber, NumFullySatisfied, NumAdequatelySatisfied, NumSatisfied, NumBarelySatisfied, NumNotSatisfied]);
-    console.log("saved!")
+    console.log("saved!", rows)
 } catch(error){
     console.log("error saving tuple", error)
 }
