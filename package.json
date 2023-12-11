@@ -5,7 +5,7 @@
   "scripts": {
     "devStart": "nodemon app.js",
     "devStartAuth": "nodemon authServer.js",
-    "start": "node ./bin/www"
+    "start": "node app.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
