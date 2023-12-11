@@ -18,7 +18,7 @@ async function getUserByUsername(username) {
   }
 
   async function getCurrentTerm(username) {
-    const sql = `SELECT DISTINCT semester FROM faculty_role WHERE username = ?`;
+    const sql = `SELECT DISTINCT semester FROM faculty_role WHERE username = ? ORDER BY semester DESC`;
 
     try {
         const [rows] = await pool.execute(sql, [username]);

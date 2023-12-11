@@ -230,6 +230,8 @@ async function inputGrades(req, res){
       const assessmentDetails = await courseInstructorModel.getAssessmentDetails(courseCode, term, section);
       const userCourses = await userModel.getCourses(user.username, term);
       let canAccess = false;
+      //we can also change this condition so that it checks for current semester from req.session.user to ensure old assessments cannot be updated
+      //it depends on what future prospects want.
       if(userCourses){
         userCourses.forEach(function(course){
           if(course.courseCode == courseCode && course.sectionNumber == section)
@@ -273,11 +275,18 @@ try{
       let total = await courseInstructorModel.getTotalWeightOfAQuestion(courseCode, term, section, type, assessmentNumber);
       //it returns it as an object w grade attribute
       const CLOPercentage = (studentGrade/ total.grade * 100).toFixed(2);
+
+      if (CLOPercentage > 100.0){
+        //not allowing save.
+        res.render('error', {message: "Error: Student ID " + studentID + " has a grade greater than the assigned grade for question " + assessmentNumber});
+      } else{
+        //saving into student_direct_assessment
+        await studentModel.saveStudentAveragePerQuestion(type, courseCode, assessmentNumber, studentID, studentGrade, CLOPercentage, term, section);
+
+
+      }
       console.log(CLOPercentage);
 
-      //now we're gonna save into student_direct_assessment
-
-      await studentModel.saveStudentAveragePerQuestion(type, courseCode, assessmentNumber, studentID, studentGrade, CLOPercentage, term, section);
   }
 
 }
@@ -339,12 +348,17 @@ async function saveIndirectAssessment(req, res) {
       const NumSatisfied = formData['NumSatisfied'];
       const NumBarelySatisfied = formData['NumBarelySatisfied'];
       const NumNotSatisfied =formData['NumNotSatisfied'];
+      const cloInfo = await courseModel.getCLOInfo(courseCode, semester);
 
       
 
   try {
       console.log("formdata", req.body);
-      for(let i=0; i< CLONumber.length; i++){
+      //i dont have to check if theyre arrays because u cannnot submit less than 4 clos.
+      if (CLONumber.length !== cloInfo.CLOnumbers.length){
+        res.render('error', {message: "Error: Make sure the CLO numbers are equal to the course's number of CLOs."})
+      } else {
+        for(let i=0; i< CLONumber.length; i++){
           const CLO = parseInt(CLONumber[i]);
           const full = parseInt(NumFullySatisfied[i]);
           const adequate = parseInt(NumAdequatelySatisfied[i]);
@@ -369,9 +383,11 @@ async function saveIndirectAssessment(req, res) {
       //then redirecting to success page to indicate this process is complete
       console.log('Indirect Assessment Results Saved Successfully!');
       res.render('success', {title: 'Success!', message:'Indirect Assessment Results Saved Successfully!'});
-  } catch (error) {
-      res.render('error', {message: "Error: Could not save course exit survey data."})
-  }
+  } 
+      }catch (error) {
+        res.render('error', {message: "Error: Could not save course exit survey data."})
+    }
+     
 }
 
 

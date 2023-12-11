@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <%- include("./partials/head.ejs") %>;
+    <%- include("./partials/head.ejs") %>
         <link rel="stylesheet" href="/stylesheets/cc.css">
 </head>
 
@@ -29,7 +29,7 @@
                     <a class="nav-link active tab" data-bs-toggle="tab" href="#editActivites">Edit Activities</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link tab" data-bs-toggle="tab" href="#viewReports">View Past Reports</a>
+                    <a class="nav-link tab" data-bs-toggle="tab" href="#viewReports">View <%= courseCode %> Reports</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link tab" data-bs-toggle="tab" href="#generateReport">Generate Report</a>
@@ -109,8 +109,7 @@
                                 placeholder="Enter weight (%)" min="0" max="100"
                                 value="<%= assignedWeights.other || '' %>">
                         </div>
-                        <!--In case of error in validating the weights, message would be shown here-->
-                        <div class="error-text" id="errorText"></div>
+                        <div class="error-text error" id="errorText"></div>
                         <button type="submit" onclick="validateWeights()" id="saveButton"
                             class="btn custom-button mt-4">Save</button>
                     </form>

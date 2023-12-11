@@ -62,7 +62,7 @@
                             </div>
                             <% }) %>
                                 <% } else { %>
-                                    <h4>You're currently not teaching courses this term.</h4>
+                                    <h4 class="error">You're currently not teaching courses this term.</h4>
                                     <form action="/view-reports/<%= user.department %>/<%= term%>" method="get">
                                         <button class="btn custom-button" href="#" style="width: 100%;">View Your Past
                                             Reports</button>

@@ -31,9 +31,22 @@ table .headings{
 table .achievement{
     text-align: center;
 }
-.save{
-    float: right;
-}
+
 form{
     margin-bottom: 15rem;
+}
+
+.button-container {
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    }
+.save{
+    margin-left:auto;
+}
+
+.custom-button {
+    float: right;
+    width: 200px;
+    padding: 1em;
 }

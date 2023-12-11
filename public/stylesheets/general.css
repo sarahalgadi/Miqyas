@@ -34,3 +34,10 @@
 .body{
     font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
+.error{
+    color: maroon;
+    font-weight: bold;
+}
