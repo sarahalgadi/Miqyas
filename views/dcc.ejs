@@ -148,7 +148,6 @@
                         cloCount = clos.length;
                         const row = cloTable.insertRow(-1);
 
-                        // Add input elements with existing CLO information
                         const cell1 = row.insertCell(0);
                         const cell2 = row.insertCell(1);
                         const cell3 = row.insertCell(2);
@@ -164,7 +163,6 @@
                         cell4.innerHTML = '<button class="btn" style="background-color: #15416e;" onclick="deleteCLO(this)"><i class="fas fa-times" style="color: white"></i></button>';
                     });
                 } else {
-                    // Add a default row if no existing CLOs
                     addDefaultCLORow();
                 }
                 //checks if retrieved clos are 8; if true, it disables the add button bc maxmimum is reached

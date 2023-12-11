@@ -17,9 +17,12 @@
         </h2>
         <% if (missingReports && missingReports.length > 0) { %>
           <% missingReports.forEach(section => { %>
-           Section <%= section.sectionNumber %> did not submit the section report. 
-          <% }) %>
-          You can only prepare course report once all section reports are submitted!
+            <h4 class="error">
+              Section <%= section.sectionNumber %> did not submit the section report. 
+              <% }) %>
+              You can only prepare course report once all section reports are submitted!
+            </h4>
+         
        <% } else { %>
 
         <h3>CLO Assessment Course Report</h3>
@@ -226,7 +229,7 @@
       </div>
 
       <div class="container">
-        <div id="recommendationError" style="color: maroon; margin-bottom: 1rem;"></div>
+        <div id="recommendationError" class="error" style="margin-bottom: 1rem;"></div>
         <textarea id="recommendation" name="recommendation" placeholder="What do you recommend?"class="form-control" rows="5" style="resize: vertical;"
           required><% if (recommendation ) { %><%= recommendation %><% } %></textarea>
       </div>
@@ -314,10 +317,8 @@
 </script>
 <script>
   function validateAndSubmit() {
-    // Get the rec text
     var recommendation = document.getElementById('recommendation').value;
 
-    // Check if the recommendation is empty
     if (recommendation.trim() === '') {
       // Display an error message
       document.getElementById('recommendationError').innerText = 'You should submit a recommendation for the course!';

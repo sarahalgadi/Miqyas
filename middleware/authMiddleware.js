@@ -22,7 +22,7 @@ async function authenticateToken(req, res, next) {
     }
 
     req.user = dbUser;
-    next(); // Call next to pass control to the next middleware
+    next(); 
   });
 }
 

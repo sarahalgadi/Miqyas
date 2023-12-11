@@ -24,6 +24,7 @@
         <hr class="divider">
         <h2>Direct Assessment</h2>
         <% if (canAccess){ %>
+            
 
             <ul class="nav nav-tabs" id="activityTabs" role="tablist">
                 <% if (activities && activities.length> 0) { %>
@@ -119,7 +120,7 @@
                             </form>
 
                                 <form action="/input-grades/<%= courseCode %>/<%= term %>/<%= section %>" method="GET">
-                                    <button id="inputGradesButton" class="btn custom-button">Input Grades</button>
+                                    <button id="inputGradesButton" class="btn custom-button" >Input Grades</button>
                                 </form>
                             </div>
                         </div>
@@ -252,8 +253,7 @@
                         addRow(this, index); // Pass the button element and index when adding a row
                     });
                 });
-
-
+              
             </script>
 
             <% } else {%>

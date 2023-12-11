@@ -94,9 +94,17 @@
                     </tbody>
                 </table>
                 <% if (condition && canAccess) {%>
-                <button class="btn custom-button save" type="submit">Submit Student Results</button>
+                    <div class="button-container">
+                        <button class="btn custom-button save" type="submit">Submit Student Results</button>
+                    </form>
+                        <form method="post" action="/indirect/<%= courseCode %>/<%= term %>/<%= section %>">
+                        <button class="btn custom-button save">Go to Indirect Assessment</button>
+                        </form>
+                    </div>
+                    
+                
                 <% } %>
-            </form>
+            
         </div>
 
       
