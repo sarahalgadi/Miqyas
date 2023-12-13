@@ -1,11 +1,11 @@
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-    host: "localhost",
-    port: 3306,
+    host: "mysql-mq-24295.nodechef.com",
+    port: 2491,
     user: "root",
-    password: "root",
-    database: "miqyasdb"
+    password: "K1MetxGQbl:k2LV4PugGW:tBXvB6bBSv",
+    database: "miqyas"
    // connectionLimit: 10,
    // queueLimit: 0,
 });
