@@ -63,8 +63,7 @@ async function getDirectAssessmentResultsDepartment(req, res) {
 
   try{
     const userCourses = await userModel.getCourses(user.username, term);
-    const userRoles = await userModel.getUserRolesQA(user.username);
-  
+    const userRoles = await userModel.getUserRoleQA(user.username);
       if (department === 'All') {
           return res.redirect(`/directAssessmentResults/${courseCode}/${term}/${section}`);
         }
@@ -104,7 +103,9 @@ async function getDirectAssessmentResultsDepartment(req, res) {
         userRoles
       });
   } catch(error){
+    console.log(error);
     res.render('error', {message: "Error: Could not fetch direct assessment results."})
+
   }
 }
 
